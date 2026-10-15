@@ -1,0 +1,30 @@
+# Local environment and secrets
+.env
+
+# Virtual environments
+.venv/
+venv/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Input data and run output contain sensitive complaint records.
+# The directories are ignored by their contents, not themselves, so the .gitkeep
+# files below can still be tracked.
+data/input/*
+data/runs/*
+
+# Keep the directories themselves
+!data/input/.gitkeep
+!data/runs/.gitkeep
+
+config/*
+
+# Keep the config directory itself and the example yaml
+!config/.rca.example.yaml
+!config/.gitkeep
