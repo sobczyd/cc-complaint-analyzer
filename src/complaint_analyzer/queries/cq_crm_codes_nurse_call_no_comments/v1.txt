@@ -1,0 +1,23 @@
+SELECT Id, CaseNumber, Status, Subject,
+       CreatedDate, ClosedDate,
+       Owner.Name,
+       Account.Name,
+       HRCSVC_Is_Complain_Qualification_Exist__c,
+       HRCSVC_Clock_Hours_to_Resolve__c,
+       HRCSVC_Business_Hours_to_Resolve__c,
+       RMA_Number__c,
+       HRCSVC_Complaint_Code__r.Name,
+       (SELECT Id, Cause_Code__r.Name, Component_Code__r.Name,
+               As_Determined_Code__r.Name, As_Reported_Code__r.Name,
+               Product_Family__r.Name, Asset__r.Name, Work_Order__r.WorkOrderNumber
+        FROM Problem_Codes__r
+        WHERE Product_Family__r.Name = 'CareComm - Nurse Call'),
+       (SELECT Id, Name, HRCSVC_Status__c, HRCSVC_Product_Group__c,
+               TW_Complaint_Number__c, HRCSVC_Issue_Cause__c,
+               HRCSVC_Actions_to_Resolve__c, HRCSVC_Device_Serviced__c
+        FROM Complaint_Qualifications__r
+        WHERE HRCSVC_Product_Group__c = 'CareComm - Nurse Call')
+FROM Case
+WHERE CreatedDate = LAST_N_DAYS:30
+  AND HRCSVC_Complaint_Code__r.Name = 'CareComm - Nurse Call'
+ORDER BY CreatedDate DESC
