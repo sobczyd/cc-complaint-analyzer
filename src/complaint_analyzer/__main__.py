@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 from . import __version__, runner
-from .analyses import AnalysisError, available, get_analysis
+from .prompts import AnalysisError, available, get_analysis
 from .data import DataError, load_sheet, select
 from .data.writer import write_workbook
 from .llm.build import build

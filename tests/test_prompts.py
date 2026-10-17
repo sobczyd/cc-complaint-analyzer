@@ -1,17 +1,24 @@
-"""The analysis framework and the RCA analysis itself."""
+"""The prompt framework, the registered prompt sets and their manifests."""
 
 from __future__ import annotations
 
 import pytest
 
-from complaint_analyzer.analyses import AnalysisError, available, get_analysis
-from complaint_analyzer.analyses.base import (
+from complaint_analyzer.prompts import AnalysisError, available, get_analysis, prompt_set_dir
+from complaint_analyzer.prompts.__main__ import main as prompts_cli
+from complaint_analyzer.prompts.base import (
     default_render,
     flatten_result,
     parse_json_object,
 )
-from complaint_analyzer.analyses.rca.schema import RcaResult
-from complaint_analyzer.analyses.rca.validators import (
+from complaint_analyzer.prompts.case_summary.schema import CaseSummaryResult
+from complaint_analyzer.prompts.manifest import (
+    next_version,
+    render_changelog,
+    validate_prompt_set,
+)
+from complaint_analyzer.prompts.root_cause_analysis.schema import RcaResult
+from complaint_analyzer.prompts.root_cause_analysis.validators import (
     check_cause_consistency,
     check_evidence_quotes,
 )
@@ -201,3 +208,61 @@ def test_analysis_runs_every_validator() -> None:
     issues = analysis.validate_result(record(), result)
     assert any("verbatim" in issue for issue in issues)
     assert any("documented_cause is empty" in issue for issue in issues)
+
+
+@pytest.mark.parametrize("name", available())
+def test_every_registered_prompt_set_validates(name: str) -> None:
+    directory = prompt_set_dir(name)
+    manifest = validate_prompt_set(directory)
+    assert manifest["prompt_set"] == directory.name
+    versions = [entry["version"] for entry in manifest["versions"]]
+    assert sorted(versions) == sorted(get_analysis(name).prompts)
+
+
+@pytest.mark.parametrize("name", available())
+def test_committed_changelog_matches_the_manifest(name: str) -> None:
+    directory = prompt_set_dir(name)
+    manifest = validate_prompt_set(directory)
+    committed = (directory / "CHANGELOG.md").read_text(encoding="utf-8")
+    assert committed == render_changelog(manifest)
+
+
+def test_rca_lives_in_a_descriptive_folder() -> None:
+    assert prompt_set_dir("rca").name == "root_cause_analysis"
+    assert prompt_set_dir("case_summary").name == "case_summary"
+    assert next_version(prompt_set_dir("rca")) == "v3"
+
+
+def test_case_summary_builds_and_validates_sample_output() -> None:
+    analysis = get_analysis("case_summary")
+    assert analysis.name == "case_summary"
+    assert analysis.result_model is CaseSummaryResult
+    assert "v1" in analysis.prompts
+    result = CaseSummaryResult.model_validate(
+        {
+            "summary": "Router drops connection; replaced cable.",
+            "status": "Resolved",
+            "actions_taken": ["Checked logs", "Replaced cable"],
+            "unexpected": "ignored",
+        }
+    )
+    assert result.status == "resolved"
+    assert analysis.validate_result(record(), result) == []
+
+
+def test_prompts_cli_lists_and_validates(capsys: pytest.CaptureFixture[str]) -> None:
+    assert prompts_cli(["--list"]) == 0
+    listed = capsys.readouterr().out
+    assert "case_summary\tcase_summary\tv1" in listed
+    assert "rca\troot_cause_analysis\tv2" in listed
+
+    assert prompts_cli(["rca"]) == 0
+    assert "ok: root_cause_analysis (2 version(s))" in capsys.readouterr().out
+
+    assert prompts_cli(["case_summary", "--next-version"]) == 0
+    assert capsys.readouterr().out.strip() == "v2"
+
+
+def test_prompts_cli_reports_a_missing_set(capsys: pytest.CaptureFixture[str]) -> None:
+    assert prompts_cli(["does_not_exist"]) == 1
+    assert "error:" in capsys.readouterr().err

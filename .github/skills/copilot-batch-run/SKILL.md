@@ -1,16 +1,31 @@
 ---
-name: rca-harness-batch
-description: "Prepare, fan out, resume, validate, and finalize RCA harness runs with isolated GitHub Copilot workers. Use for processing complaint records in configurable batches, including the default 100 records in groups of 10."
+name: copilot-batch-run
+description: "Prepare, fan out, resume, validate, and finalize harness runs of any registered prompt (rca, case_summary, ...) with isolated GitHub Copilot workers. Use for processing complaint records in configurable batches, including the default 100 records in groups of 10."
 argument-hint: "run-id [--config config\\rca.yaml] [--limit 100] [--batch-size 10]"
 user-invocable: true
 disable-model-invocation: false
 ---
 
-# RCA Harness Batch
+# Copilot Batch Run
 
 Run an auditable harness analysis using isolated Copilot workers. The Python
 application never calls Copilot; this skill owns worker delegation while the
 application owns deterministic assignments, validation, and final artifacts.
+
+The skill is prompt-agnostic. The prompt that is run comes from the
+configuration's `analysis.name` and `analysis.version` (for example `rca` /
+`v2` or `case_summary` / `v1`). Prompts live in
+`src\complaint_analyzer\prompts\<prompt_folder>\` with their own
+`manifest.yaml` and `CHANGELOG.md`; list them with:
+
+```powershell
+.\.venv\Scripts\python.exe -m complaint_analyzer.prompts --list
+```
+
+If the user names a prompt but no config, use `config\<prompt>.yaml` when it
+exists; otherwise ask which config to use (examples live in
+`config\<prompt>.example.yaml`). Never edit prompt files from this skill — use
+the `prompt-author` skill for that.
 
 ## Defaults
 
@@ -79,7 +94,7 @@ ready, skip directly to finalization.
 
 ### 4. Delegate incomplete assignments
 
-Invoke the `RCA Harness Worker` agent once for each ID in
+Invoke the `Batch Worker` agent once for each ID in
 `incomplete_assignment_ids`. Give each worker:
 
 - repository, config, run ID, assignment ID, and model;
@@ -122,6 +137,7 @@ assignments.
 
 Verify the final manifest, `results.jsonl`, workbook, and call directory. Report:
 
+- prompt name and version that were run;
 - prepared records and assignments;
 - workers launched per round;
 - responses reused and newly published;

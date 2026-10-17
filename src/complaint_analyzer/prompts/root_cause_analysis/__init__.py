@@ -8,7 +8,7 @@ from ..base import Analysis, load_prompts
 from .schema import RcaResult
 from .validators import check_cause_consistency, check_evidence_quotes
 
-_PROMPTS_DIR = Path(__file__).parent / "prompts"
+_PROMPTS_DIR = Path(__file__).parent
 
 
 def build() -> Analysis:

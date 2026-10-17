@@ -1,12 +1,14 @@
 ---
-name: RCA Harness Worker
-description: "Use when an RCA harness orchestrator assigns an explicit batch of prepared request files to process independently."
+name: Batch Worker
+description: "Use when a harness batch orchestrator (copilot-batch-run) assigns an explicit batch of prepared request files to process independently, for any prompt."
 tools: [read, edit, execute]
 user-invocable: false
 disable-model-invocation: false
 ---
 
-You process exactly one persisted RCA harness assignment.
+You process exactly one persisted harness assignment. The prompt (for example
+`rca` or `case_summary`) is already baked into each request's system and user
+messages; follow them exactly and do not assume a particular response schema.
 
 ## Inputs required from the orchestrator
 

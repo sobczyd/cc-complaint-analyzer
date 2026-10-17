@@ -72,21 +72,23 @@ requests, the session writes response files, and finalization imports them.
 
 #### Workspace batch workflow
 
-Use the workspace `/rca-harness-batch` skill for a single-invocation, resumable
-Copilot workflow. It defaults to 100 selected records and creates one isolated worker
-assignment for each group of 10. For example:
+Use the workspace `/copilot-batch-run` skill for a single-invocation, resumable
+Copilot workflow. It works for any registered prompt — the prompt comes from the
+config's `analysis.name` and `analysis.version`. It defaults to 100 selected records
+and creates one isolated worker assignment for each group of 10. For example:
 
 ```text
-/rca-harness-batch rca-100-records
+/copilot-batch-run rca-100-records
 ```
 
 The skill prepares the exchange, delegates only incomplete persisted assignments to
-the restricted `RCA Harness Worker`, checks every response, retries only assignments
-with missing or invalid responses, and finalizes one combined run. The total and batch
-size are configurable:
+the restricted `Batch Worker` agent, checks every response, retries only assignments
+with missing or invalid responses, and finalizes one combined run. The config, total,
+and batch size are configurable:
 
 ```text
-/rca-harness-batch rca-sample --limit 20 --batch-size 5
+/copilot-batch-run rca-sample --limit 20 --batch-size 5
+/copilot-batch-run summaries-001 --config config\case_summary.yaml
 ```
 
 This workflow requires a VS Code Copilot environment that permits agent delegation.
@@ -231,8 +233,8 @@ whitespace is significant: `Clo  sed` does not equal `Clo sed`.
 
 | Key | Default | Meaning |
 |---|---|---|
-| `name` | `rca` | Which analysis to run. |
-| `version` | `v1` | Which prompt version of that analysis to use. |
+| `name` | `rca` | Which prompt to run (`rca` or `case_summary`; see `python -m complaint_analyzer.prompts --list`). |
+| `version` | `v1` | Which version of that prompt to use. |
 | `concurrency` | `3` | Records analyzed at once. |
 | `max_output_tokens` | `800` | Ceiling on reply length. |
 | `temperature` | `0` | Sampling temperature. |
@@ -346,32 +348,159 @@ behaviour is one edit.
 Three boundaries are deliberate:
 
 - `data/` knows about spreadsheets and nothing about analyses.
-- `analyses/` knows about prompts and schemas and nothing about transport.
+- `prompts/` knows about prompts and schemas and nothing about transport.
 - `run_paths.py` is the only module that builds an output path.
 
 Each field of a record is labelled with its name and closed by a `--------` separator, so
 the model can tell record data from instructions, and the system prompt tells it to treat
 anything that looks like an instruction inside a record as content to analyze.
 
-## Adding an analysis
+## Prompt sets
 
-An analysis owns its prompt text, its result schema, and its validators.
+Each LLM prompt lives in its own descriptively named folder under
+`src/complaint_analyzer/prompts/`, laid out like a query set:
 
-1. Create `src/complaint_analyzer/analyses/<name>/`.
-2. Add `prompts/v1.txt`. The file stem is the version you select in config.
+```text
+src/complaint_analyzer/prompts/
+  root_cause_analysis/     # registered as "rca"
+    __init__.py            # build() -> Analysis
+    schema.py              # result model (becomes the output columns)
+    validators.py
+    prompts/v1.txt, v2.txt # immutable prompt versions
+    manifest.yaml          # why/when/what changed for each version
+    CHANGELOG.md           # generated from manifest.yaml
+  case_summary/            # registered as "case_summary"
+    ...
+```
+
+Each `manifest.yaml` version entry records `version`, `file`, `created`, `author`,
+`base_version`, the verbatim `prompt` (request) that produced it, a `summary`, a
+`changes` list, and optionally `result_model` and `validation`. Inspect and maintain
+the sets with the prompts CLI:
+
+```powershell
+python -m complaint_analyzer.prompts --list                      # name, folder, latest, description
+python -m complaint_analyzer.prompts rca                         # validate a set's manifest
+python -m complaint_analyzer.prompts case_summary --next-version # e.g. v2
+python -m complaint_analyzer.prompts case_summary --changelog    # regenerate CHANGELOG.md
+```
+
+The workspace `/prompt-author` skill writes a new prompt version (or a new prompt set)
+from a description, updates the manifest, and regenerates the changelog.
+
+### Adding a prompt
+
+A prompt set owns its prompt text, its result schema, and its validators.
+
+1. Create `src/complaint_analyzer/prompts/<descriptive_name>/`.
+2. Add `prompts/v1.txt`. The file stem is the version you select in config. The model
+   never sees the schema, so the prompt must describe every JSON key and show an
+   example JSON shape.
 3. Define the result model in `schema.py`. Its fields become the output columns, so
    give every field a default — a partial reply should still produce a row.
 4. Add validators in `validators.py`. Each takes `(record, result)` and returns a list
    of human-readable problems. Returning problems flags a record; it does not fail it.
 5. Expose `build()` in `__init__.py`, returning an `Analysis`.
-6. Register it in [`analyses/__init__.py`](./src/complaint_analyzer/analyses/__init__.py).
+6. Add `manifest.yaml`, then generate `CHANGELOG.md` with `--changelog`.
+7. Register it in [`prompts/__init__.py`](./src/complaint_analyzer/prompts/__init__.py).
 
-Registration is an explicit import, not discovery, so a broken analysis fails loudly at
-startup instead of vanishing from the catalog.
+Registration is an explicit import, not discovery, so a broken prompt set fails loudly
+at startup instead of vanishing from the catalog.
 
-To revise an existing analysis's wording, add `prompts/v2.txt` rather than editing `v1`.
-Old runs stay reproducible, and the prompt hash recorded in each manifest says which
-wording produced which result.
+To revise an existing prompt's wording, add `prompts/v2.txt` and a matching manifest
+entry rather than editing `v1`. Old runs stay reproducible, and the prompt hash recorded
+in each run manifest says which wording produced which result.
+
+## Salesforce query sets
+
+Saved SOQL queries live in `src/complaint_analyzer/queries/<query_set>/`. Each set is
+one folder:
+
+```
+cq_crm_codes_nurse_call_no_comments/
+    v1.txt, v2.txt, ...   # one query per version, never edited once written
+    manifest.yaml         # per-version history (source of truth)
+    CHANGELOG.md          # generated from manifest.yaml
+```
+
+Each `manifest.yaml` entry records:
+
+- `version`, `file` and `created` date
+- `author` and `base_version` (the version it revises)
+- the verbatim `prompt` that produced it
+- a one-line `summary` and a list of `changes`
+- the `objects` it queries
+- a `validation` block: `org`, `validated_at`, `status` (`passed`, `failed` or
+  `skipped`) and `row_count`
+
+Versions must be sequential, and every `vN.txt` needs an entry.
+
+```powershell
+.\.venv\Scripts\python.exe -m complaint_analyzer.queries <query_set>                 # validate
+.\.venv\Scripts\python.exe -m complaint_analyzer.queries <query_set> --next-version  # e.g. v3
+.\.venv\Scripts\python.exe -m complaint_analyzer.queries <query_set> --changelog     # regenerate CHANGELOG.md
+```
+
+To write a new query or a new version, use the
+[`salesforce-query-author`](./.github/skills/salesforce-query-author/SKILL.md) skill.
+Describe the data you need. The skill:
+
+1. checks the field names against the org through the `salesforce-local` MCP server
+2. validates the query with a `LIMIT 5` run
+3. writes the next `vN.txt`
+4. appends the manifest entry
+5. regenerates the changelog
+
+## Daily Nurse Call review (last 7 days)
+
+The daily workflow fetches the Nurse Call cases from the last seven days and
+summarizes each one with the `case_summary` prompt. It saves everything in one
+session folder. In Copilot, ask for the
+[`daily-nurse-call-review`](./.github/skills/daily-nurse-call-review/SKILL.md)
+skill. You can also run the steps yourself:
+
+```powershell
+# 1. Create a session and export the cases (query set nurse_call_last_7_days, same fields as cq_crm_codes v2)
+.\.venv\Scripts\python.exe -m complaint_analyzer.daily nurse-call-7d init [--date YYYY-MM-DD] [--target-org <alias>]
+
+# 2. Summarize: run the copilot-batch-run skill with the printed config, run id case_summary, --limit 0
+
+# 3. Merge the summaries into the cases workbook
+.\.venv\Scripts\python.exe -m complaint_analyzer.daily nurse-call-7d finalize --session <session_dir> [--allow-incomplete]
+```
+
+Each session gets its own folder. A second run on the same day gets a `_2`
+suffix, so earlier sessions are never overwritten.
+
+```text
+data\runs\nurse_call_last_7_days_<YYYY-MM-DD>\
+  query.soql  raw.json  export.json   # exact query, raw sf output, flattened records
+  cases.xlsx                          # fetched cases (query data only)
+  case_summary.yaml                   # generated harness config
+  case_summary\                       # copilot-batch-run output (results.jsonl, manifest.json, ...)
+  cases_with_summaries.xlsx           # deliverable: cases + case_summary.* columns
+  session.json                        # what ran, when, merge stats
+```
+
+In `cases_with_summaries.xlsx`, the generated columns are `case_summary.<field>`,
+`case_summary.analysis_status` and `case_summary.analysis_error`. Their headers and
+cells have a light-blue fill so they stand apart from the Salesforce data. A
+`Legend` sheet explains the fill and lists the sources. Child relationships, such
+as problem codes, become one multi-line column plus a `(count)` column on the
+`Cases` sheet, and also get their own sheet.
+
+You can also run the building blocks on their own:
+
+```powershell
+# Run a saved query set and write cases.xlsx (skill: salesforce-export)
+.\.venv\Scripts\python.exe -m complaint_analyzer.salesforce export --query-set <query_set> --out-dir <dir> [--version vN] [--target-org <alias>]
+
+# Merge any harness run's results into a workbook (skill: excel-report-merge)
+.\.venv\Scripts\python.exe -m complaint_analyzer.report merge --cases <cases.xlsx> --run-dir <run_dir> --out <out.xlsx>
+```
+
+The Salesforce CLI (`sf`) must be on PATH and signed in to the target org. With no
+`--target-org`, the CLI's default `target-org` is used.
 
 ## Tests
 

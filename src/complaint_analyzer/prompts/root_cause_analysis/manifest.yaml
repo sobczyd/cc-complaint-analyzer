@@ -1,0 +1,37 @@
+prompt_set: root_cause_analysis
+description: >-
+  Root cause analysis of a single service record (registry name "rca"): reported
+  symptom, restoring action, root cause category and confidence, with cited evidence.
+created: "2026-10-15"
+updated: "2026-10-16"
+versions:
+  - version: v1
+    file: v1.txt
+    created: "2026-10-15"
+    author: Sobczynski
+    base_version: null
+    prompt: >-
+      Backfilled from git history (commit ca5b0a9, "Add resumable Copilot harness batch
+      orchestration"); the original authoring request was not recorded.
+    summary: Initial single-record root cause analysis prompt with JSON-only output.
+    changes:
+      - Initial version.
+    result_model: RcaResult
+    validation:
+      status: skipped
+      notes: Predates manifest tracking; no recorded validation run.
+  - version: v2
+    file: v2.txt
+    created: "2026-10-15"
+    author: Sobczynski
+    base_version: v1
+    prompt: >-
+      Backfilled from git history (commit ca5b0a9); the original authoring request was
+      not recorded.
+    summary: Instructs the model to analyze each record independently.
+    changes:
+      - Added an instruction to review each record on its own and not combine records or infer patterns across the batch.
+    result_model: RcaResult
+    validation:
+      status: skipped
+      notes: Predates manifest tracking; no recorded validation run.

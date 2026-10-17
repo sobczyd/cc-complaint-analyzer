@@ -1,6 +1,6 @@
 """The record passed to an analysis.
 
-Deliberately dependency-free so both ``data`` and ``analyses`` can import it
+Deliberately dependency-free so both ``data`` and ``prompts`` can import it
 without importing each other.
 """
 

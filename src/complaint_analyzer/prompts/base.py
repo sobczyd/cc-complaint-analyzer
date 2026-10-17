@@ -1,7 +1,7 @@
 """What an analysis is, and how its result becomes workbook columns.
 
-An analysis owns its prompt text, its result schema, and its validators. Nothing in
-``runner``, ``data``, or ``llm`` knows about a specific analysis.
+An analysis is a prompt set (versioned ``vN.txt`` prompt text) plus its result schema
+and validators. Nothing in ``runner``, ``data``, or ``llm`` knows about a specific prompt.
 """
 
 from __future__ import annotations
@@ -15,6 +15,7 @@ from typing import Callable, Mapping, Sequence
 from pydantic import BaseModel
 
 from ..records import InputRecord
+from ..versioning import version_number, version_sort_key
 
 Renderer = Callable[[InputRecord, Sequence[str]], str]
 Validator = Callable[[InputRecord, BaseModel], list[str]]
@@ -80,12 +81,16 @@ class Analysis:
 
 
 def load_prompts(directory: Path) -> dict[str, str]:
-    """Load ``<version>.txt`` files from an analysis's ``prompts`` directory."""
+    """Load ``vN.txt`` files from a prompt set's directory, in version order."""
     if not directory.is_dir():
         raise AnalysisError(f"prompt directory not found: {directory}")
-    prompts = {path.stem: path.read_text(encoding="utf-8") for path in sorted(directory.glob("*.txt"))}
+    paths = sorted(
+        (path for path in directory.glob("*.txt") if version_number(path.stem) is not None),
+        key=lambda path: version_sort_key(path.stem),
+    )
+    prompts = {path.stem: path.read_text(encoding="utf-8") for path in paths}
     if not prompts:
-        raise AnalysisError(f"no prompt files (*.txt) in {directory}")
+        raise AnalysisError(f"no prompt files (vN.txt) in {directory}")
     return prompts
 
 

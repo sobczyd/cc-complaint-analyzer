@@ -10,7 +10,7 @@ import pytest
 
 from complaint_analyzer import runner
 from complaint_analyzer.__main__ import EXIT_CONFIG, EXIT_OK, main
-from complaint_analyzer.analyses import get_analysis
+from complaint_analyzer.prompts import get_analysis
 from complaint_analyzer.data import load_sheet, select
 from complaint_analyzer.llm.build import build
 from complaint_analyzer.logs import RunLog

@@ -11,7 +11,7 @@ from typing import Any
 
 from pydantic import ValidationError
 
-from ..analyses.base import Analysis, AnalysisError, parse_json_object
+from ..prompts.base import Analysis, AnalysisError, parse_json_object
 from ..run_paths import RunPaths, safe_component, utc_now
 from ..settings import ConfigError
 from .protocol import ChatRequest, ChatResponse

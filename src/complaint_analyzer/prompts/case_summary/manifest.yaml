@@ -1,0 +1,22 @@
+prompt_set: case_summary
+description: >-
+  Concise structured summary of a single complaint / service case: what was reported,
+  which product, actions taken, resolution and status, plus key points.
+created: "2026-10-16"
+updated: "2026-10-16"
+versions:
+  - version: v1
+    file: v1.txt
+    created: "2026-10-16"
+    author: copilot
+    base_version: null
+    prompt: >-
+      Add a "case_summary" prompt alongside root cause analysis, tracked with versions,
+      a manifest and a changelog like the query sets.
+    summary: Initial case summary prompt with JSON-only output.
+    changes:
+      - Initial version.
+    result_model: CaseSummaryResult
+    validation:
+      status: skipped
+      notes: Not yet run against records.

@@ -9,7 +9,7 @@ import pytest
 
 from complaint_analyzer import runner
 from complaint_analyzer.__main__ import EXIT_CONFIG, EXIT_OK, EXIT_PARTIAL, main
-from complaint_analyzer.analyses import get_analysis
+from complaint_analyzer.prompts import get_analysis
 from complaint_analyzer.data import load_sheet, select
 from complaint_analyzer.data.writer import STATUS_COLUMNS, write_workbook
 from complaint_analyzer.llm.build import build
@@ -380,7 +380,7 @@ def test_cli_reports_an_unknown_analysis(tmp_path: Path, workbook_path: Path, ca
     assert main(["--config", str(config)]) == EXIT_CONFIG
     captured = capsys.readouterr().err
     assert "unknown analysis" in captured
-    assert "available analyses: rca" in captured
+    assert "available analyses: case_summary, rca" in captured
 
 
 def test_cli_reports_a_missing_prompt_version(
