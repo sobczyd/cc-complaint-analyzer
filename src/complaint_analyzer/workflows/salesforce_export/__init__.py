@@ -1,6 +1,6 @@
 """Export Salesforce query sets to Excel with the ``sf`` CLI.
 
-    python -m complaint_analyzer.salesforce export --query-set nurse_call_last_7_days --out-dir DIR
+    python -m complaint_analyzer.workflows.salesforce_export export --query-set nurse_call_last_7_days --out-dir DIR
 """
 
 from __future__ import annotations

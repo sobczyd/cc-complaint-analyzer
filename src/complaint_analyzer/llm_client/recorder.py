@@ -11,8 +11,8 @@ import time
 from pathlib import Path
 from typing import Any
 
-from ..logs import CallLog, RunLog
-from ..run_paths import METADATA_NAME, REQUEST_NAME, RESPONSE_NAME, RunPaths, utc_now
+from ..core.logs import CallLog, RunLog
+from ..core.run_paths import METADATA_NAME, REQUEST_NAME, RESPONSE_NAME, RunPaths, utc_now
 from .protocol import ChatClient, ChatRequest, ChatResponse, LlmError
 
 

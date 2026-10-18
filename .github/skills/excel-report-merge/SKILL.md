@@ -30,7 +30,7 @@ by generated columns that are visibly different.
 2. Run from the repository root:
 
    ```powershell
-   .\.venv\Scripts\python.exe -m complaint_analyzer.report merge `
+   .\.venv\Scripts\python.exe -m complaint_analyzer.workflows.report_merge merge `
        --cases <cases.xlsx> --run-dir <run_dir> --out <merged.xlsx> [--analysis case_summary]
    ```
 

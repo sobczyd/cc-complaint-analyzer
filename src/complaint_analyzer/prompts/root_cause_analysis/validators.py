@@ -6,7 +6,7 @@ import re
 
 from pydantic import BaseModel
 
-from ...records import InputRecord
+from ...core.records import InputRecord
 
 _WHITESPACE = re.compile(r"\s+")
 

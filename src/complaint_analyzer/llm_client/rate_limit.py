@@ -12,7 +12,7 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Callable, Deque
 
-from ..logs import RunLog
+from ..core.logs import RunLog
 from .protocol import ChatClient, ChatRequest, ChatResponse
 
 WINDOW_SECONDS = 60.0

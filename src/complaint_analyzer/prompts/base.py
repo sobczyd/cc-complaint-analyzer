@@ -1,7 +1,8 @@
 """What an analysis is, and how its result becomes workbook columns.
 
 An analysis is a prompt set (versioned ``vN.txt`` prompt text) plus its result schema
-and validators. Nothing in ``runner``, ``data``, or ``llm`` knows about a specific prompt.
+and validators. Nothing in ``core.runner``, ``workbook``, or ``llm_client`` knows about
+a specific prompt.
 """
 
 from __future__ import annotations
@@ -14,8 +15,8 @@ from typing import Callable, Mapping, Sequence
 
 from pydantic import BaseModel
 
-from ..records import InputRecord
-from ..versioning import version_number, version_sort_key
+from ..core.records import InputRecord
+from ..core.versioning import version_number, version_sort_key
 
 Renderer = Callable[[InputRecord, Sequence[str]], str]
 Validator = Callable[[InputRecord, BaseModel], list[str]]

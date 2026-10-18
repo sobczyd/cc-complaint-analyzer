@@ -35,7 +35,7 @@ the `salesforce-export` skill).
 2. **Create the session and export the cases:**
 
    ```powershell
-   .\.venv\Scripts\python.exe -m complaint_analyzer.daily nurse-call-7d init [--date YYYY-MM-DD] [--target-org <alias>] [--batch-size 10]
+   .\.venv\Scripts\python.exe -m complaint_analyzer.workflows.daily_review nurse-call-7d init [--date YYYY-MM-DD] [--target-org <alias>] [--batch-size 10]
    ```
 
    The live Salesforce query can take a few minutes. The command prints JSON
@@ -60,7 +60,7 @@ the `salesforce-export` skill).
 5. **Merge into the deliverable workbook:**
 
    ```powershell
-   .\.venv\Scripts\python.exe -m complaint_analyzer.daily nurse-call-7d finalize --session <session_dir>
+   .\.venv\Scripts\python.exe -m complaint_analyzer.workflows.daily_review nurse-call-7d finalize --session <session_dir>
    ```
 
    It refuses to run when the harness run has no `manifest.json`. Only if the

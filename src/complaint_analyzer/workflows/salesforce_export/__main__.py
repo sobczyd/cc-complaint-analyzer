@@ -1,6 +1,6 @@
 """CLI: run a versioned query set against Salesforce and write ``cases.xlsx``.
 
-    python -m complaint_analyzer.salesforce export --query-set nurse_call_last_7_days \
+    python -m complaint_analyzer.workflows.salesforce_export export --query-set nurse_call_last_7_days \
         --out-dir data/runs/my_export [--version v1] [--target-org hillrom] [--from-json raw.json]
 """
 
@@ -14,7 +14,7 @@ from .export import DEFAULT_ID_FIELD, DEFAULT_TIMEOUT_SECONDS, ExportError, expo
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="python -m complaint_analyzer.salesforce")
+    parser = argparse.ArgumentParser(prog="python -m complaint_analyzer.workflows.salesforce_export")
     commands = parser.add_subparsers(dest="command", required=True)
     export = commands.add_parser("export", help="run a query set and write cases.xlsx")
     export.add_argument("--query-set", required=True, help="folder under queries/")

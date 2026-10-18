@@ -17,8 +17,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterator
 
-from ..logs import RunLog
-from ..run_paths import (
+from ..core.logs import RunLog
+from ..core.run_paths import (
     CALLS_DIR_NAME,
     METADATA_NAME,
     REQUEST_NAME,

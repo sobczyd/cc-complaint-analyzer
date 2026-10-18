@@ -9,11 +9,11 @@ from typing import Any, Iterable
 
 import pytest
 
-from complaint_analyzer.llm.cache import CachingClient, build_index, iter_call_dirs
-from complaint_analyzer.llm.protocol import ChatMessage, ChatRequest, LlmError
-from complaint_analyzer.llm.recorder import RecordingClient
-from complaint_analyzer.logs import CallLog, RunLog
-from complaint_analyzer.run_paths import RunPaths
+from complaint_analyzer.llm_client.cache import CachingClient, build_index, iter_call_dirs
+from complaint_analyzer.llm_client.protocol import ChatMessage, ChatRequest, LlmError
+from complaint_analyzer.llm_client.recorder import RecordingClient
+from complaint_analyzer.core.logs import CallLog, RunLog
+from complaint_analyzer.core.run_paths import RunPaths
 
 from conftest import FakeTransport, rca_payload
 
@@ -472,7 +472,7 @@ async def test_a_successful_call_closes_the_call_log(tmp_path: Path) -> None:
 async def test_a_failure_while_writing_output_still_closes_the_call_log(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from complaint_analyzer.llm import recorder as recorder_module
+    from complaint_analyzer.llm_client import recorder as recorder_module
 
     def refuse(path: Path, payload: Any) -> None:
         raise OSError(28, "no space left on device")
@@ -492,7 +492,7 @@ async def test_a_failure_while_writing_output_still_closes_the_call_log(
 async def test_a_recording_failure_does_not_mask_the_transport_error(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from complaint_analyzer.llm import recorder as recorder_module
+    from complaint_analyzer.llm_client import recorder as recorder_module
 
     real = recorder_module.write_json
     calls = {"n": 0}

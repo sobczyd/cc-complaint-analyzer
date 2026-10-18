@@ -10,8 +10,8 @@ import pytest
 from openpyxl import Workbook as OpenpyxlWorkbook
 from pydantic import SecretStr
 
-from complaint_analyzer.llm.protocol import ChatRequest, ChatResponse, LlmError
-from complaint_analyzer.settings import Credentials, Settings
+from complaint_analyzer.llm_client.protocol import ChatRequest, ChatResponse, LlmError
+from complaint_analyzer.core.settings import Credentials, Settings
 
 SHEET = "Service Records"
 

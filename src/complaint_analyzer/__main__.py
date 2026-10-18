@@ -13,21 +13,22 @@ import shutil
 import sys
 from pathlib import Path
 
-from . import __version__, runner
+from . import __version__
+from .core import runner
 from .prompts import AnalysisError, available, get_analysis
-from .data import DataError, load_sheet, select
-from .data.writer import write_workbook
-from .llm.build import build
-from .llm.exchange import (
+from .workbook import DataError, load_sheet, select
+from .workbook.writer import write_workbook
+from .llm_client.build import build
+from .llm_client.exchange import (
     inspect_exchange,
     load_exchange_client,
     prepare_exchange,
     publish_response,
 )
-from .llm.protocol import ChatClient
-from .logs import RunLog
-from .run_paths import RunPaths, default_run_id
-from .settings import ConfigError, Credentials, load_credentials, load_settings
+from .llm_client.protocol import ChatClient
+from .core.logs import RunLog
+from .core.run_paths import RunPaths, default_run_id
+from .core.settings import ConfigError, Credentials, load_credentials, load_settings
 
 EXIT_OK = 0
 EXIT_PARTIAL = 1

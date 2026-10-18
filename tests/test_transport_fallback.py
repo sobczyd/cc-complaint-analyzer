@@ -18,11 +18,11 @@ import pytest
 from openai import BadRequestError
 from pydantic import SecretStr
 
-from complaint_analyzer.llm.openai_compat import OpenAICompatibleClient
-from complaint_analyzer.llm.protocol import LlmError
-from complaint_analyzer.settings import Credentials
+from complaint_analyzer.llm_client.openai_compat import OpenAICompatibleClient
+from complaint_analyzer.llm_client.protocol import LlmError
+from complaint_analyzer.core.settings import Credentials
 
-from test_llm_layers import make_request
+from test_llm_client_layers import make_request
 from test_transport import _Choice, _Completion
 
 UNSUPPORTED = "Invalid value for 'response_format': this model does not support it."

@@ -1,4 +1,4 @@
-"""CLI: ``python -m complaint_analyzer.daily <workflow> init|finalize``."""
+"""CLI: ``python -m complaint_analyzer.workflows.daily_review <workflow> init|finalize``."""
 
 from __future__ import annotations
 
@@ -8,9 +8,9 @@ import sys
 from datetime import date
 from pathlib import Path
 
-from ..report import MergeError
-from ..salesforce.export import ExportError
-from ..settings import load_settings
+from ..report_merge import MergeError
+from ..salesforce_export.export import ExportError
+from ...core.settings import load_settings
 from . import (
     DEFAULT_RUNS_ROOT,
     WORKFLOWS,
@@ -23,7 +23,7 @@ from . import (
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="python -m complaint_analyzer.daily",
+        prog="python -m complaint_analyzer.workflows.daily_review",
         description="Daily review sessions: export cases, then merge harness summaries.",
     )
     parser.add_argument("workflow", choices=sorted(WORKFLOWS), help="workflow name")

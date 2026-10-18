@@ -7,9 +7,9 @@ from pathlib import Path
 import pytest
 from openpyxl import Workbook as OpenpyxlWorkbook
 
-from complaint_analyzer.data import DataError, load_sheet, select
-from complaint_analyzer.data.workbook import cell_text
-from complaint_analyzer.settings import DatasetSettings, FilterSpec
+from complaint_analyzer.workbook import DataError, load_sheet, select
+from complaint_analyzer.workbook.workbook import cell_text
+from complaint_analyzer.core.settings import DatasetSettings, FilterSpec
 
 from conftest import SHEET, make_settings
 

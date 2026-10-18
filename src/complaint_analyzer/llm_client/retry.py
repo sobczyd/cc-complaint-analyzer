@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 import random
 
-from ..logs import RunLog
+from ..core.logs import RunLog
 from .protocol import ChatClient, ChatRequest, ChatResponse, LlmError
 
 BASE_DELAY_SECONDS = 1.0

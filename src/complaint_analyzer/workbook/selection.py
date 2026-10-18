@@ -10,8 +10,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Callable, Sequence
 
-from ..records import InputRecord
-from ..settings import DatasetSettings, FilterSpec
+from ..core.records import InputRecord
+from ..core.settings import DatasetSettings, FilterSpec
 from .workbook import DataError, RawRow, Workbook, cell_text
 
 

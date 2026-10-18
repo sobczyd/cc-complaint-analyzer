@@ -22,10 +22,10 @@ from openai import (
     RateLimitError,
 )
 
-from complaint_analyzer.llm.openai_compat import OpenAICompatibleClient, _retry_after
-from complaint_analyzer.llm.protocol import LlmError
+from complaint_analyzer.llm_client.openai_compat import OpenAICompatibleClient, _retry_after
+from complaint_analyzer.llm_client.protocol import LlmError
 
-from test_llm_layers import make_request
+from test_llm_client_layers import make_request
 
 translate = OpenAICompatibleClient._translate
 

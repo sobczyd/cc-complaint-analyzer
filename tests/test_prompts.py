@@ -22,7 +22,7 @@ from complaint_analyzer.prompts.root_cause_analysis.validators import (
     check_cause_consistency,
     check_evidence_quotes,
 )
-from complaint_analyzer.records import InputRecord
+from complaint_analyzer.core.records import InputRecord
 
 FIELDS = ("Service description", "Troubleshooting")
 

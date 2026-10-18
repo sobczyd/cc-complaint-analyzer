@@ -10,10 +10,10 @@ import pytest
 from openpyxl import Workbook as OpenpyxlWorkbook
 from openpyxl import load_workbook
 
-from complaint_analyzer.data import load_sheet, select
-from complaint_analyzer.data.workbook import RawRow
-from complaint_analyzer.data.writer import MAX_CELL_LENGTH, OutputRow, write_workbook
-from complaint_analyzer.settings import DatasetSettings
+from complaint_analyzer.workbook import load_sheet, select
+from complaint_analyzer.workbook.workbook import RawRow
+from complaint_analyzer.workbook.writer import MAX_CELL_LENGTH, OutputRow, write_workbook
+from complaint_analyzer.core.settings import DatasetSettings
 
 from conftest import SHEET
 
@@ -156,7 +156,7 @@ def test_workbook_is_closed_when_row_generation_fails(tmp_path: Path, monkeypatc
             closed.append(True)
             super().close()
 
-    monkeypatch.setattr("complaint_analyzer.data.writer.OpenpyxlWorkbook", TrackingWorkbook)
+    monkeypatch.setattr("complaint_analyzer.workbook.writer.OpenpyxlWorkbook", TrackingWorkbook)
 
     def exploding_rows() -> Iterator[OutputRow]:
         raise RuntimeError("row generation failed")
@@ -187,7 +187,7 @@ def test_workbook_is_closed_when_saving_fails(tmp_path: Path, monkeypatch) -> No
             closed.append(True)
             super().close()
 
-    monkeypatch.setattr("complaint_analyzer.data.writer.OpenpyxlWorkbook", TrackingWorkbook)
+    monkeypatch.setattr("complaint_analyzer.workbook.writer.OpenpyxlWorkbook", TrackingWorkbook)
 
     with pytest.raises(OSError, match="disk full"):
         _write(tmp_path / "analyzed.xlsx")

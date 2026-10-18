@@ -16,9 +16,9 @@ from typing import Any, Sequence
 
 from pydantic import ValidationError
 
-from .prompts.base import Analysis, AnalysisError, flatten_result, parse_json_object
-from .data import OutputRow, Selection
-from .llm.protocol import ChatClient, ChatMessage, ChatRequest, LlmError
+from ..prompts.base import Analysis, AnalysisError, flatten_result, parse_json_object
+from ..workbook import OutputRow, Selection
+from ..llm_client.protocol import ChatClient, ChatMessage, ChatRequest, LlmError
 from .logs import RunLog
 from .records import InputRecord
 from .run_paths import RunPaths, utc_now

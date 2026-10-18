@@ -35,8 +35,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from .. import versioning
-from ..versioning import CHANGELOG_FILENAME, MANIFEST_FILENAME, VALIDATION_STATUSES
+from ..core import versioning
+from ..core.versioning import CHANGELOG_FILENAME, MANIFEST_FILENAME, VALIDATION_STATUSES
 from .base import QueryError
 
 __all__ = [

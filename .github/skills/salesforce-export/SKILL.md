@@ -29,7 +29,7 @@ harness (and people) can read. Queries are authored by the
 2. Run the export from the repository root:
 
    ```powershell
-   .\.venv\Scripts\python.exe -m complaint_analyzer.salesforce export `
+   .\.venv\Scripts\python.exe -m complaint_analyzer.workflows.salesforce_export export `
        --query-set <query_set> --out-dir <folder> [--version vN] [--target-org <alias>]
    ```
 

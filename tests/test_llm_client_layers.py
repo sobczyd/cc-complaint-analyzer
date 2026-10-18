@@ -7,13 +7,13 @@ from pathlib import Path
 
 import pytest
 
-from complaint_analyzer.llm.cache import CachingClient, PassthroughClient, build_index
-from complaint_analyzer.llm.protocol import ChatMessage, ChatRequest, ChatResponse, LlmError
-from complaint_analyzer.llm.rate_limit import RateLimitedClient, estimate_tokens
-from complaint_analyzer.llm.recorder import RecordingClient
-from complaint_analyzer.llm.retry import RetryingClient, backoff_delay
-from complaint_analyzer.logs import RunLog
-from complaint_analyzer.run_paths import RunPaths
+from complaint_analyzer.llm_client.cache import CachingClient, PassthroughClient, build_index
+from complaint_analyzer.llm_client.protocol import ChatMessage, ChatRequest, ChatResponse, LlmError
+from complaint_analyzer.llm_client.rate_limit import RateLimitedClient, estimate_tokens
+from complaint_analyzer.llm_client.recorder import RecordingClient
+from complaint_analyzer.llm_client.retry import RetryingClient, backoff_delay
+from complaint_analyzer.core.logs import RunLog
+from complaint_analyzer.core.run_paths import RunPaths
 
 from conftest import FakeTransport, permanent, transient
 

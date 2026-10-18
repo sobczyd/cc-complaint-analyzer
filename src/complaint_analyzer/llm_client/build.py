@@ -9,9 +9,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from ..logs import RunLog
-from ..run_paths import RunPaths
-from ..settings import Credentials, Settings
+from ..core.logs import RunLog
+from ..core.run_paths import RunPaths
+from ..core.settings import Credentials, Settings
 from .cache import CachingClient, PassthroughClient
 from .openai_compat import OpenAICompatibleClient
 from .protocol import ChatClient

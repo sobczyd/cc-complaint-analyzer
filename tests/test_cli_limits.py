@@ -8,14 +8,14 @@ from pathlib import Path
 
 import pytest
 
-from complaint_analyzer import runner
+from complaint_analyzer.core import runner
 from complaint_analyzer.__main__ import EXIT_CONFIG, EXIT_OK, main
 from complaint_analyzer.prompts import get_analysis
-from complaint_analyzer.data import load_sheet, select
-from complaint_analyzer.llm.build import build
-from complaint_analyzer.logs import RunLog
-from complaint_analyzer.run_paths import RunPaths
-from complaint_analyzer.settings import Settings
+from complaint_analyzer.workbook import load_sheet, select
+from complaint_analyzer.llm_client.build import build
+from complaint_analyzer.core.logs import RunLog
+from complaint_analyzer.core.run_paths import RunPaths
+from complaint_analyzer.core.settings import Settings
 
 from conftest import SHEET, FakeTransport, make_settings, rca_payload
 

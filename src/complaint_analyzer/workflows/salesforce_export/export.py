@@ -25,10 +25,10 @@ from openpyxl.cell import WriteOnlyCell
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
 
-from ..data.writer import _sanitize
-from ..queries import QueryError, load_queries, version_sort_key
+from ...workbook.writer import _sanitize
+from ...queries import QueryError, load_queries, version_sort_key
 
-QUERIES_DIR = Path(__file__).resolve().parent.parent / "queries"
+QUERIES_DIR = Path(__file__).resolve().parents[2] / "queries"
 MAIN_SHEET = "Cases"
 DEFAULT_ID_FIELD = "CaseNumber"
 DEFAULT_TIMEOUT_SECONDS = 900

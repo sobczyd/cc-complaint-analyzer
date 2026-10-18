@@ -20,7 +20,7 @@ from openai import (
     RateLimitError,
 )
 
-from ..settings import Credentials
+from ..core.settings import Credentials
 from .protocol import ChatRequest, ChatResponse, LlmError
 
 RETRYABLE_STATUS = frozenset({408, 409, 425, 429, 500, 502, 503, 504})

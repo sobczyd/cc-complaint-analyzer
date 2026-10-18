@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ..versioning import version_number, version_sort_key
+from ..core.versioning import version_number, version_sort_key
 
 __all__ = ["QueryError", "load_queries", "version_number", "version_sort_key"]
 

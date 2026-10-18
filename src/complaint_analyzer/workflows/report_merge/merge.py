@@ -22,8 +22,8 @@ from openpyxl import Workbook as OpenpyxlWorkbook
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill
 
-from ..run_paths import RESULTS_NAME
-from ..salesforce.export import MAIN_SHEET, Table, make_cell, write_table
+from ...core.run_paths import RESULTS_NAME
+from ..salesforce_export.export import MAIN_SHEET, Table, make_cell, write_table
 
 GENERATED_FILL_COLOR = "DDEBF7"
 LEGEND_SHEET = "Legend"
@@ -255,7 +255,7 @@ def merge_analysis_run(
     allow_missing_results: bool = False,
 ) -> MergeResult:
     """Merge ``<run_dir>/results.jsonl`` for a registered analysis into ``cases``."""
-    from ..prompts import get_analysis
+    from ...prompts import get_analysis
 
     try:
         definition = get_analysis(analysis)

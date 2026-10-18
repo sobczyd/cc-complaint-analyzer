@@ -9,19 +9,19 @@ from pathlib import Path
 import pytest
 from openpyxl import load_workbook
 
-from complaint_analyzer.daily import (
+from complaint_analyzer.workflows.daily_review import (
     MERGED_WORKBOOK_FILENAME,
     NURSE_CALL_7D,
     SessionError,
     finalize_session,
     init_session,
 )
-from complaint_analyzer.daily.__main__ import main as daily_main
-from complaint_analyzer.report import MergeError
-from complaint_analyzer.report.__main__ import main as report_main
-from complaint_analyzer.report.merge import GENERATED_FILL_COLOR, LEGEND_SHEET, merge_results
-from complaint_analyzer.salesforce.__main__ import main as export_main
-from complaint_analyzer.salesforce.export import (
+from complaint_analyzer.workflows.daily_review.__main__ import main as daily_main
+from complaint_analyzer.workflows.report_merge import MergeError
+from complaint_analyzer.workflows.report_merge.__main__ import main as report_main
+from complaint_analyzer.workflows.report_merge.merge import GENERATED_FILL_COLOR, LEGEND_SHEET, merge_results
+from complaint_analyzer.workflows.salesforce_export.__main__ import main as export_main
+from complaint_analyzer.workflows.salesforce_export.export import (
     ExportError,
     export_query_set,
     flatten_records,

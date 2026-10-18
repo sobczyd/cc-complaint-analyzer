@@ -1,4 +1,4 @@
-"""CLI: ``python -m complaint_analyzer.report merge --cases ... --run-dir ... --out ...``."""
+"""CLI: ``python -m complaint_analyzer.workflows.report_merge merge --cases ... --run-dir ... --out ...``."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from .merge import MergeError, merge_analysis_run
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="python -m complaint_analyzer.report",
+        prog="python -m complaint_analyzer.workflows.report_merge",
         description="Merge analysis results into an exported cases workbook.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
