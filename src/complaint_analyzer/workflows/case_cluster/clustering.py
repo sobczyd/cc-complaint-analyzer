@@ -33,6 +33,7 @@ SUMMARY_COLUMNS = (
 CASE_SEPARATOR = "=== Case ==="
 MERGE_REQUEST_ID = "merge"
 SAMPLE_CASES = 5
+DEFAULT_MERGE_FANIN = 5
 
 MANIFEST = "manifest.json"
 REQUESTS_DIR = "requests"
@@ -128,6 +129,36 @@ def read_cases(
 # -- prepare ---------------------------------------------------------------------------------
 
 
+def build_merge_plan(batch_ids: Sequence[str], fanin: int) -> list[list[dict[str, Any]]]:
+    """Tiers of merge requests; each request merges at most ``fanin`` inputs (batches or earlier merges).
+
+    Up to ``fanin`` batches need one request, ``merge``. More batches are merged in groups
+    (``merge_01_NN``, prompt case_cluster_merge), then the group results are combined by meta-merge
+    tiers (``meta_TT_NN``, prompt case_cluster_meta_merge) until a single request remains.
+    """
+    if len(batch_ids) < 2:
+        return []
+    if len(batch_ids) <= fanin:
+        return [[{"request_id": MERGE_REQUEST_ID, "prompt": "case_cluster_merge", "inputs": list(batch_ids)}]]
+    plan: list[list[dict[str, Any]]] = []
+    inputs = list(batch_ids)
+    while len(inputs) > 1:
+        tier = len(plan) + 1
+        prefix, prompt = ("merge", "case_cluster_merge") if tier == 1 else ("meta", "case_cluster_meta_merge")
+        requests = []
+        for number, start in enumerate(range(0, len(inputs), fanin), 1):
+            requests.append(
+                {
+                    "request_id": f"{prefix}_{tier:02d}_{number:02d}",
+                    "prompt": prompt,
+                    "inputs": inputs[start : start + fanin],
+                }
+            )
+        plan.append(requests)
+        inputs = [r["request_id"] for r in requests]
+    return plan
+
+
 def prepare(
     workbook: Path,
     out_dir: Path,
@@ -139,15 +170,21 @@ def prepare(
     batch_size: int = 100,
     prompt_version: str | None = None,
     merge_version: str | None = None,
+    meta_merge_version: str | None = None,
+    merge_fanin: int = DEFAULT_MERGE_FANIN,
 ) -> dict[str, Any]:
     if batch_size < 1:
         raise ClusterError("--batch-size must be at least 1")
+    if merge_fanin < 2:
+        raise ClusterError("--merge-fanin must be at least 2")
     if (out_dir / MANIFEST).exists():
         raise ClusterError(f"{out_dir} is already prepared; resume it or choose a new directory")
     analysis = get_analysis("case_cluster")
     version = prompt_version or sorted(analysis.prompts, key=lambda v: int(v[1:]))[-1]
     merge = get_analysis("case_cluster_merge")
     merge_ver = merge_version or sorted(merge.prompts, key=lambda v: int(v[1:]))[-1]
+    meta = get_analysis("case_cluster_meta_merge")
+    meta_ver = meta_merge_version or sorted(meta.prompts, key=lambda v: int(v[1:]))[-1]
 
     cases = read_cases(workbook, sheet=sheet, id_field=id_field, offset=offset, limit=limit)
     batches: list[dict[str, Any]] = []
@@ -187,8 +224,11 @@ def prepare(
         "case_count": len(cases),
         "prompt_version": version,
         "merge_prompt_version": merge_ver,
+        "meta_merge_prompt_version": meta_ver,
+        "merge_fanin": merge_fanin,
         "batches": batches,
         "merge_required": len(batches) > 1,
+        "merge_plan": build_merge_plan([b["batch_id"] for b in batches], merge_fanin),
     }
     _write_json(out_dir / MANIFEST, manifest)
     return manifest
@@ -320,11 +360,20 @@ def publish_response(directory: Path, request_id: str, candidate: Path) -> list[
 # -- check / merge request -------------------------------------------------------------------
 
 
+def _plan(manifest: dict[str, Any]) -> list[list[dict[str, Any]]]:
+    if "merge_plan" in manifest:
+        return manifest["merge_plan"]
+    batch_ids = [b["batch_id"] for b in manifest["batches"]]
+    return build_merge_plan(batch_ids, max(len(batch_ids), 2))
+
+
 def _request_ids(directory: Path) -> list[str]:
     manifest = _load_manifest(directory)
     ids = [batch["batch_id"] for batch in manifest["batches"]]
-    if (directory / REQUESTS_DIR / f"{MERGE_REQUEST_ID}.json").is_file():
-        ids.append(MERGE_REQUEST_ID)
+    for tier in _plan(manifest):
+        for request in tier:
+            if (directory / REQUESTS_DIR / f"{request['request_id']}.json").is_file():
+                ids.append(request["request_id"])
     return ids
 
 
@@ -343,46 +392,171 @@ def check(directory: Path) -> dict[str, Any]:
     return {"ready": not incomplete, "incomplete_request_ids": incomplete, "errors": errors}
 
 
+class _Node:
+    """A merge input: a batch clustering or the response of an earlier merge request."""
+
+    def __init__(self, node_id: str, clusters: list[dict[str, Any]], case_count: int) -> None:
+        self.node_id = node_id
+        self.clusters = clusters
+        self.case_count = case_count
+
+    def sub_cases(self) -> dict[str, list[str]]:
+        return {s["subcluster_id"]: s["case_numbers"] for c in self.clusters for s in c["subs"]}
+
+
+def _load_node(directory: Path, node_id: str, plan_by_id: dict[str, dict[str, Any]], memo: dict[str, _Node]) -> _Node:
+    if node_id in memo:
+        return memo[node_id]
+    response = _read_json(directory / RESPONSES_DIR / f"{node_id}.json")
+    clusters: list[dict[str, Any]] = []
+    if node_id not in plan_by_id:
+        result = BatchClusterResult.model_validate(response)
+        for cluster in result.clusters:
+            clusters.append(
+                {
+                    "cluster_id": cluster.cluster_id,
+                    "label": cluster.label,
+                    "description": cluster.description,
+                    "rationale": cluster.rationale,
+                    "subs": [
+                        {
+                            "subcluster_id": s.subcluster_id,
+                            "label": s.label,
+                            "description": s.description,
+                            "rationale": s.rationale,
+                            "case_numbers": list(s.case_numbers),
+                        }
+                        for s in cluster.subclusters
+                    ],
+                }
+            )
+    else:
+        merged = MergeResult.model_validate(response)
+        child_cases: dict[tuple[str, str], list[str]] = {}
+        for child_id in plan_by_id[node_id]["inputs"]:
+            for sub_id, cases in _load_node(directory, child_id, plan_by_id, memo).sub_cases().items():
+                child_cases[(child_id, sub_id)] = cases
+        by_target: dict[tuple[str, str], list[str]] = {}
+        for m in merged.mappings:
+            by_target.setdefault((_norm(m.final_cluster), _norm(m.final_subcluster)), []).extend(
+                child_cases[(m.batch_id, m.subcluster_id)]
+            )
+        for i, cluster in enumerate(merged.final_clusters, 1):
+            clusters.append(
+                {
+                    "cluster_id": f"C{i}",
+                    "label": cluster.label,
+                    "description": cluster.description,
+                    "rationale": cluster.rationale,
+                    "subs": [
+                        {
+                            "subcluster_id": f"C{i}.S{j}",
+                            "label": s.label,
+                            "description": s.description,
+                            "rationale": s.rationale,
+                            "case_numbers": by_target.get((_norm(cluster.label), _norm(s.label)), []),
+                        }
+                        for j, s in enumerate(cluster.subclusters, 1)
+                    ],
+                }
+            )
+    node = _Node(node_id, clusters, sum(len(s["case_numbers"]) for c in clusters for s in c["subs"]))
+    memo[node_id] = node
+    return node
+
+
+def _merge_request(
+    manifest: dict[str, Any], directory: Path, spec: dict[str, Any], plan_by_id: dict[str, dict[str, Any]]
+) -> dict[str, Any]:
+    analysis = get_analysis(spec["prompt"])
+    version = manifest["merge_prompt_version" if spec["prompt"] == "case_cluster_merge" else "meta_merge_prompt_version"]
+    memo: dict[str, _Node] = {}
+    parts: list[str] = []
+    subclusters: list[dict[str, str]] = []
+    for node_id in spec["inputs"]:
+        node = _load_node(directory, node_id, plan_by_id, memo)
+        kind = "Batch" if node_id not in plan_by_id else "Group"
+        parts.append(f"=== {kind} {node_id} ({node.case_count} cases) ===")
+        for cluster in node.clusters:
+            count = sum(len(s["case_numbers"]) for s in cluster["subs"])
+            parts.append(
+                f"Cluster {cluster['cluster_id']}: {cluster['label']} ({count} cases)\n"
+                f"  description: {cluster['description']}\n  rationale: {cluster['rationale']}"
+            )
+            for sub in cluster["subs"]:
+                subclusters.append({"batch_id": node_id, "subcluster_id": sub["subcluster_id"]})
+                parts.append(
+                    f"  Sub-cluster {sub['subcluster_id']}: {sub['label']} ({len(sub['case_numbers'])} cases; "
+                    f"samples: {', '.join(sub['case_numbers'][:SAMPLE_CASES])})\n"
+                    f"    description: {sub['description']}\n    rationale: {sub['rationale']}"
+                )
+    heading = "Merge these batch clusterings." if spec["prompt"] == "case_cluster_merge" else (
+        "Combine these merged cluster groups."
+    )
+    return {
+        "request_id": spec["request_id"],
+        "kind": "merge",
+        "prompt": spec["prompt"],
+        "prompt_version": version,
+        "prompt_hash": analysis.prompt_hash(version),
+        "system": analysis.system_prompt + "\n\n" + analysis.prompt(version),
+        "user": heading + "\n\n" + "\n\n".join(parts),
+        "subclusters": subclusters,
+        "inputs": list(spec["inputs"]),
+    }
+
+
 def prepare_merge(directory: Path) -> dict[str, Any]:
+    """Build the requests of the next merge tier whose inputs all have valid responses.
+
+    Run it again after each tier's responses are published until it reports ``final`` and ``complete``.
+    """
     manifest = _load_manifest(directory)
     if not manifest["merge_required"]:
         return {"merge_required": False}
     status = check(directory)
-    pending = [i for i in status["incomplete_request_ids"] if i != MERGE_REQUEST_ID]
+    plan = _plan(manifest)
+    plan_ids = {r["request_id"] for tier in plan for r in tier}
+    pending = [i for i in status["incomplete_request_ids"] if i not in plan_ids]
     if pending:
         raise ClusterError(f"batch responses missing or invalid: {', '.join(pending)}")
-    analysis = get_analysis("case_cluster_merge")
-    version = manifest["merge_prompt_version"]
-    parts: list[str] = []
-    subclusters: list[dict[str, str]] = []
-    for batch in manifest["batches"]:
-        batch_id = batch["batch_id"]
-        result = BatchClusterResult.model_validate(_read_json(directory / RESPONSES_DIR / f"{batch_id}.json"))
-        parts.append(f"=== Batch {batch_id} ({batch['case_count']} cases) ===")
-        for cluster in result.clusters:
-            parts.append(
-                f"Cluster {cluster.cluster_id}: {cluster.label} ({len(cluster.case_numbers)} cases)\n"
-                f"  description: {cluster.description}\n  rationale: {cluster.rationale}"
+    plan_by_id = {r["request_id"]: r for tier in plan for r in tier}
+    incomplete = set(status["incomplete_request_ids"])
+    for index, tier in enumerate(plan, 1):
+        ids = [r["request_id"] for r in tier]
+        done = all(
+            (directory / RESPONSES_DIR / f"{i}.json").is_file() and i not in incomplete for i in ids
+        )
+        if done:
+            continue
+        for spec in tier:
+            _write_json(
+                directory / REQUESTS_DIR / f"{spec['request_id']}.json",
+                _merge_request(manifest, directory, spec, plan_by_id),
             )
-            for sub in cluster.subclusters:
-                subclusters.append({"batch_id": batch_id, "subcluster_id": sub.subcluster_id})
-                parts.append(
-                    f"  Sub-cluster {sub.subcluster_id}: {sub.label} ({len(sub.case_numbers)} cases; "
-                    f"samples: {', '.join(sub.case_numbers[:SAMPLE_CASES])})\n"
-                    f"    description: {sub.description}\n    rationale: {sub.rationale}"
-                )
-    request = {
-        "request_id": MERGE_REQUEST_ID,
-        "kind": "merge",
-        "prompt": "case_cluster_merge",
-        "prompt_version": version,
-        "prompt_hash": analysis.prompt_hash(version),
-        "system": analysis.system_prompt + "\n\n" + analysis.prompt(version),
-        "user": "Merge these batch clusterings.\n\n" + "\n\n".join(parts),
-        "subclusters": subclusters,
+        units = sum(
+            len(_read_json(directory / REQUESTS_DIR / f"{i}.json")["subclusters"]) for i in ids
+        )
+        out: dict[str, Any] = {
+            "merge_required": True,
+            "tier": index,
+            "tiers": len(plan),
+            "request_ids": ids,
+            "final": index == len(plan),
+            "complete": False,
+            "subclusters": units,
+        }
+        if len(ids) == 1:
+            out["request_id"] = ids[0]
+        return out
+    return {
+        "merge_required": True,
+        "tier": len(plan),
+        "tiers": len(plan),
+        "request_ids": [],
+        "final": True,
+        "complete": True,
     }
-    _write_json(directory / REQUESTS_DIR / f"{MERGE_REQUEST_ID}.json", request)
-    return {"merge_required": True, "request_id": MERGE_REQUEST_ID, "subclusters": len(subclusters)}
 
 
 # -- finalize --------------------------------------------------------------------------------
@@ -395,14 +569,51 @@ class _Sub:
     sub: Any
 
 
+def _compose(
+    directory: Path,
+    plan_by_id: dict[str, dict[str, Any]],
+    final_id: str | None,
+    batch_keys: Sequence[tuple[str, str]],
+) -> dict[tuple[str, str], list[tuple[str, str, str, str]]]:
+    """Follow each batch sub-cluster up the merge tree.
+
+    Returns, per batch sub-cluster, the (request_id, cluster label, sub-cluster label, rationale) of every
+    merge it passed through, lowest tier first; the last entry is the final merge.
+    """
+    parent: dict[tuple[str, str], tuple[str, str, str, str, str]] = {}
+    for request_id in plan_by_id:
+        result = MergeResult.model_validate(_read_json(directory / RESPONSES_DIR / f"{request_id}.json"))
+        ids = {
+            (_norm(c.label), _norm(s.label)): (f"C{i}.S{j}", c.label, s.label)
+            for i, c in enumerate(result.final_clusters, 1)
+            for j, s in enumerate(c.subclusters, 1)
+        }
+        for m in result.mappings:
+            sub_id, cluster, sub = ids[(_norm(m.final_cluster), _norm(m.final_subcluster))]
+            parent[(m.batch_id, m.subcluster_id)] = (request_id, sub_id, cluster, sub, m.rationale)
+    composed: dict[tuple[str, str], list[tuple[str, str, str, str]]] = {}
+    for batch_key in batch_keys:
+        key, trail = batch_key, []
+        while key in parent:
+            request_id, sub_id, cluster, sub, rationale = parent[key]
+            trail.append((request_id, cluster, sub, rationale))
+            key = (request_id, sub_id)
+        if not trail or trail[-1][0] != final_id:
+            raise ClusterError(f"{batch_key[0]}/{batch_key[1]} does not reach the final merge")
+        composed[batch_key] = trail
+    return composed
+
+
 def finalize(directory: Path) -> dict[str, Any]:
     manifest = _load_manifest(directory)
     status = check(directory)
     if not status["ready"]:
         raise ClusterError(f"responses incomplete: {status}")
-    merge_path = directory / RESPONSES_DIR / f"{MERGE_REQUEST_ID}.json"
+    plan = _plan(manifest)
+    final_id = plan[-1][0]["request_id"] if plan else None
+    merge_path = directory / RESPONSES_DIR / f"{final_id}.json" if final_id else None
     if manifest["merge_required"] and not merge_path.is_file():
-        raise ClusterError("merge response missing; run prepare-merge and publish the merge response")
+        raise ClusterError("final merge response missing; run prepare-merge until it reports complete")
 
     subs: dict[tuple[str, str], _Sub] = {}
     for batch in manifest["batches"]:
@@ -413,19 +624,14 @@ def finalize(directory: Path) -> dict[str, Any]:
             for sub in cluster.subclusters:
                 subs[(batch["batch_id"], sub.subcluster_id)] = _Sub(batch["batch_id"], cluster, sub)
 
+    trails: dict[tuple[str, str], list[str]] = {}
     if manifest["merge_required"]:
         merged = MergeResult.model_validate(_read_json(merge_path))
-        canonical = {
-            (_norm(c.label), _norm(s.label)): (c.label, s.label)
-            for c in merged.final_clusters
-            for s in c.subclusters
-        }
-        mapping = {
-            (m.batch_id, m.subcluster_id): (
-                canonical[(_norm(m.final_cluster), _norm(m.final_subcluster))],
-                m.rationale,
-            )
-            for m in merged.mappings
+        composed = _compose(directory, {r["request_id"]: r for t in plan for r in t}, final_id, list(subs))
+        mapping = {key: ((labels[-1][1], labels[-1][2]), labels[-1][3]) for key, labels in composed.items()}
+        trails = {
+            key: [f"{rid}: {cluster} / {sub}" for rid, cluster, sub, _ in labels[:-1]]
+            for key, labels in composed.items()
         }
         final_defs = merged.final_clusters
     else:
@@ -516,7 +722,7 @@ def finalize(directory: Path) -> dict[str, Any]:
     with (directory / ASSIGNMENTS_FILE).open("w", encoding="utf-8") as handle:
         for row in assignments:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-    _write_workbook(directory / WORKBOOK_FILE, taxonomy, assignments, mapping, case_values)
+    _write_workbook(directory / WORKBOOK_FILE, taxonomy, assignments, mapping, case_values, trails)
     return {
         "case_count": len(assignments),
         "final_clusters": len(taxonomy),
@@ -531,6 +737,7 @@ def _write_workbook(
     assignments: Sequence[dict[str, Any]],
     mapping: dict[tuple[str, str], tuple[tuple[str, str], str]],
     case_values: dict[str, dict[str, str]],
+    trails: dict[tuple[str, str], list[str]] | None = None,
 ) -> None:
     book = Workbook()
     book.remove(book.active)
@@ -589,11 +796,15 @@ def _write_workbook(
         ],
         [14, 32, 32, 10, 32, 32, 50, 70],
     )
+    trails = trails or {}
     sheet(
         "Merge Map",
-        ["Batch", "Batch sub-cluster", "Final cluster", "Final sub-cluster", "Rationale"],
-        [[k[0], k[1], v[0][0], v[0][1], v[1]] for k, v in sorted(mapping.items())],
-        [10, 16, 32, 32, 60],
+        ["Batch", "Batch sub-cluster", "Final cluster", "Final sub-cluster", "Rationale", "Intermediate merges"],
+        [
+            [k[0], k[1], v[0][0], v[0][1], v[1], "\n".join(trails.get(k, []))]
+            for k, v in sorted(mapping.items())
+        ],
+        [10, 16, 32, 32, 60, 60],
     )
     path.parent.mkdir(parents=True, exist_ok=True)
     book.save(path)

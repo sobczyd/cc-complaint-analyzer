@@ -381,7 +381,7 @@ def test_cli_reports_an_unknown_analysis(tmp_path: Path, workbook_path: Path, ca
     captured = capsys.readouterr().err
     assert "unknown analysis" in captured
     assert (
-        "available analyses: case_cluster, case_cluster_merge, case_summary, "
+        "available analyses: case_cluster, case_cluster_merge, case_cluster_meta_merge, case_summary, "
         "defect_comment_summary, defect_mapping, rca" in captured
     )
 

@@ -6,15 +6,16 @@ user-invocable: false
 disable-model-invocation: false
 ---
 
-You process exactly one persisted clustering request: either a `batch_NN` request (cluster a batch of
-case summaries) or the `merge` request (consolidate the batch taxonomies). The request's `system` and
+You process exactly one persisted clustering request: a `batch_NN` request (cluster a batch of case
+summaries), a merge request (`merge`, `merge_TT_NN`: consolidate batch taxonomies) or a meta-merge request
+(`meta_TT_NN`: combine already-merged group taxonomies). The request's `system` and
 `user` fields hold the full instructions, the Nurse Call glossary and the data; follow them exactly.
 
 ## Inputs required from the orchestrator
 
 - Absolute repository path
 - Cluster run directory
-- Request ID (`batch_NN` or `merge`)
+- Request ID (`batch_NN`, `merge`, `merge_TT_NN` or `meta_TT_NN`)
 
 Stop with an error if any input is missing or if `requests\<request-id>.json` does not exist.
 
@@ -31,7 +32,7 @@ Stop with an error if any input is missing or if `requests\<request-id>.json` do
 ## Procedure
 
 1. Read the request file and follow its `system` and `user` messages. Use only the case numbers (batch)
-   or `(batch_id, subcluster_id)` pairs (merge) present in the request.
+   or `(batch_id, subcluster_id)` pairs (merge and meta-merge) present in the request.
 2. Write the JSON object the instructions specify (no envelope, no commentary) to
    `<run-dir>\candidates\<request-id>.json`.
 3. Publish it through the CLI, which validates it:

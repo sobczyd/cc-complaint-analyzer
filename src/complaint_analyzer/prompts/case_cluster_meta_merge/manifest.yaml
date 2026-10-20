@@ -1,0 +1,24 @@
+prompt_set: case_cluster_meta_merge
+description: >-
+  Combines the intermediate taxonomies produced by group merges (case_cluster_merge) into one
+  higher-level taxonomy, for runs with too many batches for a single merge. Maps every intermediate
+  sub-cluster to a final cluster and sub-cluster. Uses the same glossary as case_cluster.
+created: "2026-10-19"
+updated: "2026-10-19"
+versions:
+  - version: v1
+    file: v1.txt
+    created: "2026-10-19"
+    author: Copilot (prompt-author)
+    base_version: null
+    prompt: >-
+      When a whole month of complaints (about 2000) is clustered, the aggregation has to run several
+      times. Add a meta-like aggregation of clusters/sub-clusters that combines the results of the
+      different aggregations, since a single prompt cannot aggregate thousands of cases.
+    summary: Meta-merge prompt that unifies group-merge taxonomies into one final taxonomy.
+    changes:
+      - Initial version.
+    result_model: MergeResult
+    validation:
+      status: skipped
+      notes: Not yet run against cases.

@@ -27,6 +27,17 @@ def _latest_cluster_manifest(run: Path) -> tuple[str | None, dict[str, Any]]:
     return manifests[0].parent.name, _read_json(manifests[0])
 
 
+def _merge_node(cluster: dict[str, Any]) -> str:
+    """Mermaid line for the merge stage; shows the tiers when the merge ran in more than one."""
+    plan = cluster.get("merge_plan") or []
+    if len(plan) < 2:
+        return '    G --> H["Merge batch labels<br/>into one taxonomy"]'
+    tiers = "<br/>".join(
+        f"tier {i}: {len(tier)} x {'merge' if i == 1 else 'meta-merge'}" for i, tier in enumerate(plan, 1)
+    )
+    return f'    G --> H["Tiered merge (fan-in {cluster.get("merge_fanin", "?")})<br/>{tiers}<br/>into one taxonomy"]'
+
+
 def build_diagram(run: Path) -> str:
     """Return a markdown document with a Mermaid flowchart describing the run."""
     run = Path(run)
@@ -58,7 +69,7 @@ def build_diagram(run: Path) -> str:
         f'    D --> E["Summarize with case_summary {_esc(summ_version)}<br/>batch size {_esc(summ_batch)}<br/>Batch Worker agents"]',
         '    E --> F["cases_with_summaries.xlsx"]',
         f'    F --> G["Cluster in batches of {_esc(cl_batch)}<br/>{_esc(cases)} cases, {_esc(n_batches)} batches<br/>glossary: {_esc(glossary)}<br/>Cluster Worker agents"]',
-        '    G --> H["Merge batch labels<br/>into one taxonomy"]',
+        _merge_node(cluster),
         f'    H --> I["Final taxonomy<br/>{_esc(n_clusters)} clusters<br/>clusters.xlsx, final_taxonomy.json"]',
         '    I --> J["Run folder + workflow.md"]',
     ]
@@ -67,7 +78,8 @@ def build_diagram(run: Path) -> str:
         ("Fetch", "Skipped when a folder with data is supplied; otherwise a run-specific query based on the default query set."),
         ("Summarize", "Latest case_summary prompt version, Batch Worker agents, results merged into cases_with_summaries.xlsx."),
         ("Cluster", "case_cluster prompt with the Nurse Call glossary as standing context, in batches."),
-        ("Merge", "case_cluster_merge prompt melts duplicate or related labels into one taxonomy."),
+        ("Merge", "case_cluster_merge prompt melts duplicate or related labels into one taxonomy. With many batches "
+                  "the merge runs in groups, then case_cluster_meta_merge combines the group results (extra tiers if needed)."),
         ("Outputs", "final_taxonomy.json, case_assignments.jsonl and clusters.xlsx in the run folder."),
     ]
     body = ["# Classify complaints workflow", "", f"Run folder: `{run.name}`", "", "```mermaid", *lines, "```", "",

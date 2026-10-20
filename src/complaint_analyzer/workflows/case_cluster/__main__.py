@@ -28,10 +28,18 @@ def main(argv: list[str] | None = None) -> int:
     prep.add_argument("--batch-size", type=int, default=100)
     prep.add_argument("--prompt-version", default=None)
     prep.add_argument("--merge-prompt-version", default=None)
+    prep.add_argument("--meta-merge-prompt-version", default=None)
+    prep.add_argument(
+        "--merge-fanin",
+        type=int,
+        default=clustering.DEFAULT_MERGE_FANIN,
+        help="max batches (or earlier merges) per merge request; more batches are merged in tiers "
+        f"(default {clustering.DEFAULT_MERGE_FANIN})",
+    )
 
     for name, help_text in (
         ("check", "report which requests still lack a valid response"),
-        ("prepare-merge", "build the merge request once every batch response is valid"),
+        ("prepare-merge", "build the next merge tier's requests; repeat until it reports complete"),
         ("finalize", "apply the merge map and write final taxonomy, assignments and clusters.xlsx"),
     ):
         cmd = sub.add_parser(name, help=help_text)
@@ -39,7 +47,7 @@ def main(argv: list[str] | None = None) -> int:
 
     pub = sub.add_parser("publish", help="validate a candidate response and store it")
     pub.add_argument("--dir", type=Path, required=True)
-    pub.add_argument("--request-id", required=True, help="batch_NN or merge")
+    pub.add_argument("--request-id", required=True, help="batch_NN, merge, merge_TT_NN or meta_TT_NN")
     pub.add_argument("--candidate", type=Path, required=True)
 
     args = parser.parse_args(argv)
@@ -55,6 +63,8 @@ def main(argv: list[str] | None = None) -> int:
                 batch_size=args.batch_size,
                 prompt_version=args.prompt_version,
                 merge_version=args.merge_prompt_version,
+                meta_merge_version=args.meta_merge_prompt_version,
+                merge_fanin=args.merge_fanin,
             )
         elif args.command == "check":
             out = clustering.check(args.dir)

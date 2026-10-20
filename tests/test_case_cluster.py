@@ -164,3 +164,70 @@ def test_cli_prepare_and_check(tmp_path: Path, capsys: pytest.CaptureFixture[str
     capsys.readouterr()
     assert main(["check", "--dir", str(out)]) == 1
     assert json.loads(capsys.readouterr().out)["incomplete_request_ids"] == ["batch_01"]
+
+
+def _publish_merge(out: Path, request_id: str, tmp_path: Path, labels: tuple[str, ...]) -> None:
+    request = json.loads((out / "requests" / f"{request_id}.json").read_text())
+    mappings = [
+        {
+            "batch_id": s["batch_id"],
+            "subcluster_id": s["subcluster_id"],
+            "final_cluster": f"{labels[i % len(labels)]} problems",
+            "final_subcluster": f"{labels[i % len(labels)]} detail",
+        }
+        for i, s in enumerate(request["subclusters"])
+    ]
+    merge = {
+        "final_clusters": [
+            {"label": f"{name} problems", "subclusters": [{"label": f"{name} detail"}]} for name in labels
+        ],
+        "mappings": mappings,
+    }
+    candidate = tmp_path / f"{request_id}.candidate.json"
+    candidate.write_text(json.dumps(merge))
+    assert cl.publish_response(out, request_id, candidate) == []
+
+
+def test_merge_plan_tiers() -> None:
+    assert cl.build_merge_plan(["b1"], 5) == []
+    single = cl.build_merge_plan([f"b{i}" for i in range(5)], 5)
+    assert [r["request_id"] for t in single for r in t] == ["merge"]
+    plan = cl.build_merge_plan([f"b{i}" for i in range(26)], 5)
+    assert [len(t) for t in plan] == [6, 2, 1]
+    assert plan[0][0]["prompt"] == "case_cluster_merge" and plan[0][0]["request_id"] == "merge_01_01"
+    assert plan[1][0]["prompt"] == "case_cluster_meta_merge" and plan[1][0]["inputs"][0] == "merge_01_01"
+    assert plan[2][0]["request_id"] == "meta_03_01"
+
+
+def test_tiered_merge_and_finalize(tmp_path: Path) -> None:
+    out = tmp_path / "run"
+    manifest = cl.prepare(_workbook(tmp_path / "w.xlsx", 8), out, limit=None, batch_size=1, merge_fanin=3)
+    candidate = tmp_path / "c.json"
+    for batch in manifest["batches"]:
+        request = json.loads((out / "requests" / f"{batch['batch_id']}.json").read_text())
+        candidate.write_text(json.dumps(_batch(request)))
+        assert cl.publish_response(out, batch["batch_id"], candidate) == []
+
+    tier1 = cl.prepare_merge(out)
+    assert tier1["tier"] == 1 and tier1["final"] is False
+    assert tier1["request_ids"] == ["merge_01_01", "merge_01_02", "merge_01_03"]
+    for request_id in tier1["request_ids"]:
+        _publish_merge(out, request_id, tmp_path, ("Audio", "Light"))
+    with pytest.raises(cl.ClusterError):
+        cl.finalize(out)
+
+    tier2 = cl.prepare_merge(out)
+    assert tier2["request_ids"] == ["meta_02_01"] and tier2["final"] is True
+    meta = json.loads((out / "requests" / "meta_02_01.json").read_text())
+    assert meta["prompt"] == "case_cluster_meta_merge"
+    assert "=== Group merge_01_01 (3 cases) ===" in meta["user"]
+    assert len(meta["subclusters"]) == 6
+    _publish_merge(out, "meta_02_01", tmp_path, ("Audio", "Light", "Other"))
+    assert cl.prepare_merge(out)["complete"] is True
+
+    summary = cl.finalize(out)
+    assert summary["case_count"] == 8 and summary["final_clusters"] == 3
+    rows = [json.loads(line) for line in (out / "case_assignments.jsonl").read_text().splitlines()]
+    assert [r["case_number"] for r in rows] == [str(1000 + i) for i in range(8)]
+    merge_map = load_workbook(out / "clusters.xlsx")["Merge Map"]
+    assert merge_map.max_row == 9 and "merge_01_" in merge_map["F2"].value

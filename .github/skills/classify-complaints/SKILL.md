@@ -47,7 +47,9 @@ each decision with:
 4. **Cluster**: ask the clustering batch size (default 100) and whether to use the glossary as is or update
    it first. To update, use `jama-nursecall-context` / `prompt-author` (this bumps prompt versions), then
    continue. Run the `case-clustering` skill procedure with `--limit 0 --batch-size <b>` and
-   `--out-dir <run_dir>\clusters\<name>` (name like `all_b<b>`), including the merge when required.
+   `--out-dir <run_dir>\clusters\<name>` (name like `all_b<b>`), including the tiered merge when required
+   (group merges, then meta-merge tiers, until `prepare-merge` reports `complete`; a month of ~2000 cases
+   typically needs three tiers).
 5. **Cases with clusters**: run the `excel-report-merge` skill's `merge-clusters` command with
    `--cases <run_dir>\cases_with_summaries.xlsx --cluster-dir <run_dir>\clusters\<name>` to write
    `<run_dir>\cases_with_clusters.xlsx`.

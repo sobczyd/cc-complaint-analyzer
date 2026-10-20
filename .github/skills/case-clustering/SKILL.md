@@ -43,8 +43,16 @@ Resolve paths from the repository root. Use `.\.venv\Scripts\python.exe`.
    cases itself; if delegation is unavailable, stop with an explicit environment error.
 5. Re-run `check`. Relaunch workers only for still-incomplete IDs; at most two rounds in total. After the
    second failed check, report every error and stop (valid responses are kept for a resume).
-6. If `merge_required`: run `... case_cluster prepare-merge --dir <dir>`, then run one `Cluster Worker`
-   with request ID `merge` (same retry rule), then `check` again.
+6. If `merge_required`, merge in tiers. Loop:
+   1. Run `... case_cluster prepare-merge --dir <dir>`. It builds the next tier's requests and prints
+      `tier`, `tiers`, `request_ids`, `final` and `complete`.
+   2. Run one `Cluster Worker` per ID in `request_ids` (in parallel; same retry rule), then `check`.
+   3. Repeat until `prepare-merge` reports `complete: true`.
+
+   Up to `--merge-fanin` batches (default 5) need a single `merge` request. Larger runs (for example ~20
+   batches for a month) are merged in groups of `merge_fanin` batches (`merge_01_NN`), then the group
+   results are combined by meta-merge requests (`meta_TT_NN`, prompt `case_cluster_meta_merge`), adding tiers
+   until one request remains. A request never sees more than `merge_fanin` inputs.
 7. Finalize: `... case_cluster finalize --dir <dir>`. This writes in the run directory:
    - `final_taxonomy.json` (clusters, sub-clusters, descriptions, rationale, case numbers, source batch ids)
    - `case_assignments.jsonl` (each case with batch and final cluster/sub-cluster)
@@ -54,6 +62,9 @@ Resolve paths from the repository root. Use `.\.venv\Scripts\python.exe`.
 
 ## Scaling
 
-To cover all 800 cases, run `--limit 0 --batch-size 100` in one prepared directory (8 batches, then merge).
-The final map is only as consistent as the merge; review the `Merge Map` sheet for surprising merges.
+To cover all 800 cases, run `--limit 0 --batch-size 100` in one prepared directory (8 batches, then a tiered
+merge: 2 group merges and one meta-merge at the default fan-in of 5). For ~2000 cases, expect ~20 batches
+and three tiers at most. Add `--merge-fanin <n>` to `prepare` to tune how many inputs one merge request sees.
+The final map is only as consistent as the merges; review the `Merge Map` sheet (its `Intermediate merges`
+column shows the group-level label each batch sub-cluster passed through) for surprising merges.
 The manifest records the prompt versions and the case selection for reproducibility.

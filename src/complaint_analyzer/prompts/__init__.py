@@ -14,6 +14,7 @@ from typing import Callable, Mapping
 from .base import Analysis, AnalysisError
 from .case_cluster import build as build_case_cluster
 from .case_cluster_merge import build as build_case_cluster_merge
+from .case_cluster_meta_merge import build as build_case_cluster_meta_merge
 from .case_summary import build as build_case_summary
 from .defect_comment_summary import build as build_defect_comment_summary
 from .defect_mapping import build as build_defect_mapping
@@ -25,6 +26,7 @@ PROMPTS_DIR = Path(__file__).parent
 _BUILDERS: Mapping[str, Callable[[], Analysis]] = {
     "case_cluster": build_case_cluster,
     "case_cluster_merge": build_case_cluster_merge,
+    "case_cluster_meta_merge": build_case_cluster_meta_merge,
     "case_summary": build_case_summary,
     "defect_comment_summary": build_defect_comment_summary,
     "defect_mapping": build_defect_mapping,

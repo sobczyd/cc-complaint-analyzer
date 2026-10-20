@@ -48,3 +48,13 @@ def test_skill_exists_and_names_chain() -> None:
     assert body.startswith("---\nname: classify-complaints")
     for needle in ("cq_crm_codes_nurse_call_no_comments", "case-clustering", "copilot-batch-run", "workflow.md"):
         assert needle in body
+
+
+def test_merge_node_shows_tiers() -> None:
+    from complaint_analyzer.workflows.classify_complaints import _merge_node
+    from complaint_analyzer.workflows.case_cluster.clustering import build_merge_plan
+
+    assert "Merge batch labels" in _merge_node({})
+    plan = build_merge_plan([f"b{i}" for i in range(12)], 5)
+    node = _merge_node({"merge_plan": plan, "merge_fanin": 5})
+    assert "tier 1: 3 x merge" in node and "tier 2: 1 x meta-merge" in node
