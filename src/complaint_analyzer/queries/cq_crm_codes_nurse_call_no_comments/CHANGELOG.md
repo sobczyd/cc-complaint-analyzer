@@ -6,7 +6,29 @@ Last-30-day Salesforce Cases with the CareComm - Nurse Call complaint code, with
 
 - Created: 2026-10-15
 - Last updated: 2026-10-19
-- Versions: 3
+- Versions: 4
+
+## v4 — 2026-10-19
+
+**Summary:** Adds the Case LastModifiedDate field to v3.
+
+- File: `v4.txt`
+- Based on: v3
+- Author: Sobczynski
+- Objects: `Case`, `Account`, `Asset`, `Problem_Codes__r`, `Complaint_Qualifications__r`
+
+**Changes:**
+
+- Case: added LastModifiedDate (placed after ClosedDate).
+- Filters, subquery fields, subquery filters and ordering are unchanged from v3.
+
+**Prompt:**
+
+> The Power BI export needs the Last Modified Date of each case. Version the query to v4 to include it.
+
+**Validation:** status `skipped`
+
+_Single standard Case field added; not run against the org yet._
 
 ## v3 — 2026-10-19
 

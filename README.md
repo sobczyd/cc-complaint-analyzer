@@ -1,49 +1,12 @@
 # cc-complaint-analyzer
 
-Row-by-row LLM analysis of service-record workbooks, with saved call history, logging,
-selection, and rate limiting. Each selected row is sent to the model on its own, the
-reply is validated against a schema and a set of analysis-specific checks, and
-everything — the request, the reply, the timings, and the decision — is written to
-disk so the result can be audited later.
+Classify Nurse Call complaints and link them to the Jira defects and root cause analyses
+(RCAs) that would likely have addressed them — all from a **VS Code Copilot session**.
+You type a request; Copilot skills fetch cases from Salesforce, summarize and cluster them
+with isolated worker agents, and write everything to one run folder under `data\runs\`.
+No separate LLM API key is needed: the reasoning is done by Copilot.
 
-On top of that core engine, the repository also has workflows for pulling cases out of
-Salesforce, merging analysis results back into a reviewer-friendly workbook, and running
-an ad-hoc fetch-and-summarize workflow and an end-to-end complaint classification workflow.
-
-For a deep dive into how the code is organized and how a request flows through it, see
-[docs/architecture.md](./docs/architecture.md). For full CLI flags and config keys, see
-[docs/cli-reference.md](./docs/cli-reference.md) and
-[docs/configuration.md](./docs/configuration.md). For where planned future work
-(topic modeling, LangGraph workflows, clustering) should live, see
-[docs/extending.md](./docs/extending.md).
-
-## Repository structure at a glance
-
-```text
-src/complaint_analyzer/
-  core/           shared engine: settings, run paths, logging, versioning, the runner
-  llm_client/     chat-completion client stack (cache/retry/rate-limit/recorder/transport)
-  workbook/       Excel input/output and row selection
-  prompts/        versioned LLM analysis prompts + result schemas (rca, case_summary)
-  queries/        versioned Salesforce SOQL query sets
-  workflows/      end-to-end jobs built on the layers above
-    salesforce_export/   export a query set to an Excel workbook
-    report_merge/        merge harness results back into a workbook
-    custom_fetch/        ad-hoc, run-specific fetch (+ optional summarize) into data/runs
-    case_cluster/        batch-cluster case summaries, then merge the batch taxonomies
-    defect_mapping/      Jira defect/RCA + KB corpora, and complaint-to-defect mapping
-    classify_complaints/ run state and the Mermaid workflow diagram for a run folder
-    analysis_run.py      config/commands/merge helpers used by custom_fetch
-docs/             architecture, configuration, CLI reference, and extension points
-config/           example and working YAML configs for the core analysis CLI
-data/             input workbooks and run output (gitignored except examples)
-```
-
-See [docs/architecture.md](./docs/architecture.md) for what each folder is
-responsible for, how the layers depend on each other, and control-flow
-walkthroughs.
-
-## Setup
+## Quick start
 
 ```powershell
 python -m venv .venv
@@ -51,94 +14,97 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install pytest pytest-asyncio
 ```
 
-Requires Python 3.12 or newer.
+You need Python 3.12+, the Salesforce `sf` CLI logged in to your org, and the
+`salesforce-local`, `jira-local`/Atlassian and (optionally) `jama-local` MCP servers
+available in VS Code. Open this folder in VS Code, start a Copilot chat in agent mode,
+and type a `/skill` command.
 
-### Credentials
+## Workflow
 
-Credentials live in the environment, never in the config file.
-
-```powershell
-Copy-Item .env.example .env
+```mermaid
+flowchart TD
+    A["/classify-complaints<br/>'past week for Nurse Call'"] --> B[Fetch cases<br/>salesforce-fetch agent]
+    B --> C[Summarize cases<br/>copilot-batch-run + Batch Worker]
+    C --> D[Cluster summaries<br/>case-clustering + Cluster Worker]
+    D --> E[Merge clusters into workbook<br/>excel-report-merge]
+    E --> F[(Run folder<br/>data/runs/...)]
+    F --> G["/defect-mapping<br/>(optional)"]
+    J[jira-rca-corpus<br/>Jira + KB corpora] --> G
+    G --> H[Defect Mapping Worker<br/>per sub-cluster]
+    H --> I[mappings.xlsx<br/>defects and RCAs per complaint]
+    K[jama-nursecall-context<br/>glossary refresh] -.-> D
 ```
 
-| Variable | Meaning |
+`/classify-complaints` asks short questions (period, query, batch sizes, glossary) with a
+sensible default for each; say "use defaults" to skip them. It can also offer to run
+defect mapping at the end.
+
+## Example prompts
+
+| Prompt | Skills / agents used | Result |
+|---|---|---|
+| `/classify-complaints past week for Nurse Call` | `classify-complaints` → `salesforce-fetch`, `copilot-batch-run` (Batch Worker), `case-clustering` (Cluster Worker), `excel-report-merge` | New run folder with cases, summaries, clusters and `workflow.md` |
+| `/classify-complaints Nurse Call complaints in October, use defaults` | same, no questions | Same, with default batch sizes (10 summaries, 100 clustering) |
+| `/classify-complaints data\runs\<run-id>` | `classify-complaints` (reuses existing summaries/cases) | Continues from whatever the folder already has |
+| `/defect-mapping data\runs\<run-id>\clusters\<name>` | `defect-mapping` → Defect Mapping Worker | `defects\<name>\mappings.xlsx`, `mappings.jsonl`, `summary.json` |
+| `/defect-mapping data\runs\<run-id>\clusters\<name> --min-batch 10 --max-batch 20` | `defect-mapping` | Same, with custom batch bounds |
+| `/jira-rca-corpus refresh` | `jira-rca-corpus` | Fresh Jira defect/RCA and KB corpora in `data\jira` and `data\kb` |
+| `/jama-nursecall-context update the glossary` | `jama-nursecall-context`, `prompt-author` | Updated clustering glossary (new prompt version) |
+
+### Key outputs in a run folder
+
+| File | Contents |
 |---|---|
-| `LLM_BASE_URL` | API base URL as documented by your provider. Usually ends in `/v1`, not `/chat/completions`. |
-| `LLM_API_KEY` | Your API key. Redacted from every log line and never written to a run artifact. |
-| `LLM_MODEL` | The model name to request. |
+| `cases_with_summaries.xlsx` | Fetched cases plus generated summaries |
+| `clusters\<name>\clusters.xlsx` | Cluster / sub-cluster taxonomy with labels, rationale and cited case numbers |
+| `cases_with_clusters.xlsx` | Cases with final cluster and sub-cluster columns |
+| `defects\<name>\mappings.xlsx` | Complaint → defect/RCA matches (direct Jira links included) |
+| `workflow.md` | Mermaid diagram of what this run did |
 
-`.env` is gitignored. Do not commit it.
+`/defect-mapping` needs a finished clustering run and the Jira/KB corpora; it runs
+`jira-rca-corpus` first if they are missing. Complaints already linked in Jira by CRM case
+number are mapped directly; "none" is the expected answer for hardware, configuration and
+no-fault-found complaints.
 
-## Running
+## All skills
 
-```powershell
-Copy-Item config\rca.example.yaml config\rca.yaml
-# edit config\rca.yaml to point at your workbook
-.\.venv\Scripts\python.exe -m complaint_analyzer --config config\rca.yaml
-```
+Skills live in [`.github/skills/`](./.github/skills/).
 
-Once installed, the `complaint-analyzer` console script does the same thing. This is
-API mode (`--backend api`, the default); start with `--dry-run` to confirm your filters
-select the rows you expect.
-
-Harness mode (`--backend harness`) uses this VS Code Copilot session instead of an LLM
-API key — see the `/copilot-batch-run` skill below, or
-[docs/cli-reference.md](./docs/cli-reference.md) for the full `--prepare` /
-`--check` / `--finalize` walkthrough and every CLI flag.
-
-## Skills
-
-These live under [`.github/skills/`](./.github/skills/) and are invoked from a VS Code
-Copilot session (for example `/copilot-batch-run ...`).
-
-| Skill | What it does |
+| Skill | Purpose |
 |---|---|
-| [`salesforce-export`](./.github/skills/salesforce-export/SKILL.md) | Runs a versioned Salesforce query set with the `sf` CLI and writes the fetched cases to an Excel workbook (`cases.xlsx`), with child relationships flattened to joined columns and detail sheets. |
-| [`excel-report-merge`](./.github/skills/excel-report-merge/SKILL.md) | Merges a finalized harness run's `results.jsonl` back into an exported cases workbook as color-coded generated columns, with a `Legend` sheet. `merge-clusters` adds the final cluster and sub-cluster columns to produce `cases_with_clusters.xlsx`. |
-| [`copilot-batch-run`](./.github/skills/copilot-batch-run/SKILL.md) | Prepares, fans out, resumes, validates, and finalizes a harness-backed run of any registered prompt across isolated Copilot workers, in configurable batches. |
-| [`prompt-author`](./.github/skills/prompt-author/SKILL.md) | Writes or revises an LLM analysis prompt from a natural-language description, saving it as the next versioned file with a manifest entry and a regenerated changelog. |
-| [`salesforce-query-author`](./.github/skills/salesforce-query-author/SKILL.md) | Writes or revises a Salesforce SOQL query, validates it against the org, and saves it as the next versioned file with a manifest entry and a regenerated changelog. |
+| [`classify-complaints`](./.github/skills/classify-complaints/SKILL.md) | End-to-end fetch → summarize → cluster into one run folder |
+| [`defect-mapping`](./.github/skills/defect-mapping/SKILL.md) | Map clustered complaints to Jira defects and RCAs |
+| [`jira-rca-corpus`](./.github/skills/jira-rca-corpus/SKILL.md) | Build/refresh Jira defect, RCA and KB corpora |
+| [`case-clustering`](./.github/skills/case-clustering/SKILL.md) | Cluster case summaries in batches and merge the taxonomies |
+| [`copilot-batch-run`](./.github/skills/copilot-batch-run/SKILL.md) | Run any registered prompt across isolated Copilot workers |
+| [`salesforce-export`](./.github/skills/salesforce-export/SKILL.md) | Export a versioned Salesforce query to Excel |
+| [`excel-report-merge`](./.github/skills/excel-report-merge/SKILL.md) | Merge results and clusters back into a cases workbook |
+| [`jama-nursecall-context`](./.github/skills/jama-nursecall-context/SKILL.md) | Maintain the clustering glossary from Jama |
+| [`prompt-author`](./.github/skills/prompt-author/SKILL.md) | Create or revise a versioned analysis prompt |
+| [`salesforce-query-author`](./.github/skills/salesforce-query-author/SKILL.md) | Create or revise a versioned SOQL query |
 
-| [`case-clustering`](./.github/skills/case-clustering/SKILL.md) | Clusters summarized cases by meaning and intent in batches (default 100), then merges the batch taxonomies into one final cluster / sub-cluster map with labels, rationale and cited case numbers (`clusters.xlsx`). Uses the `Cluster Worker` agent and the Nurse Call glossary in the `case_cluster` prompts. |
-| [`classify-complaints`](./.github/skills/classify-complaints/SKILL.md) | End-to-end orchestrator: fetches cases (or reuses a run folder), summarizes with the latest `case_summary`, clusters, asks about batch sizes and glossary, and stores everything in one run folder with a regenerable Mermaid diagram (`workflow.md`, via `python -m complaint_analyzer.workflows.classify_complaints diagram --run <dir>`). |
-| [`jira-rca-corpus`](./.github/skills/jira-rca-corpus/SKILL.md) | Builds the reusable corpus of Nurse Call Jira defects (`NC`, `Defect_CC`) and root cause analyses (`RCA`), summarizes each issue's comment thread into the corpus, and fetches the Confluence KB articles the complaint qualifications cite. |
-| [`defect-mapping`](./.github/skills/defect-mapping/SKILL.md) | Maps clustered complaints to the defects and RCAs that would likely have addressed them, sub-cluster by sub-cluster (batched within a sub-cluster), after short-circuiting complaints Jira already links by CRM case number and filtering candidates by software version. Uses the `Defect Mapping Worker` agent and the `defect_mapping` prompt. |
-| [`jama-nursecall-context`](./.github/skills/jama-nursecall-context/SKILL.md) | Pulls terms and acronyms from the Nurse Call - Parent Repository design documents in Jama (read-only) to maintain the clustering glossary. |
+Prompts (`src\complaint_analyzer\prompts\`) and queries (`src\complaint_analyzer\queries\`)
+are immutable versioned `vN.txt` files; use `prompt-author` and `salesforce-query-author`
+rather than editing them by hand.
 
-## Configuration
+## Repository layout
 
-See [docs/configuration.md](./docs/configuration.md) for the full `dataset` /
-`analysis` / `rate_limits` / `cache` / `output` reference and filter operators, and
-[config/rca.example.yaml](./config/rca.example.yaml) for a commented example.
-
-## Prompt and query sets
-
-Prompts live under `src/complaint_analyzer/prompts/<name>/` and query sets under
-`src/complaint_analyzer/queries/<name>/`, each as a folder of immutable `vN.txt` files
-plus a `manifest.yaml` and a generated `CHANGELOG.md`. Use the matching CLI to inspect
-them:
-
-```powershell
-.\.venv\Scripts\python.exe -m complaint_analyzer.prompts --list
-.\.venv\Scripts\python.exe -m complaint_analyzer.queries --list
+```text
+.github/skills/, .github/agents/   Copilot skills and worker agents
+src/complaint_analyzer/            Python helpers that prepare, validate and finalize runs
+  workflows/                       classify_complaints, case_cluster, defect_mapping, ...
+  prompts/, queries/               versioned prompts and SOQL query sets
+data/runs/                         one folder per run (gitignored except examples)
+docs/                              architecture, configuration, CLI reference, extending
 ```
 
-Author new prompts or queries with the `/prompt-author` and `/salesforce-query-author`
-skills rather than editing these folders by hand. See
-[docs/architecture.md](./docs/architecture.md#prompts-and-queries) for the folder
-layout and manifest fields.
-
-## What's next
-
-Planned future work — topic modeling, custom LangGraph workflows, and clustering via
-a custom search method against the external LLM API — has a documented home before any
-code exists: see [docs/extending.md](./docs/extending.md).
+More detail: [docs/architecture.md](./docs/architecture.md),
+[docs/cli-reference.md](./docs/cli-reference.md),
+[docs/configuration.md](./docs/configuration.md),
+[docs/extending.md](./docs/extending.md).
 
 ## Tests
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest
 ```
-
-The suite uses a generated fixture workbook and a scripted fake transport, so it never
-touches the network.

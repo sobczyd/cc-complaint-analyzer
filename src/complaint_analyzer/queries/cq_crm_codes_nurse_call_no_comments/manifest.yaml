@@ -73,3 +73,21 @@ versions:
       status: passed
       row_count: 5
       notes: Ran with sf data query --file and LIMIT 5 on the default target org; done=true. Validated with the sf CLI because the salesforce-local MCP tools were unavailable.
+  - version: v4
+    file: v4.txt
+    created: "2026-10-19"
+    author: Sobczynski
+    base_version: v3
+    prompt: >-
+      The Power BI export needs the Last Modified Date of each case. Version the query to v4 to include it.
+    summary: Adds the Case LastModifiedDate field to v3.
+    changes:
+      - "Case: added LastModifiedDate (placed after ClosedDate)."
+      - Filters, subquery fields, subquery filters and ordering are unchanged from v3.
+    objects: [Case, Account, Asset, Problem_Codes__r, Complaint_Qualifications__r]
+    validation:
+      org: null
+      validated_at: null
+      status: skipped
+      row_count: null
+      notes: Single standard Case field added; not run against the org yet.
