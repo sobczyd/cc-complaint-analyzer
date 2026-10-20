@@ -83,3 +83,68 @@ def test_prompt_author_skill_documents_versioned_workflow() -> None:
         "copilot-batch-run",
     ):
         assert marker in body
+
+def test_salesforce_fetch_agent_is_run_scoped() -> None:
+    path = ROOT / ".github" / "agents" / "salesforce-fetch.agent.md"
+    metadata, body = _frontmatter(path)
+
+    assert metadata["name"] == "salesforce-fetch"
+    assert metadata["user-invocable"] is True
+    assert "agent" in metadata["tools"]
+    assert not any(tool.startswith("salesforce-local") for tool in metadata["tools"])
+    for marker in (
+        "custom_fetch init",
+        "custom_fetch prepare",
+        "custom_fetch finalize",
+        "fields --query-set",
+        "copilot-batch-run",
+        "Only SELECT",
+    ):
+        assert marker in body
+    assert "salesforce-local" not in body
+
+
+def test_defect_mapping_skill_and_worker_are_wired() -> None:
+    skill_path = ROOT / ".github" / "skills" / "defect-mapping" / "SKILL.md"
+    metadata, body = _frontmatter(skill_path)
+    assert metadata["name"] == skill_path.parent.name
+    assert metadata["user-invocable"] is True
+    for needle in (
+        "Defect Mapping Worker",
+        "case_assignments.jsonl",
+        "direct_links.jsonl",
+        "--min-batch",
+        "incomplete_request_ids",
+    ):
+        assert needle in body
+
+    worker_path = ROOT / ".github" / "agents" / "defect-mapping-worker.agent.md"
+    worker, worker_body = _frontmatter(worker_path)
+    assert worker["name"] == "Defect Mapping Worker"
+    assert "publish" in worker_body
+    assert "=== Candidate ===" in worker_body
+
+    corpus_path = ROOT / ".github" / "skills" / "jira-rca-corpus" / "SKILL.md"
+    corpus, corpus_body = _frontmatter(corpus_path)
+    assert corpus["name"] == corpus_path.parent.name
+    for needle in ("jira-plan", "jira-normalize", "kb-plan", "kb-normalize", "defect_comment_summary"):
+        assert needle in corpus_body
+
+
+def test_case_clustering_skill_and_worker_are_wired() -> None:
+    skill_path = ROOT / ".github" / "skills" / "case-clustering" / "SKILL.md"
+    metadata, body = _frontmatter(skill_path)
+    assert metadata["name"] == skill_path.parent.name
+    assert metadata["user-invocable"] is True
+    for needle in ("Cluster Worker", "prepare-merge", "finalize", "incomplete_request_ids"):
+        assert needle in body
+
+    worker_path = ROOT / ".github" / "agents" / "cluster-worker.agent.md"
+    worker, worker_body = _frontmatter(worker_path)
+    assert worker["name"] == "Cluster Worker"
+    assert "publish" in worker_body
+
+    jama_path = ROOT / ".github" / "skills" / "jama-nursecall-context" / "SKILL.md"
+    jama, jama_body = _frontmatter(jama_path)
+    assert jama["name"] == jama_path.parent.name
+    assert "CWS-CMP-122" in jama_body and "CWS-CMP-320" in jama_body

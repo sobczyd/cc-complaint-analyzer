@@ -4,7 +4,7 @@ description: >-
   Nurse Call problem codes and complaint qualifications. Case comments are deliberately
   excluded.
 created: "2026-10-15"
-updated: "2026-10-15"
+updated: "2026-10-19"
 versions:
   - version: v1
     file: v1.txt
@@ -55,3 +55,21 @@ versions:
       status: skipped
       row_count: null
       notes: Backfilled when manifest tracking was introduced; no validation run was recorded.
+  - version: v3
+    file: v3.txt
+    created: "2026-10-19"
+    author: Sobczynski
+    base_version: v2
+    prompt: >-
+      The field "Description" is missing from v2. Version the query to v3 to include this field.
+    summary: Adds the Case Description field to v2.
+    changes:
+      - "Case: added Description (placed after Subject)."
+      - Filters, subquery fields, subquery filters and ordering are unchanged from v2.
+    objects: [Case, Account, Asset, Problem_Codes__r, Complaint_Qualifications__r]
+    validation:
+      org: hillrom
+      validated_at: "2026-10-19T19:54:00Z"
+      status: passed
+      row_count: 5
+      notes: Ran with sf data query --file and LIMIT 5 on the default target org; done=true. Validated with the sf CLI because the salesforce-local MCP tools were unavailable.

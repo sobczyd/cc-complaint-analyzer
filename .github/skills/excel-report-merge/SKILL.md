@@ -49,6 +49,23 @@ by generated columns that are visibly different.
 - Sheet `Legend`: explains the color coding, the source run, and each
   generated column.
 
+## Adding clusters and sub-clusters (`cases_with_clusters.xlsx`)
+
+After `case-clustering` has finalized a cluster directory, add the final cluster and sub-cluster as
+columns. Use the summarized workbook as input so the summary columns are kept:
+
+```powershell
+.\.venv\Scripts\python.exe -m complaint_analyzer.workflows.report_merge merge-clusters `
+    --cases data\runs\<run>\cases_with_summaries.xlsx `
+    --cluster-dir data\runs\<run>\clusters\<name> [--out data\runs\<run>\cases_with_clusters.xlsx]
+```
+
+`--out` defaults to `cases_with_clusters.xlsx` next to `--cases`. It joins `CaseNumber` to the
+`case_number` in `case_assignments.jsonl` and appends light-blue `case_cluster.cluster`,
+`case_cluster.subcluster`, `case_cluster.analysis_status` and `case_cluster.analysis_error`. Cases outside the
+clustered subset get `not_run` and empty cluster cells. The Legend sheet lists the cluster run used.
+Report `rows`, `matched` and `status_counts`; exit code 2 is a merge error.
+
 ## Rules
 
 - Never alter query data columns; only append generated ones.

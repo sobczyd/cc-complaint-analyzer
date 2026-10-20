@@ -131,11 +131,13 @@ def merge_results(
     sheet: str = MAIN_SHEET,
     notes: Sequence[str] = (),
     allow_missing_results: bool = False,
+    entries: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> MergeResult:
     """Write ``out_path``: ``cases`` with one set of generated columns per record.
 
     With ``allow_missing_results`` a missing ``results`` file is treated as empty, so
-    every row is marked ``not_run`` instead of raising.
+    every row is marked ``not_run`` instead of raising. ``entries`` (keyed by record id,
+    same shape as ``results.jsonl`` lines) replaces reading ``results`` altogether.
     """
     tables = read_sheets(cases)
     if sheet not in tables:
@@ -143,9 +145,12 @@ def merge_results(
     main = tables[sheet]
     if main.rows and id_field not in main.columns:
         raise MergeError(f"id field '{id_field}' is not a column of sheet '{sheet}'")
-    entries = read_results(results) if results.is_file() else {}
-    if not results.is_file() and main.rows and not allow_missing_results:
-        raise MergeError(f"results file not found: {results}")
+    if entries is None:
+        if not results.is_file() and main.rows and not allow_missing_results:
+            raise MergeError(f"results file not found: {results}")
+        entries = read_results(results) if results.is_file() else {}
+    else:
+        entries = dict(entries)
 
     prefix = prefix or analysis
     keys = list(output_keys) + [STATUS_KEY, ERROR_KEY]
@@ -272,3 +277,59 @@ def merge_analysis_run(
         notes=notes,
         allow_missing_results=allow_missing_results,
     )
+
+
+CLUSTER_PREFIX = "case_cluster"
+CLUSTER_KEYS = ("cluster", "subcluster")
+
+
+def read_cluster_assignments(path: Path) -> dict[str, dict[str, Any]]:
+    """``case_assignments.jsonl`` as results-shaped entries keyed by case number."""
+    if not path.is_file():
+        raise MergeError(f"cluster assignments not found: {path}")
+    entries: dict[str, dict[str, Any]] = {}
+    with path.open(encoding="utf-8") as handle:
+        for number, line in enumerate(handle, start=1):
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                item = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise MergeError(f"{path}:{number}: invalid JSON: {exc}") from exc
+            entries[str(item["case_number"])] = {
+                "status": "ok",
+                "values": {
+                    "cluster": item.get("final_cluster", ""),
+                    "subcluster": item.get("final_subcluster", ""),
+                },
+            }
+    return entries
+
+
+def merge_cluster_run(
+    cases: Path,
+    cluster_dir: Path,
+    out_path: Path,
+    *,
+    id_field: str = "CaseNumber",
+    notes: Sequence[str] = (),
+) -> MergeResult:
+    """Add ``case_cluster.cluster`` / ``case_cluster.subcluster`` columns to ``cases``.
+
+    Cases outside the clustered subset are marked ``not_run``.
+    """
+    entries = read_cluster_assignments(cluster_dir / "case_assignments.jsonl")
+    return merge_results(
+        cases,
+        cluster_dir / "case_assignments.jsonl",
+        out_path,
+        output_keys=CLUSTER_KEYS,
+        analysis="case_cluster",
+        id_field=id_field,
+        prefix=CLUSTER_PREFIX,
+        notes=[f"Cluster run: {cluster_dir}", *notes],
+        entries=entries,
+    )
+
+

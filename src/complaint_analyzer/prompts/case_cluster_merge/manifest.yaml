@@ -1,0 +1,24 @@
+prompt_set: case_cluster_merge
+description: >-
+  Consolidates the cluster and sub-cluster labels from several batch clusterings into one final
+  taxonomy and a mapping from every batch sub-cluster to a final cluster and sub-cluster. Uses the
+  same glossary as case_cluster.
+created: "2026-10-19"
+updated: "2026-10-19"
+versions:
+  - version: v1
+    file: v1.txt
+    created: "2026-10-19"
+    author: Copilot
+    base_version: null
+    prompt: >-
+      After batches are clustered independently, run a final aggregation that takes all labels and
+      sub-topics generated so far and melts them into a reasonable common final label and sub-topic
+      map, avoiding duplicates and merging highly related topics from different batches.
+    summary: Final merge prompt producing a final taxonomy and batch-to-final mapping.
+    changes:
+      - Initial version.
+    result_model: MergeResult
+    validation:
+      status: skipped
+      notes: Not yet run against cases.

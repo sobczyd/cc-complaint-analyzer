@@ -1,4 +1,4 @@
-"""Run a versioned SOQL query with the Salesforce CLI and write the result to Excel.
+﻿"""Run a versioned SOQL query with the Salesforce CLI and write the result to Excel.
 
 The export produces one row per top-level record on a ``Cases`` sheet. Lookup fields
 (``Owner.Name``) become dotted column names. Each child relationship subquery
@@ -429,8 +429,8 @@ def write_cases_workbook(path: Path, export: FlatExport) -> None:
 @dataclass(frozen=True)
 class ExportResult:
     out_dir: Path
-    query_set: str
-    version: str
+    query_set: str | None  # None for run-specific (ad-hoc) queries
+    version: str | None
     target_org: str | None
     row_count: int
     done: bool
@@ -463,12 +463,38 @@ def export_query_set(
     id_field: str = DEFAULT_ID_FIELD,
     timeout: int = DEFAULT_TIMEOUT_SECONDS,
 ) -> ExportResult:
-    """Run (or replay) a query set and write ``query.soql``, ``raw.json``, ``cases.xlsx``.
+    """Run (or replay) a saved query set and write ``query.soql``, ``raw.json``, ``cases.xlsx``.
 
     ``from_json`` replays a saved ``sf data query --json`` response instead of calling
     Salesforce, which is useful for tests and for rebuilding a workbook.
     """
     version, soql = resolve_query(query_set, version)
+    return export_soql(
+        soql,
+        out_dir,
+        query_set=query_set,
+        version=version,
+        target_org=target_org,
+        from_json=from_json,
+        id_field=id_field,
+        timeout=timeout,
+    )
+
+
+def export_soql(
+    soql: str,
+    out_dir: Path,
+    *,
+    query_set: str | None = None,
+    version: str | None = None,
+    target_org: str | None = None,
+    from_json: Path | None = None,
+    id_field: str = DEFAULT_ID_FIELD,
+    timeout: int = DEFAULT_TIMEOUT_SECONDS,
+) -> ExportResult:
+    """Run (or replay) a SOQL SELECT statement and write the run-folder artifacts."""
+    if _select_and_from(soql) is None:
+        raise ExportError("only a SOQL SELECT ... FROM ... statement can be exported")
     out_dir.mkdir(parents=True, exist_ok=True)
     query_path = out_dir / QUERY_FILENAME
     query_path.write_text(soql, encoding="utf-8")
@@ -501,3 +527,31 @@ def export_query_set(
         json.dumps(outcome.as_json(), indent=2), encoding="utf-8"
     )
     return outcome
+
+
+_CLAUSE_START = re.compile(r"\s(WHERE|GROUP\s+BY|HAVING|ORDER\s+BY|LIMIT|OFFSET)\b", re.IGNORECASE)
+
+
+def select_clause(query_set: str, version: str | None = None) -> str:
+    """``SELECT ... FROM <object>`` of a saved query, without its top-level filters.
+
+    Child subqueries keep their own WHERE clauses. Used as the field template for
+    ad-hoc queries ("same columns as <query set>").
+    """
+    _, soql = resolve_query(query_set, version)
+    soql = soql.strip()
+    parsed = _select_and_from(soql)
+    if parsed is None:
+        raise ExportError(f"query set '{query_set}' is not a SELECT statement")
+    head_end = _FROM.search(soql, len(parsed[0])).end()
+    tail = soql[head_end:]
+    depth = 0
+    for index, char in enumerate(tail):
+        if char == "(":
+            depth += 1
+        elif char == ")":
+            depth -= 1
+        elif depth == 0 and char.isspace() and _CLAUSE_START.match(tail, index):
+            tail = tail[:index]
+            break
+    return (soql[:head_end] + tail).rstrip()

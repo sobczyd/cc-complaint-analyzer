@@ -1,0 +1,23 @@
+prompt_set: defect_comment_summary
+description: >-
+  Condenses the comment thread of one Jira defect or RCA into a technical summary, key points, the
+  root cause and the fix or workaround, so the issue can be matched against complaints later.
+created: "2026-10-19"
+updated: "2026-10-19"
+versions:
+  - version: v1
+    file: v1.txt
+    created: "2026-10-19"
+    author: Copilot
+    base_version: null
+    prompt: >-
+      First summarize the defect comments and then add that comment summary to the defect, so the
+      mapping prompt can use it. Keep the technical substance needed to decide whether the issue
+      explains a customer complaint.
+    summary: Per-issue comment thread summary with key points, root cause and fix or workaround.
+    changes:
+      - Initial version.
+    result_model: CommentSummary
+    validation:
+      status: skipped
+      notes: Not yet run against issues.

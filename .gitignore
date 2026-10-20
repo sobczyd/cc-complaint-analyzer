@@ -19,9 +19,15 @@ dist/
 data/input/*
 data/runs/*
 
+# Jira defect/RCA corpora and Confluence KB article text, fetched per environment.
+data/jira/*
+data/kb/*
+
 # Keep the directories themselves
 !data/input/.gitkeep
 !data/runs/.gitkeep
+!data/jira/.gitkeep
+!data/kb/.gitkeep
 
 config/*
 

@@ -8,7 +8,7 @@ disk so the result can be audited later.
 
 On top of that core engine, the repository also has workflows for pulling cases out of
 Salesforce, merging analysis results back into a reviewer-friendly workbook, and running
-a recurring "daily review" session that chains both together.
+an ad-hoc fetch-and-summarize workflow and an end-to-end complaint classification workflow.
 
 For a deep dive into how the code is organized and how a request flows through it, see
 [docs/architecture.md](./docs/architecture.md). For full CLI flags and config keys, see
@@ -29,7 +29,11 @@ src/complaint_analyzer/
   workflows/      end-to-end jobs built on the layers above
     salesforce_export/   export a query set to an Excel workbook
     report_merge/        merge harness results back into a workbook
-    daily_review/        compose the two above into a recurring session
+    custom_fetch/        ad-hoc, run-specific fetch (+ optional summarize) into data/runs
+    case_cluster/        batch-cluster case summaries, then merge the batch taxonomies
+    defect_mapping/      Jira defect/RCA + KB corpora, and complaint-to-defect mapping
+    classify_complaints/ run state and the Mermaid workflow diagram for a run folder
+    analysis_run.py      config/commands/merge helpers used by custom_fetch
 docs/             architecture, configuration, CLI reference, and extension points
 config/           example and working YAML configs for the core analysis CLI
 data/             input workbooks and run output (gitignored except examples)
@@ -90,11 +94,16 @@ Copilot session (for example `/copilot-batch-run ...`).
 | Skill | What it does |
 |---|---|
 | [`salesforce-export`](./.github/skills/salesforce-export/SKILL.md) | Runs a versioned Salesforce query set with the `sf` CLI and writes the fetched cases to an Excel workbook (`cases.xlsx`), with child relationships flattened to joined columns and detail sheets. |
-| [`excel-report-merge`](./.github/skills/excel-report-merge/SKILL.md) | Merges a finalized harness run's `results.jsonl` back into an exported cases workbook as color-coded generated columns, with a `Legend` sheet. |
+| [`excel-report-merge`](./.github/skills/excel-report-merge/SKILL.md) | Merges a finalized harness run's `results.jsonl` back into an exported cases workbook as color-coded generated columns, with a `Legend` sheet. `merge-clusters` adds the final cluster and sub-cluster columns to produce `cases_with_clusters.xlsx`. |
 | [`copilot-batch-run`](./.github/skills/copilot-batch-run/SKILL.md) | Prepares, fans out, resumes, validates, and finalizes a harness-backed run of any registered prompt across isolated Copilot workers, in configurable batches. |
-| [`daily-nurse-call-review`](./.github/skills/daily-nurse-call-review/SKILL.md) | The daily workflow: fetches Nurse Call cases from the last 7 days, summarizes each with `copilot-batch-run`, and saves everything — including the merged, color-coded Excel — in one session folder under `data/runs/`. |
 | [`prompt-author`](./.github/skills/prompt-author/SKILL.md) | Writes or revises an LLM analysis prompt from a natural-language description, saving it as the next versioned file with a manifest entry and a regenerated changelog. |
 | [`salesforce-query-author`](./.github/skills/salesforce-query-author/SKILL.md) | Writes or revises a Salesforce SOQL query, validates it against the org, and saves it as the next versioned file with a manifest entry and a regenerated changelog. |
+
+| [`case-clustering`](./.github/skills/case-clustering/SKILL.md) | Clusters summarized cases by meaning and intent in batches (default 100), then merges the batch taxonomies into one final cluster / sub-cluster map with labels, rationale and cited case numbers (`clusters.xlsx`). Uses the `Cluster Worker` agent and the Nurse Call glossary in the `case_cluster` prompts. |
+| [`classify-complaints`](./.github/skills/classify-complaints/SKILL.md) | End-to-end orchestrator: fetches cases (or reuses a run folder), summarizes with the latest `case_summary`, clusters, asks about batch sizes and glossary, and stores everything in one run folder with a regenerable Mermaid diagram (`workflow.md`, via `python -m complaint_analyzer.workflows.classify_complaints diagram --run <dir>`). |
+| [`jira-rca-corpus`](./.github/skills/jira-rca-corpus/SKILL.md) | Builds the reusable corpus of Nurse Call Jira defects (`NC`, `Defect_CC`) and root cause analyses (`RCA`), summarizes each issue's comment thread into the corpus, and fetches the Confluence KB articles the complaint qualifications cite. |
+| [`defect-mapping`](./.github/skills/defect-mapping/SKILL.md) | Maps clustered complaints to the defects and RCAs that would likely have addressed them, sub-cluster by sub-cluster (batched within a sub-cluster), after short-circuiting complaints Jira already links by CRM case number and filtering candidates by software version. Uses the `Defect Mapping Worker` agent and the `defect_mapping` prompt. |
+| [`jama-nursecall-context`](./.github/skills/jama-nursecall-context/SKILL.md) | Pulls terms and acronyms from the Nurse Call - Parent Repository design documents in Jama (read-only) to maintain the clustering glossary. |
 
 ## Configuration
 

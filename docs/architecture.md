@@ -13,7 +13,7 @@ config keys, see [cli-reference.md](./cli-reference.md) and
                     |      workflows/          |
                     | salesforce_export        |
                     | report_merge             |
-                    | daily_review             |
+                    | custom_fetch             |
                     +-----------+--------------+
                                 |
           +---------------------+---------------------+
@@ -129,21 +129,33 @@ composes another.
   and writes `cases.xlsx` (one row per case, child relationships flattened to
   joined columns plus their own detail sheets). See
   [`export.py`](../src/complaint_analyzer/workflows/salesforce_export/export.py).
+  `export_soql` runs any SELECT statement; `export_query_set` wraps it for
+  saved sets, and `select_clause` returns a saved query's SELECT/FROM as a
+  field template.
+- **`custom_fetch/`** — ad-hoc fetch: writes a run-specific query (drafted by
+  the `salesforce-fetch` agent in `.github/agents/`) into a new
+  `data/runs/<slug>_<date>/` folder with `request.txt`, `query.soql`,
+  `raw.json`, `export.json`, `cases.xlsx` and `session.json`. Nothing is saved
+  to `config/` or `queries/`. A failed export leaves no folder. CLI:
+  `python -m complaint_analyzer.workflows.custom_fetch init --soql-file Q --slug S --prompt "..." [--based-on SET]`.
+  Optional summarization of the same folder: `prepare --run D [--analysis case_summary|rca]`
+  writes the harness config, `copilot-batch-run` processes the cases, and
+  `finalize --run D` merges them into `cases_with_summaries.xlsx`.
+  Ad-hoc export without a run folder: `salesforce_export export --soql-file Q --out-dir D`;
+  field template: `salesforce_export fields --query-set SET`.
 - **`report_merge/`** — merges a finalized harness run's `results.jsonl` back
   into an exported cases workbook as color-coded generated columns plus a
   `Legend` sheet. See
   [`merge.py`](../src/complaint_analyzer/workflows/report_merge/merge.py).
-- **`daily_review/`** — composes the two above into one recurring session:
-  export cases, generate a harness config, (externally) run the batch
-  analysis, then merge. See
-  [`__init__.py`](../src/complaint_analyzer/workflows/daily_review/__init__.py).
+- **`analysis_run.py`** — plumbing used by `custom_fetch`:
+  run-folder naming, harness config, `copilot-batch-run` commands, and the final merge.
 
-A `daily_review` session folder under `data/runs/` holds every artifact for
+A `custom_fetch` run folder under `data/runs/` holds every artifact for
 one run:
 
 ```text
-data/runs/<query_set>_<date>[_N]/
-  query.soql  raw.json  export.json      <- salesforce_export
+data/runs/<slug>_<date>/
+  request.txt  query.soql  raw.json  export.json   <- custom_fetch / salesforce_export
   cases.xlsx                             <- fetched cases (query data only)
   <analysis>.yaml                        <- generated harness config
   <analysis>/                            <- harness run (exchange/, results.jsonl, manifest.json, ...)
@@ -174,17 +186,18 @@ Copilot session (often via the `/copilot-batch-run` skill) writes responses,
 and `--finalize` validates and imports them before the same `write_workbook` /
 `write_manifest` steps run.
 
-### `daily_review` init → batch run → finalize
+### `custom_fetch` init → batch run → finalize
 
 ```text
-workflows.daily_review init
+workflows.custom_fetch init
   -> workflows.salesforce_export.export_query_set   (query.soql, raw.json, cases.xlsx)
+workflows.custom_fetch prepare
   -> build_config + write_config                    (writes <analysis>.yaml)
   -> prints harness_commands (prepare/check/finalize) for the caller to run
 
   [external: /copilot-batch-run runs the harness-backed analysis for <analysis>.yaml]
 
-workflows.daily_review finalize
+workflows.custom_fetch finalize
   -> workflows.report_merge.merge_analysis_run       (reads <analysis>/results.jsonl,
                                                         writes cases_with_summaries.xlsx)
 ```

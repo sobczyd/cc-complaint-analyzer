@@ -1,4 +1,4 @@
-SELECT Id, CaseNumber, Status, Subject,
+SELECT Id, CaseNumber, Status, Subject, Description,
        CreatedDate, ClosedDate,
        Owner.Name,
        Account.Name, Account.BillingState, Account.BillingPostalCode, Account.JDE_External_ID__c,
@@ -45,6 +45,6 @@ SELECT Id, CaseNumber, Status, Subject,
         FROM Complaint_Qualifications__r
         WHERE HRCSVC_Product_Group__c = 'CareComm - Nurse Call')
 FROM Case
-WHERE CreatedDate = LAST_N_DAYS:7
+WHERE CreatedDate = LAST_N_DAYS:30
   AND HRCSVC_Complaint_Code__r.Name = 'CareComm - Nurse Call'
 ORDER BY CreatedDate DESC

@@ -11,7 +11,7 @@ for the layers referenced below.
 Every one of the capabilities below is an end-to-end job, not a new shared
 layer, so each belongs as a new subpackage under
 [`src/complaint_analyzer/workflows/`](../src/complaint_analyzer/workflows/),
-alongside `salesforce_export/`, `report_merge/`, and `daily_review/`. Each new
+alongside `salesforce_export/`, `report_merge/`, and `custom_fetch/`. Each new
 workflow should:
 
 - own its CLI (`__main__.py`) and any orchestration logic,
@@ -20,7 +20,7 @@ workflow should:
 - reuse `workbook` for any Excel input/output, and `prompts` / `queries` if it
   needs versioned, auditable text content,
 - avoid importing other workflows unless it explicitly composes them (the way
-  `daily_review` composes `salesforce_export` and `report_merge`).
+  `custom_fetch` composes `salesforce_export` and `report_merge`).
 
 ## Topic modeling
 

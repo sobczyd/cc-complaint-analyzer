@@ -30,6 +30,19 @@ src\complaint_analyzer\queries\<query_set>\
   - `-m complaint_analyzer.queries <set>` validates the manifest against the files.
   - `-m complaint_analyzer.queries <set> --changelog` validates the set and regenerates `CHANGELOG.md`.
 
+## Run-scoped mode (ad-hoc queries)
+
+When the request is a one-off filtered fetch (used by the `salesforce-fetch` agent), do not
+create a query set, version, manifest or changelog. Follow steps 1, 2, 4, 5 and 6 below, then
+hand the final SOQL to `python -m complaint_analyzer.workflows.custom_fetch init`, which saves
+it as `query.soql` in a new run folder. To reuse the columns of a saved set, run
+`python -m complaint_analyzer.workflows.salesforce_export fields --query-set <set>`, then
+append the user's WHERE/ORDER BY. Child subquery filters in the template are kept unless the
+append the user's WHERE/ORDER BY. Child subquery filters in the template are kept unless the
+user asks otherwise; say so in the report. Without the salesforce-local MCP tools, verify
+fields with `sf sobject describe --sobject Case --json` and let `custom_fetch init` validate
+the query (a failed export leaves no run folder).
+
 ## Procedure
 
 1. **Gather context.**

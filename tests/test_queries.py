@@ -54,10 +54,10 @@ def test_load_queries_rejects_a_directory_with_no_txt_files(tmp_path: Path) -> N
         load_queries(tmp_path)
 
 
-def test_cq_crm_codes_nurse_call_no_comments_has_v1_and_v2() -> None:
+def test_cq_crm_codes_nurse_call_no_comments_has_v1_to_v3() -> None:
     queries = load_queries(_QUERY_SET_DIR)
 
-    assert set(queries) == {"v1", "v2"}
+    assert set(queries) == {"v1", "v2", "v3"}
     for text in queries.values():
         assert "FROM Case" in text
         assert "Problem_Codes__r" in text
@@ -129,9 +129,16 @@ def test_version_numbers_sort_numerically(tmp_path: Path) -> None:
     assert sorted(["draft", "v10", "v2"], key=version_sort_key) == ["v2", "v10", "draft"]
 
 
+def test_v3_adds_case_description_to_v2() -> None:
+    queries = load_queries(_QUERY_SET_DIR)
+
+    assert "Description," not in queries["v2"].split("FROM Case")[0].replace("Model_Description__c", "")
+    assert "Subject, Description," in queries["v3"]
+
+
 def test_next_version_starts_at_v1_and_follows_existing(tmp_path: Path) -> None:
     assert next_version(tmp_path / "new_set") == "v1"
-    assert next_version(_QUERY_SET_DIR) == "v3"
+    assert next_version(_QUERY_SET_DIR) == "v4"
     _write_set(tmp_path / "s", versions=3)
     assert next_version(tmp_path / "s") == "v4"
 
@@ -176,7 +183,7 @@ def test_render_changelog_lists_newest_first(tmp_path: Path) -> None:
 def test_committed_set_manifest_is_valid_and_changelog_is_current() -> None:
     manifest = validate_query_set(_QUERY_SET_DIR)
 
-    assert [v["version"] for v in manifest["versions"]] == ["v1", "v2"]
+    assert [v["version"] for v in manifest["versions"]] == ["v1", "v2", "v3"]
     committed = (_QUERY_SET_DIR / CHANGELOG_FILENAME).read_text(encoding="utf-8")
     assert committed == render_changelog(manifest)
 

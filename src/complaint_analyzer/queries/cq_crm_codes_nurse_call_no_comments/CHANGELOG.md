@@ -5,8 +5,30 @@
 Last-30-day Salesforce Cases with the CareComm - Nurse Call complaint code, with their Nurse Call problem codes and complaint qualifications. Case comments are deliberately excluded.
 
 - Created: 2026-10-15
-- Last updated: 2026-10-15
-- Versions: 2
+- Last updated: 2026-10-19
+- Versions: 3
+
+## v3 — 2026-10-19
+
+**Summary:** Adds the Case Description field to v2.
+
+- File: `v3.txt`
+- Based on: v2
+- Author: Sobczynski
+- Objects: `Case`, `Account`, `Asset`, `Problem_Codes__r`, `Complaint_Qualifications__r`
+
+**Changes:**
+
+- Case: added Description (placed after Subject).
+- Filters, subquery fields, subquery filters and ordering are unchanged from v2.
+
+**Prompt:**
+
+> The field "Description" is missing from v2. Version the query to v3 to include this field.
+
+**Validation:** status `passed`, org `hillrom`, at 2026-10-19T19:54:00Z, 5 row(s)
+
+_Ran with sf data query --file and LIMIT 5 on the default target org; done=true. Validated with the sf CLI because the salesforce-local MCP tools were unavailable._
 
 ## v2 — 2026-10-15
 

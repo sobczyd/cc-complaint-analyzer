@@ -1,7 +1,7 @@
----
+﻿---
 name: salesforce-export
 description: "Run a versioned Salesforce query set (src\\complaint_analyzer\\queries\\<query_set>\\vN.txt) with the sf CLI and write the fetched cases to an Excel workbook (cases.xlsx) with one row per case, joined child-relationship columns, and one detail sheet per child relationship. Use when asked to fetch/export Salesforce cases to Excel."
-argument-hint: "query_set --out-dir data\\runs\\<folder> [--version vN] [--target-org alias]"
+argument-hint: "(query_set | --soql-file query.soql) --out-dir data\\runs\\<folder> [--version vN] [--target-org alias]"
 user-invocable: true
 disable-model-invocation: false
 ---
@@ -17,6 +17,8 @@ harness (and people) can read. Queries are authored by the
 - **Query set** (required): a folder under `src\complaint_analyzer\queries\`.
   List them with `.\.venv\Scripts\python.exe -m complaint_analyzer.queries --list`.
 - **Output folder** (required): normally a session folder under `data\runs\`.
+- **Run-specific query** (alternative to a query set): a `.soql` file for an ad-hoc fetch.
+  Prefer the salesforce-fetch agent, which also creates the run folder.
 - **Version**: defaults to the latest `vN.txt` in the query set.
 - **Target org**: defaults to the sf CLI default org. Before running, report
   which org will be used (`sf config get target-org --json`) so the user knows.
@@ -32,6 +34,9 @@ harness (and people) can read. Queries are authored by the
    .\.venv\Scripts\python.exe -m complaint_analyzer.workflows.salesforce_export export `
        --query-set <query_set> --out-dir <folder> [--version vN] [--target-org <alias>]
    ```
+
+   For an ad-hoc query use `--soql-file <path>` instead of `--query-set`/`--version`.
+   `fields --query-set <set>` prints a saved query's SELECT...FROM without its filters.
 
    Live queries can take a few minutes. Use `--from-json <raw.json>` to replay
    a saved `sf data query --json` response without contacting Salesforce.

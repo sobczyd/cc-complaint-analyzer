@@ -1,22 +1,13 @@
-"""Tests for the Salesforce export, the Excel merge and the daily session workflow."""
+"""Tests for the Salesforce export and the Excel merge."""
 
 from __future__ import annotations
 
 import json
-from datetime import date
 from pathlib import Path
 
 import pytest
 from openpyxl import load_workbook
 
-from complaint_analyzer.workflows.daily_review import (
-    MERGED_WORKBOOK_FILENAME,
-    NURSE_CALL_7D,
-    SessionError,
-    finalize_session,
-    init_session,
-)
-from complaint_analyzer.workflows.daily_review.__main__ import main as daily_main
 from complaint_analyzer.workflows.report_merge import MergeError
 from complaint_analyzer.workflows.report_merge.__main__ import main as report_main
 from complaint_analyzer.workflows.report_merge.merge import GENERATED_FILL_COLOR, LEGEND_SHEET, merge_results
@@ -101,12 +92,12 @@ def test_flatten_records_joins_children():
 def test_export_query_set_from_json(tmp_path):
     raw = _write_raw(tmp_path / "saved.json", [_record("001", codes=["A"])], done=False)
     out = tmp_path / "out"
-    result = export_query_set("nurse_call_last_7_days", out, from_json=raw)
+    result = export_query_set("cq_crm_codes_nurse_call_no_comments", out, from_json=raw)
     assert result.row_count == 1 and result.done is False
     for name in ("query.soql", "raw.json", "export.json", "cases.xlsx"):
         assert (out / name).is_file()
     meta = json.loads((out / "export.json").read_text(encoding="utf-8"))
-    assert meta["version"] == "v1" and meta["row_count"] == 1
+    assert meta["version"] == "v3" and meta["row_count"] == 1
     header = _sheet_rows(out / "cases.xlsx", "Cases")[0]
     assert header[:2] == ["Id", "CaseNumber"]
     assert "Problem Codes" in load_workbook(out / "cases.xlsx").sheetnames
@@ -116,7 +107,7 @@ def test_export_cli_reports_errors(tmp_path, capsys):
     bad = tmp_path / "bad.json"
     bad.write_text(json.dumps({"status": 1, "message": "nope"}), encoding="utf-8")
     code = export_main(
-        ["export", "--query-set", "nurse_call_last_7_days", "--out-dir", str(tmp_path / "o"), "--from-json", str(bad)]
+        ["export", "--query-set", "cq_crm_codes_nurse_call_no_comments", "--out-dir", str(tmp_path / "o"), "--from-json", str(bad)]
     )
     assert code == 1
     assert "nope" in capsys.readouterr().err
@@ -128,7 +119,7 @@ def test_export_cli_reports_errors(tmp_path, capsys):
 def _cases(tmp_path: Path, numbers: list[str]) -> Path:
     out = tmp_path / "export"
     raw = _write_raw(tmp_path / "raw_in.json", [_record(n, codes=["A"]) for n in numbers])
-    export_query_set("nurse_call_last_7_days", out, from_json=raw)
+    export_query_set("cq_crm_codes_nurse_call_no_comments", out, from_json=raw)
     return out / "cases.xlsx"
 
 
@@ -207,67 +198,3 @@ def test_report_cli(tmp_path, capsys):
         ["merge", "--cases", str(cases), "--run-dir", str(tmp_path / "none"), "--out", str(out)]
     )
     assert code == 2
-
-
-# ------------------------------------------------------------------ daily
-
-
-def test_daily_session_end_to_end(tmp_path):
-    raw = _write_raw(tmp_path / "saved.json", [_record("001"), _record("002")])
-    runs = tmp_path / "runs"
-    day = date(2026, 1, 2)
-    first = init_session(NURSE_CALL_7D, runs_root=runs, day=day, from_json=raw)
-    assert first.session_dir.name == "nurse_call_last_7_days_2026-01-02"
-    assert first.needs_batch_run and first.config_path is not None and first.config_path.is_file()
-    assert set(first.commands) == {"prepare", "check", "finalize"}
-    assert "--run-id case_summary" in first.commands["prepare"]
-
-    second = init_session(NURSE_CALL_7D, runs_root=runs, day=day, from_json=raw)
-    assert second.session_dir.name == "nurse_call_last_7_days_2026-01-02_2"
-
-    session = first.session_dir
-    with pytest.raises(SessionError, match="not finalized"):
-        finalize_session(session)
-
-    incomplete = finalize_session(session, allow_incomplete=True)
-    assert incomplete.status_counts == {"not_run": 2}
-
-    run_dir = session / first.run_id
-    _write_results(
-        run_dir / "results.jsonl",
-        [{"record_id": "001", "status": "ok", "values": {"summary": "S1"}}],
-    )
-    (run_dir / "manifest.json").write_text("{}", encoding="utf-8")
-    merged = finalize_session(session)
-    assert merged.matched == 1 and merged.status_counts == {"not_run": 1, "ok": 1}
-    assert (session / MERGED_WORKBOOK_FILENAME).is_file()
-    data = json.loads((session / "session.json").read_text(encoding="utf-8"))
-    assert data["finalized_at"] and data["merge"]["matched"] == 1
-    assert data["merge"]["run_manifest"].endswith("manifest.json")
-
-
-def test_daily_zero_cases_skips_batch_run(tmp_path, capsys):
-    raw = _write_raw(tmp_path / "saved.json", [])
-    runs = tmp_path / "runs"
-    code = daily_main(
-        ["nurse-call-7d", "init", "--runs-root", str(runs), "--date", "2026-01-02", "--from-json", str(raw)]
-    )
-    assert code == 0
-    payload = json.loads(capsys.readouterr().out)
-    assert payload["rows"] == 0 and payload["needs_batch_run"] is False
-    assert payload["config"] is None and payload["harness_commands"] == {}
-
-    session = Path(payload["session_dir"])
-    code = daily_main(["nurse-call-7d", "finalize", "--session", str(session)])
-    assert code == 0
-    assert json.loads(capsys.readouterr().out)["rows"] == 0
-    assert (session / MERGED_WORKBOOK_FILENAME).is_file()
-
-
-def test_daily_cli_finalize_error_exit_code(tmp_path, capsys):
-    raw = _write_raw(tmp_path / "saved.json", [_record("001")])
-    runs = tmp_path / "runs"
-    assert daily_main(["nurse-call-7d", "init", "--runs-root", str(runs), "--from-json", str(raw)]) == 0
-    session = json.loads(capsys.readouterr().out)["session_dir"]
-    assert daily_main(["nurse-call-7d", "finalize", "--session", session]) == 2
-    assert "--allow-incomplete" in capsys.readouterr().err

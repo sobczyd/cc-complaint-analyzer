@@ -1,0 +1,26 @@
+prompt_set: case_cluster
+description: >-
+  Groups a batch of summarized Nurse Call cases into clusters of similar meaning and intent, with
+  labelled sub-clusters that cite CaseNumbers. A Nurse Call glossary is injected via {{GLOSSARY}}
+  from glossary.md.
+created: "2026-10-19"
+updated: "2026-10-19"
+versions:
+  - version: v1
+    file: v1.txt
+    created: "2026-10-19"
+    author: Copilot
+    base_version: null
+    prompt: >-
+      Cluster batches of 100 case summaries (case_summary.summary, reported_issue, product,
+      actions_taken, resolution, status, key_points, rendered as "{Column name}: {Column contents}")
+      by meaning and intent. Provide a glossary of Nurse Call terms as standing context. Return a label
+      and rationale per cluster and short-label sub-clusters with cited case numbers.
+    summary: Batch clustering prompt with glossary context, JSON clusters and sub-clusters.
+    changes:
+      - Initial version.
+      - Glossary built from nursecall-AGENTS.md, Jama CWS Design Documents (CWS-CMP-122, CWS-CMP-320) and the summaries.
+    result_model: BatchClusterResult
+    validation:
+      status: skipped
+      notes: Not yet run against cases.

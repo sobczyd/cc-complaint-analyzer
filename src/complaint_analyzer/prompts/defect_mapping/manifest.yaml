@@ -1,0 +1,28 @@
+prompt_set: defect_mapping
+description: >-
+  Maps a batch of complaints from one cluster sub-topic to existing Jira defects (NC) and root cause
+  analyses (RCA), using the case summaries, their KB article text and a version-filtered candidate
+  list. The Nurse Call glossary is injected via {{GLOSSARY}} and the historical issue-to-case
+  associations via {{EXAMPLES}} from known_mappings.csv.
+created: "2026-10-19"
+updated: "2026-10-19"
+versions:
+  - version: v1
+    file: v1.txt
+    created: "2026-10-19"
+    author: Copilot
+    base_version: null
+    prompt: >-
+      Review each cluster of complaints by sub-topic (optionally batched) and decide which existing
+      defects or RCAs, if fixed, would likely have addressed the complaint. Filter candidates by
+      reported software version or a later fix version, supply the case summary and the KB article
+      text for traceability, and include past defect-to-case associations as in-context examples.
+    summary: Batch defect and RCA mapping with glossary, KB article context and historical examples.
+    changes:
+      - Initial version.
+      - Glossary shared with case_cluster; examples from 388 historical NC and RCA associations.
+      - Returns ranked matches per complaint with rationale, version justification and cited KB articles.
+    result_model: MappingResult
+    validation:
+      status: skipped
+      notes: Not yet run against complaints.

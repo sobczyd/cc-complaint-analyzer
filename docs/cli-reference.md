@@ -2,7 +2,7 @@
 
 This covers the main `python -m complaint_analyzer` entry point: every flag,
 harness-backed runs, exit codes, and what a run writes to disk. For the
-`workflows.*` CLIs (`salesforce_export`, `report_merge`, `daily_review`), run
+`workflows.*` CLIs (`salesforce_export`, `report_merge`, `custom_fetch`), run
 each with `--help`, or use the matching skill in
 [`.github/skills/`](../.github/skills/) — see the
 [README](../README.md#skills) for which skill does what.
