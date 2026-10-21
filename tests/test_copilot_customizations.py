@@ -148,3 +148,25 @@ def test_case_clustering_skill_and_worker_are_wired() -> None:
     jama, jama_body = _frontmatter(jama_path)
     assert jama["name"] == jama_path.parent.name
     assert "CWS-CMP-122" in jama_body and "CWS-CMP-320" in jama_body
+
+
+def test_compare_periods_skill_and_worker_are_wired() -> None:
+    skill_path = ROOT / ".github" / "skills" / "compare-periods" / "SKILL.md"
+    metadata, body = _frontmatter(skill_path)
+    assert metadata["name"] == skill_path.parent.name
+    assert metadata["user-invocable"] is True
+    for needle in (
+        "Cluster Resolve Worker",
+        "list-clusters",
+        "--min-change",
+        "--batch-size",
+        "incomplete_request_ids",
+        "comparison.xlsx",
+        "resolved_assignments.jsonl",
+    ):
+        assert needle in body
+
+    worker_path = ROOT / ".github" / "agents" / "cluster-resolve-worker.agent.md"
+    worker, worker_body = _frontmatter(worker_path)
+    assert worker["name"] == "Cluster Resolve Worker"
+    assert "publish" in worker_body and "compare_periods" in worker_body

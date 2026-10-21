@@ -16,6 +16,7 @@ from .case_cluster import build as build_case_cluster
 from .case_cluster_merge import build as build_case_cluster_merge
 from .case_cluster_meta_merge import build as build_case_cluster_meta_merge
 from .case_summary import build as build_case_summary
+from .cluster_resolve import build as build_cluster_resolve
 from .defect_comment_summary import build as build_defect_comment_summary
 from .defect_mapping import build as build_defect_mapping
 from .root_cause_analysis import build as build_rca
@@ -28,6 +29,7 @@ _BUILDERS: Mapping[str, Callable[[], Analysis]] = {
     "case_cluster_merge": build_case_cluster_merge,
     "case_cluster_meta_merge": build_case_cluster_meta_merge,
     "case_summary": build_case_summary,
+    "cluster_resolve": build_cluster_resolve,
     "defect_comment_summary": build_defect_comment_summary,
     "defect_mapping": build_defect_mapping,
     "rca": build_rca,

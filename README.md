@@ -29,6 +29,9 @@ flowchart TD
     D --> E[Merge clusters into workbook<br/>excel-report-merge]
     E --> F[(Run folder<br/>data/runs/...)]
     F --> G["/defect-mapping<br/>(optional)"]
+    F --> L["/compare-periods<br/>(optional, two time points)"]
+    L --> M[Cluster Resolve Worker<br/>map B onto baseline A]
+    M --> N[comparison.xlsx<br/>counts, shares, flags]
     J[jira-rca-corpus<br/>Jira + KB corpora] --> G
     G --> H[Defect Mapping Worker<br/>per sub-cluster]
     H --> I[mappings.xlsx<br/>defects and RCAs per complaint]
@@ -48,6 +51,8 @@ defect mapping at the end.
 | `/classify-complaints data\runs\<run-id>` | `classify-complaints` (reuses existing summaries/cases) | Continues from whatever the folder already has |
 | `/defect-mapping data\runs\<run-id>\clusters\<name>` | `defect-mapping` → Defect Mapping Worker | `defects\<name>\mappings.xlsx`, `mappings.jsonl`, `summary.json` |
 | `/defect-mapping data\runs\<run-id>\clusters\<name> --min-batch 10 --max-batch 20` | `defect-mapping` | Same, with custom batch bounds |
+| `/compare-periods Sep 2026 (run <a>) vs Oct 1-19 2026 (run <b>)` | `compare-periods` → Cluster Resolve Worker | `data\runs\compare_...\comparison.xlsx`, `summary.md`, audit files |
+| `/compare-periods split data\runs\<run-id> at 2026-10-15` | `compare-periods` (one run, two date ranges) | Same, with no name resolution needed |
 | `/jira-rca-corpus refresh` | `jira-rca-corpus` | Fresh Jira defect/RCA and KB corpora in `data\jira` and `data\kb` |
 | `/jama-nursecall-context update the glossary` | `jama-nursecall-context`, `prompt-author` | Updated clustering glossary (new prompt version) |
 
@@ -66,6 +71,12 @@ defect mapping at the end.
 number are mapped directly; "none" is the expected answer for hardware, configuration and
 no-fault-found complaints.
 
+`/compare-periods` needs a finalized clustering in each period (no defect mapping). Time point A is
+the baseline; the later period's sub-clusters are mapped onto it (or flagged NEW) so counts, shares and
+cases per day are like for like. Flags: NEW, GONE, and UPTICK / DECLINE (change > 10 cases with at
+least 10 cases in one period by default; it asks for the thresholds). The comparison folder holds
+`comparison.xlsx`, `summary.md` and the case-level original vs resolved assignments for audit.
+
 ## All skills
 
 Skills live in [`.github/skills/`](./.github/skills/).
@@ -74,6 +85,7 @@ Skills live in [`.github/skills/`](./.github/skills/).
 |---|---|
 | [`classify-complaints`](./.github/skills/classify-complaints/SKILL.md) | End-to-end fetch → summarize → cluster into one run folder |
 | [`defect-mapping`](./.github/skills/defect-mapping/SKILL.md) | Map clustered complaints to Jira defects and RCAs |
+| [`compare-periods`](./.github/skills/compare-periods/SKILL.md) | Compare the clusters of two time points (baseline-anchored name resolution, counts, shares, flags) |
 | [`jira-rca-corpus`](./.github/skills/jira-rca-corpus/SKILL.md) | Build/refresh Jira defect, RCA and KB corpora |
 | [`case-clustering`](./.github/skills/case-clustering/SKILL.md) | Cluster case summaries in batches and merge the taxonomies (tiered group + meta-merge for large runs) |
 | [`copilot-batch-run`](./.github/skills/copilot-batch-run/SKILL.md) | Run any registered prompt across isolated Copilot workers |
@@ -92,7 +104,7 @@ rather than editing them by hand.
 ```text
 .github/skills/, .github/agents/   Copilot skills and worker agents
 src/complaint_analyzer/            Python helpers that prepare, validate and finalize runs
-  workflows/                       classify_complaints, case_cluster, defect_mapping, ...
+  workflows/                       classify_complaints, case_cluster, defect_mapping, compare_periods, ...
   prompts/, queries/               versioned prompts and SOQL query sets
 data/runs/                         one folder per run (gitignored except examples)
 docs/                              architecture, configuration, CLI reference, extending

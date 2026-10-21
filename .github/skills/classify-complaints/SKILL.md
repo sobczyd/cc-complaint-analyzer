@@ -62,6 +62,8 @@ each decision with:
    If yes, run the `jira-rca-corpus` skill when the corpora are missing or stale, then the
    `defect-mapping` skill against `<run_dir>\clusters\<name>\case_assignments.jsonl`.
    Also offer the `powerbi-export` skill to write `<run_dir>\powerbi.xlsx` (salesforce.xlsx layout) from `cases.xlsx`.
+   To compare this period with another (for example last month), mention the `compare-periods` skill, which
+   needs only the finished clustering and not the defect mapping.
 7. **Diagram**: record the final choices with `state`, then generate the static diagram (rerun any time):
 
    ```powershell
