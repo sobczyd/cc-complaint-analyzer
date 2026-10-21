@@ -32,9 +32,14 @@ each decision with:
      `cases.xlsx` / `case_context.xlsx`, skip to step 3. Otherwise report the problem and fall back to a fetch
      after asking.
    - No folder: fetch. Ask to confirm the period and the query. Default query set:
-     `cq_crm_codes_nurse_call_no_comments` (list with
-     `.\.venv\Scripts\python.exe -m complaint_analyzer.queries --list`). Build a run-specific SOQL from that
-     set (`python -m complaint_analyzer.workflows.salesforce_export fields --query-set <set>`), replacing its
+     `cq_crm_codes_nurse_call_no_comments`, **latest version** (currently
+     `src\complaint_analyzer\queries\cq_crm_codes_nurse_call_no_comments\v4.txt`; find the newest
+     `vN.txt` rather than assuming). If the user did not name a query, ask with `ask_user` whether to use
+     the latest version of the default set (first choice, recommended) or another query name/version
+     (list with `.\.venv\Scripts\python.exe -m complaint_analyzer.queries --list`) before proceeding.
+     Build a run-specific SOQL from that
+     set (`python -m complaint_analyzer.workflows.salesforce_export fields --query-set <set> [--version vN]`;
+     defaults to the latest), replacing its
      `CreatedDate = LAST_N_DAYS:30` filter with the requested range (for example `LAST_N_DAYS:7`) and keeping
      the complaint-code and child filters. Follow `.github\agents\salesforce-fetch.agent.md` steps 2-5
      (`custom_fetch init ... --based-on <query_set>`). Report org, row count and any `done=false` warning.

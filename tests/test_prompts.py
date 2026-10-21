@@ -253,14 +253,14 @@ def test_case_summary_builds_and_validates_sample_output() -> None:
 def test_prompts_cli_lists_and_validates(capsys: pytest.CaptureFixture[str]) -> None:
     assert prompts_cli(["--list"]) == 0
     listed = capsys.readouterr().out
-    assert "case_summary\tcase_summary\tv2" in listed
+    assert "case_summary\tcase_summary\tv3" in listed
     assert "rca\troot_cause_analysis\tv2" in listed
 
     assert prompts_cli(["rca"]) == 0
     assert "ok: root_cause_analysis (2 version(s))" in capsys.readouterr().out
 
     assert prompts_cli(["case_summary", "--next-version"]) == 0
-    assert capsys.readouterr().out.strip() == "v3"
+    assert capsys.readouterr().out.strip() == "v4"
 
 
 def test_prompts_cli_reports_a_missing_set(capsys: pytest.CaptureFixture[str]) -> None:

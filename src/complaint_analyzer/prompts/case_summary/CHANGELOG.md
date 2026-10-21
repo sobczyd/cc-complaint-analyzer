@@ -5,8 +5,33 @@
 Concise structured summary of a single complaint / service case: what was reported, which product, actions taken, resolution and status, plus key points.
 
 - Created: 2026-10-16
-- Last updated: 2026-10-19
-- Versions: 2
+- Last updated: 2026-10-20
+- Versions: 3
+
+## v3 — 2026-10-20
+
+**Summary:** Adds the Description field to the context columns and tells the model how to use it.
+
+- File: `v3.txt`
+- Based on: v2
+- Author: Copilot (prompt-author)
+- Result model: `CaseSummaryResult`
+
+**Changes:**
+
+- Adds Description to the list of context columns, described as the reporter's free-text case description.
+- Adds guidance to use Description with Subject for what was reported, product, symptoms, error messages and versions.
+- Prefers the RA_* and resolution fields over Description for cause, actions and resolution, and notes disagreements in key_points.
+- Forbids copying contact details or names of people or patients from Description.
+- Same JSON output and result model as v2.
+
+**Prompt:**
+
+> Revise the case_summary prompt to include use of the Description field when generating summaries.
+
+**Validation:** status `skipped`
+
+_Not yet run against records._
 
 ## v2 — 2026-10-19
 

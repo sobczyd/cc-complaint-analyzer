@@ -15,10 +15,14 @@ summarize (or run an RCA on) the fetched cases, you do that in the same folder.
 1. If the request involves Nurse Call, read `C:\Users\sobczyd\.copilot\nursecall-AGENTS.md`.
 2. Report the org: `sf config get target-org --json` (or the user's `--target-org`).
    Use `sf` from PATH, or `%USERPROFILE%\.local\node\sf.cmd`.
-3. Decide the columns:
-   - "same fields as <query set>": run
-     `.\.venv\Scripts\python.exe -m complaint_analyzer.workflows.salesforce_export fields --query-set <set>`
-     and use its output as the SELECT/FROM. List sets with
+3. Decide the columns. Unless the user explicitly names a query or asks for custom fields, the
+   default is the **latest version** of `cq_crm_codes_nurse_call_no_comments` (currently
+   `src\complaint_analyzer\queries\cq_crm_codes_nurse_call_no_comments\v4.txt`; find the newest `vN.txt`).
+   If the user did not specify a query, ask with `ask_user` whether to use that latest query (first
+   choice, recommended) or which other query name/version to use, before proceeding.
+   - Saved query ("same fields as <query set>", or the default above): run
+     `.\.venv\Scripts\python.exe -m complaint_analyzer.workflows.salesforce_export fields --query-set <set> [--version vN]`
+     (defaults to the latest version) and use its output as the SELECT/FROM. List sets with
      `.\.venv\Scripts\python.exe -m complaint_analyzer.queries --list`.
    - Otherwise follow `.github\skills\salesforce-query-author\SKILL.md` (run-scoped mode); use
      `sf sobject describe --sobject Case --json` to verify field names.
@@ -57,4 +61,5 @@ summarize (or run an RCA on) the fetched cases, you do that in the same folder.
 
 - Only SELECT statements. Never DML. Never put credentials in files.
 - Never write to `config\` or `src\complaint_analyzer\queries\`.
-- Ask the user only when a filter is genuinely ambiguous; otherwise state your assumption.
+- Ask the user only when a filter is genuinely ambiguous, or when no query was specified (see step 3);
+  otherwise state your assumption.
