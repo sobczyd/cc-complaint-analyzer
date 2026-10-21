@@ -1,0 +1,1372 @@
+{
+  "ex_01_01": {
+    "example_id": "ex_01_01",
+    "case_number": "01111943",
+    "issue_key": "RCA-1914",
+    "match_type": "rca",
+    "rationale": "Code blue did not annunciate on GRS10 at the same facility/PBX described in the RCA, with the same root cause of GatewayService message/socket instability.",
+    "matches": [
+      {
+        "issue_key": "RCA-1914",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports a code blue that did not alert on GRS10 at Holy Cross Health (Room 360/3 South/CVIMC); the RCA documents the identical facility/unit and root-causes repeated GRS10-at-PBX recovery-mode entry from oversized GatewayService messages and socket errors, matching the case's annunciation failure.",
+        "version_justification": "version_rule is reported_in_same_version: the candidate's version_reported matches the case's reported Voalte Nurse Call 4.0.405/PRJ01586 exactly, strongly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_01_02": {
+    "example_id": "ex_01_02",
+    "case_number": "01138390",
+    "issue_key": "RCA-1913",
+    "match_type": "rca",
+    "rationale": "Case explicitly suspects a failed GRS5 code blue lever in 2nd Floor Med Surg Room 202, matching the RCA's identical room/title and broken-lever root cause.",
+    "matches": [
+      {
+        "issue_key": "RCA-1913",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case states the GRS5 code blue lever is suspected of failing in 2nd Floor Med Surg Room 202; the RCA's title and location are the same (2nd Fl Med Surg Rm202) and its root cause is a broken code lever, directly matching the suspected failure mode in the case.",
+        "version_justification": "version_rule is reported_in_same_version: the candidate's version_reported matches the case's reported Voalte Nurse Call 4.0.403 exactly, strongly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_01_03": {
+    "example_id": "ex_01_03",
+    "case_number": "01131426",
+    "issue_key": "RCA-1912",
+    "match_type": "rca",
+    "rationale": "Case reports a code blue not alerting from the SRS in the 1st Fl ER Trauma Room, resolved by swapping the device; the RCA for the identical location root-causes a blown power diode causing the SRS to be dead.",
+    "matches": [
+      {
+        "issue_key": "RCA-1912",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case describes an SRS code blue failure in the 1st Fl, ER, Trauma Room resolved by replacing the device; the RCA covers the same unit/room and root-causes a blown diode (D2_PWR) that left the SRS dead, consistent with the case's device-swap resolution.",
+        "version_justification": "version_rule is reported_in_same_version: the candidate's version_reported matches the case's reported PRJ01167-VNC 4.0.110 exactly, strongly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_01_04": {
+    "example_id": "ex_01_04",
+    "case_number": "01172864",
+    "issue_key": "RCA-1910",
+    "match_type": "rca",
+    "rationale": "GRS7 touchscreen froze while the physical code lever still worked, matching the RCA's known frozen-screen defect and confirmed KB article for the same symptom.",
+    "matches": [
+      {
+        "issue_key": "RCA-1910",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports a frozen GRS7 touchscreen with the code blue lever not activating at Inova Fairfax North Tower, 6th floor, Room 646; the RCA documents the same known frozen-screen defect in GRS7 app versions prior to 4.1.200 and confirms the physical code lever operates independently of the touchscreen, matching the case's hardware-vs-software finding.",
+        "version_justification": "version_rule is reported_in_same_version: the candidate's version_reported matches the case's reported Voalte Nurse Call 4.0.405/PRJ01586 exactly, and the RCA's fix version (prior to 4.1.200) is consistent with the case's affected version.",
+        "kb_support": [
+          "UIDInw"
+        ]
+      }
+    ]
+  },
+  "ex_01_05": {
+    "example_id": "ex_01_05",
+    "case_number": "01127977",
+    "issue_key": "RCA-1893",
+    "match_type": "rca",
+    "rationale": "Bed exit alarm failed to ring on GRS10 in the same two rooms at the same hospital described in the RCA, though the RCA's reported version differs from this case's.",
+    "matches": [
+      {
+        "issue_key": "RCA-1893",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case reports a bed exit alarm not ringing to GRS10 stations in Rooms 359/361 at Montrose Memorial Hospital, with continuous ping timeouts to the RCBs resolved by RCB replacement; the RCA covers the identical rooms and hospital and the same RCB-ping-timeout investigation pattern.",
+        "version_justification": "version_rule is version_excluded: the candidate's reported version (PRJ01175-VNC 4.0.300) differs from the case's reported Voalte Nurse Call 4.0.404, and the RCA's own conclusion was inconclusive/network-related rather than a confirmed hardware defect, which weakens the match despite the strong location/symptom alignment.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_01_06": {
+    "example_id": "ex_01_06",
+    "case_number": "01044221",
+    "issue_key": "RCA-1828",
+    "match_type": "rca",
+    "rationale": "GRS10 at the same hospital produced the identical 3-tone beeping noise with sporadic stuck calls, root-caused to the same WebSocket timing defect requiring the same future-release fix.",
+    "matches": [
+      {
+        "issue_key": "RCA-1828",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case describes a GRS10 at Mount Nittany Medical Center making a 3-tone beeping noise with sporadic stuck calls, traced to a WebSocket connection timing issue requiring an upgrade to a future release; the RCA's title and account are identical (Mount Nittany, same symptom description) and documents the same WebSocket timing root cause fixed in a later release.",
+        "version_justification": "version_rule is issue_version_unknown because no structured version_reported field is populated, but the RCA's own description states the NC version as 4.2.000, matching the case's reported Voalte Nurse Call 4.2.000, and both reference the same fix (4.2.200), supporting the match despite the unstructured version metadata.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_01_07": {
+    "example_id": "ex_01_07",
+    "case_number": "01008579",
+    "issue_key": "RCA-1786",
+    "match_type": "rca",
+    "rationale": "Post-restore script error on the SmartSync server matches the RCA's verbatim collation-conflict error message and identical fix.",
+    "matches": [
+      {
+        "issue_key": "RCA-1786",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports a post-restore script error on the SmartSync test server resolved by updating the script to evaluate values using the database default collation; the RCA's description contains the same collation-conflict error text (\"Cannot resolve the collation conflict... Msg 468, Level 16, State 9... Unable to complete post-restore for NavicareEnterprise\") and its verification summary documents the identical fix of updating the post-restore script to use the database default collation.",
+        "version_justification": "version_rule is case_version_unknown (no version_reported/version_fix populated on either side), but the verbatim match of the error text and the identical resolution provide strong independent support for the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_01_08": {
+    "example_id": "ex_01_08",
+    "case_number": "00965986",
+    "issue_key": "RCA-1766",
+    "match_type": "rca",
+    "rationale": "Specific users on wireless mobiles could not receive calls on the reported 4.1.210 version, matching the RCA's identical version-tagged title and oversized SIP INVITE root cause.",
+    "matches": [
+      {
+        "issue_key": "RCA-1766",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports specific users unable to receive calls on wireless mobile devices, with the underlying cause traced to an oversized message header (over 1499 bytes) forcing an additional codec; the RCA's title (\"NNC - 4.1.210 - Specific User Cannot Receive Calls on their Mobiles\") matches the symptom description exactly and its root cause states the INVITE SIP packet exceeds the 1499-byte limit, the same header-size finding as the case.",
+        "version_justification": "version_rule is issue_version_unknown because no structured version_reported field is populated, but the RCA's own title states version 4.1.210, matching the case's reported Voalte Nurse Call 4.1.210 exactly, supporting the match despite the unstructured version metadata.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_02_01": {
+    "example_id": "ex_02_01",
+    "case_number": "00960232",
+    "issue_key": "RCA-1751",
+    "match_type": "rca",
+    "rationale": "The case's failed/replaced GRS5 audio stations are the same physical devices documented in RCA-1751 (serial numbers match), which replaced them with GRS7 units after an unrecoverable application crash loop.",
+    "matches": [
+      {
+        "issue_key": "RCA-1751",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a lost primary audio station alert resolved by replacing failed GRS5 audio devices with GRS7 units. RCA-1751 documents three GRS5 units (serials 0282006WWIS, 041192S2WIS, 041192LTWIS) that failed during network maintenance and could not be powered back into a working application state, and were likewise replaced with newer GRS7 units -- the case's GRS5 serial numbers correspond exactly to devices covered by this RCA.",
+        "version_justification": "RCA-1751's version_rule is issue_version_unknown (no version_reported/version_fix recorded), so the match is not supported by version alignment; instead it rests on the exact match of affected device serial numbers and identical failure/remediation pattern (GRS5 failure, replaced with GRS7).",
+        "kb_support": [
+          "2629730338"
+        ]
+      }
+    ]
+  },
+  "ex_02_02": {
+    "example_id": "ex_02_02",
+    "case_number": "00917743",
+    "issue_key": "RCA-1747",
+    "match_type": "rca",
+    "rationale": "The case's stiff, hard-to-press Code Pink button in the NICU that was resolved by replacing the switch matches RCA-1747's investigation of the same stiff NICU Code Pink button.",
+    "matches": [
+      {
+        "issue_key": "RCA-1747",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case describes a NICU Code Pink button that was found stiff/hard to press and was resolved by replacing the call switch. RCA-1747's summary and description describe the identical symptom: a NICU Code Pink button that was 'very stiff and hard to press,' resulting in failed activations, with the investigation inspecting and replacing part P2520NNC2A09 (PB SWITCH, CODE PINK, W/CANCEL) -- the same component and failure mode as the case.",
+        "version_justification": "RCA-1747's version_rule is issue_version_unknown (no version data recorded), so confidence here is driven by the close textual and mechanical alignment (same button type, same location type, same stiffness symptom, same switch-replacement fix) rather than version evidence.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_02_03": {
+    "example_id": "ex_02_03",
+    "case_number": "00869710",
+    "issue_key": "RCA-1742",
+    "match_type": "rca",
+    "rationale": "The case's newly staged Gen 3 POE switch that could not be reached via its command line interface after factory/standard resets matches RCA-1742's identically described defective POE switch.",
+    "matches": [
+      {
+        "issue_key": "RCA-1742",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case states a Gen 3 POE switch could not be interfaced with via its command line interface, with factory reset, standard reset, and power reseating all failing before the device was replaced as an out-of-box failure. RCA-1742's description states the same thing nearly verbatim: 'Defective POE switch, cannot interface with the command line interface. Have tried factory and standard reset and reseeding to power supply with no success.'",
+        "version_justification": "RCA-1742's version_rule is issue_version_unknown (no version_reported/version_fix recorded), so the match relies on the near-identical description of the failure and the troubleshooting steps attempted (factory reset, standard reset, power reseat) rather than version evidence.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_02_04": {
+    "example_id": "ex_02_04",
+    "case_number": "00946971",
+    "issue_key": "RCA-1740",
+    "match_type": "rca",
+    "rationale": "The case's stuck rounding-due light traced to an SQL monitoring process (SQLExternalMonitoring) overloading the database server matches RCA-1740's identical root cause for rounding timers failing to clear.",
+    "matches": [
+      {
+        "issue_key": "RCA-1740",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a stuck rounding-due light caused by a lack of server hardware and an SQL monitoring service bogging down the database, fixed by eliminating the SQL monitor service and adding DB server hardware, on Voalte Nurse Call 4.0.402. RCA-1740's description also references Nursecall version 4.0.402.0 with rounding-due calls getting stuck/unable to clear and reminder logs showing SQL update failures, and its investigation identifies the exact same cause: the 'SQLExternalMonitoring' process hammering TempDB and causing IO latency/timeouts, recommending staggered backups and disabling that monitoring process.",
+        "version_justification": "RCA-1740's version_rule is issue_version_unknown (no version_reported/version_fix field populated), but the candidate's own description text states 'Nursecall version | 4.0.402.0,' which matches the case's reported software version (Voalte Nurse Call 4.0.402) exactly, strongly reinforcing the match even though the structured version_rule field is unpopulated.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_02_05": {
+    "example_id": "ex_02_05",
+    "case_number": "00942599",
+    "issue_key": "RCA-1734",
+    "match_type": "rca",
+    "rationale": "The case's sporadic inability to call a Linq device, inconclusive on Voalte Nurse Call 4.1.210/4.1.211, matches RCA-1734's identically titled sporadic Linq-calling investigation.",
+    "matches": [
+      {
+        "issue_key": "RCA-1734",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a sporadic inability to call a Linq device that was upgraded to 4.1.211 during investigation but remained inconclusive/unreproduced. RCA-1734 is titled 'Sporadic inability to call Linq device' and its comment summary describes a site that sporadically could not call a specific Linq device, with the audio station holding incorrect dialing information for that staff member, and notes no further occurrences were reported after an upgrade -- matching both the symptom and the eventual upgrade-related resolution path in the case.",
+        "version_justification": "RCA-1734's version_rule is issue_version_unknown (no version_reported/version_fix recorded), so the match is supported by the matching symptom description and the shared detail that the issue stopped recurring after a software upgrade, rather than by a populated version field.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_02_06": {
+    "example_id": "ex_02_06",
+    "case_number": "00942470",
+    "issue_key": "RCA-1730",
+    "match_type": "rca",
+    "rationale": "The case's inability to log into Voalte Admin Client while logged into Linq, traced to undersized database columns and fixed in 4.1.211, matches RCA-1730's identical root cause and fix.",
+    "matches": [
+      {
+        "issue_key": "RCA-1730",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case describes users unable to log into Voalte Admin Client specifically while also logged into Linq, on version 4.1.210, with R&D tracing it to database function column sizes and applying a fix. RCA-1730's summary is 'Users logged into a Linq badge are unable to login to Voalte Admin Client,' and its investigation_details identify the exact same root cause: the TrunkAccessDialString column size mismatch (20 vs 256) in the Staff_GetByUserDomainId function, with the fix applied in the Voalte Nurse Call 4.1.211 release -- matching both the symptom and the resolution described in the case.",
+        "version_justification": "RCA-1730 itself has version_rule issue_version_unknown, but its text documents that the underlying defect (linked as NC-20390, version_reported NC 4.1.210, version_rule reported_in_same_version) was fixed in 4.1.211, which exactly matches the case's reported version (Voalte Nurse Call 4.1.210) and confirms the fix had not yet reached the customer at the time of the complaint.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_02_07": {
+    "example_id": "ex_02_07",
+    "case_number": "00917005",
+    "issue_key": "RCA-1703",
+    "match_type": "rca",
+    "rationale": "The case's Avaya callback failures from 8-digit FreeSWITCH-generated VoIP extensions, resolved by restarting VoIP services, matches RCA-1703's identical finding and workaround.",
+    "matches": [
+      {
+        "issue_key": "RCA-1703",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports Mobile Heartbeat callback failures because FreeSWITCH-generated VoIP extensions grew past 7 digits (exceeding 7999), while Avaya is hardcoded for 7-digit extensions, with VoIP service restart used as a workaround. RCA-1703's description documents the identical mechanism: aliases were being generated at 6 digits instead of 5, which combined with a prepended prefix produced 8-digit extensions that broke Avaya callback (expecting only 7 digits), and restarting the VoIP service temporarily restored 5-digit aliases -- matching the case's symptom and workaround exactly.",
+        "version_justification": "RCA-1703's version_rule is issue_version_unknown (no version data recorded on the RCA itself), but the related defect candidate NC-20216 (same summary title) has version_reported NC 4.1.210 with version_rule reported_in_same_version, matching the case's reported software version (Voalte Nurse Call 4.1.210) and reinforcing that this was an active, unfixed issue at the time of the case.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_02_08": {
+    "example_id": "ex_02_08",
+    "case_number": "00913499",
+    "issue_key": "RCA-1700",
+    "match_type": "rca",
+    "rationale": "The case's 4th floor GRS7 devices freezing after the 4.1.210 upgrade, resolved by rebooting the units, is explicitly tracked under RCA-1700 in the case's own key points.",
+    "matches": [
+      {
+        "issue_key": "RCA-1700",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case states GRS7 devices on the 4th floor kept freezing after an upgrade to Voalte Nurse Call 4.1.210 and that field service rebooted all GRS7 units to stop further occurrences, explicitly noting the issue was 'Tracked under RCA-1700.' RCA-1700's summary and comment_summary describe GRS7 panels on the 4th floor becoming unresponsive to touch after the upgrade to 4.1.210 on 11/25/2025, remedied by resetting the affected rooms -- matching the device, floor, upgrade version, symptom, and remediation described in the case.",
+        "version_justification": "RCA-1700's version_rule is issue_version_unknown (no version_reported/version_fix recorded), but its summary text states the freeze occurred 'after upgrade to 4.1.210,' matching the case's reported software version (Voalte Nurse Call 4.1.210) exactly, which strengthens the match despite the unpopulated structured version fields.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_03_01": {
+    "example_id": "ex_03_01",
+    "case_number": "00869858",
+    "issue_key": "RCA-1688",
+    "match_type": "rca",
+    "rationale": "RCB device power-stability failure (RCB3 powers on but won't stay on) matches RCA-1688's identical RCB power-on-but-not-staying-on complaint, both closed inconclusive.",
+    "matches": [
+      {
+        "issue_key": "RCA-1688",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "The case reports an RCB that failed as an out-of-box failure (OOBF) with no remote troubleshooting performed. RCA-1688's description states the RCB 'will power on but not stay on' after cabling and port changes, and its own HW/SW investigation found no hardware faults (device passed FCT) and could not reproduce the failure, concluding 'inconclusive but most likely environmental' -- the same inconclusive, no-fault-found outcome as this case's unresolved OOBF.",
+        "version_justification": "version_rule is issue_version_unknown and version_reported/version_fix are both (none), so there is no formal version evidence; the case's reported version (Voalte Nurse Call 4.0.402) is not corroborated or contradicted by RCA-1688's text, leaving version support neutral.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_03_02": {
+    "example_id": "ex_03_02",
+    "case_number": "00894378",
+    "issue_key": "RCA-1681",
+    "match_type": "rca",
+    "rationale": "RCA-1681's own field-action note explicitly references 'Case 894378' and documents the same ED-door Staff Emergency switch replacement, directly tying it to this case.",
+    "matches": [
+      {
+        "issue_key": "RCA-1681",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a Staff Emergency call at an ED door not registering, resolved by replacing the pull switch hardware. RCA-1681's investigation notes describe the same location, the same device replacement action, and a field-action request note that explicitly cites 'Case 894378' -- directly identifying this RCA as the record of this exact case's investigation, not merely a similar incident.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none), so there is no formal version rule to apply; the direct case-number citation in RCA-1681's own text is stronger evidence of the correct match than version data would provide.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_03_03": {
+    "example_id": "ex_03_03",
+    "case_number": "00868767",
+    "issue_key": "RCA-1674",
+    "match_type": "rca",
+    "rationale": "Smart/Admin Client staff-tab slow loading with a large staff count matches RCA-1674's own investigation, which attributes the delay to an inefficient staff query needing pagination.",
+    "matches": [
+      {
+        "issue_key": "RCA-1674",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports the staff tab being slow/frozen when loading. RCA-1674's summary is 'VNC 4.1.200 Admin Client Slow/Frozen when Loading staff tab' and its root_cause_summary states the query for a large number of staff (2500+) is inefficient and needs paging -- directly matching the case's own symptom and component (staff tab loading performance).",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none); however RCA-1674's own summary cites 'VNC 4.1.200' explicitly in its title, consistent with the case being on a comparable software line, supporting (though not formally confirming via the version_rule field) the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_03_04": {
+    "example_id": "ex_03_04",
+    "case_number": "00883844",
+    "issue_key": "RCA-1665",
+    "match_type": "rca",
+    "rationale": "No symptom overlap exists between this case's Mirth-configuration dome-light issue and RCA-1665's staff-sync/application-user record defect; the only shared fact is the reported software version.",
+    "matches": [
+      {
+        "issue_key": "RCA-1665",
+        "issue_type": "rca",
+        "confidence": "low",
+        "rationale": "The case describes dome lights not illuminating because Mirth configuration for built-out channels was never completed during implementation, causing Risk channel messages to get stuck in processing; this was resolved by applying missed Mirth configuration steps. RCA-1665 instead describes a staff-sync error where a CSA practitioner version bump causes Nurse Call to null out a staff record's foreign key to the application-user table -- an unrelated subsystem (staff/user account data) and symptom (login/sync failure, not dome-light alerting) with no described connection to Mirth or Risk channel configuration.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none); the only alignment is that both the case and RCA-1665's summary reference software version 4.1.210, which is too weak on its own to support a causal match given the complete lack of symptom overlap.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_03_05": {
+    "example_id": "ex_03_05",
+    "case_number": "00942470",
+    "issue_key": "RCA-1665",
+    "match_type": "rca",
+    "rationale": "Both describe simultaneous-login/staff-account database problems introduced around the Linq deployment, though the case attributes its specific fix to database function column sizes rather than RCA-1665's stated foreign-key nulling.",
+    "matches": [
+      {
+        "issue_key": "RCA-1665",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "The case reports users unable to log into Voalte Admin Client while simultaneously logged into Linq, traced by R&D to database function column sizes. RCA-1665 covers a related Linq-pilot-era defect where a CSA practitioner version bump causes Nurse Call to null out a staff record's application-user foreign key, also a database-level staff/login data defect tied to Linq deployment -- a thematically adjacent root cause (staff/login database integrity during Linq rollout) but not the identical mechanism the case itself cites (column sizing vs. foreign-key nulling).",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none); both the case and RCA-1665's summary reference software version 4.1.210, providing weak corroborating (not conclusive) version alignment given the differing specific root-cause mechanism.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_03_06": {
+    "example_id": "ex_03_06",
+    "case_number": "00898373",
+    "issue_key": "RCA-1665",
+    "match_type": "rca",
+    "rationale": "Missing user IDs and staff roles in the Smart Client directly match RCA-1665's root cause of staff records having their application-user foreign key nulled out.",
+    "matches": [
+      {
+        "issue_key": "RCA-1665",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports missing user IDs and staff roles in the Smart Client, with the implementation lead confirming R&D is working on the issue in Voalte Admin. RCA-1665's root_cause_summary explains exactly this symptom class: a CSA practitioner version bump causes Nurse Call to update the staff record and null out its foreign key to the application-user table (username/domain), which is the direct cause of missing user ID/role data -- a precise causal match to the case's reported_issue and key_points.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none); the case and RCA-1665's summary both reference software version 4.1.210, and the case's status (unresolved, pending an R&D fix) is consistent with RCA-1665 being open/in-progress work on the same defect at the time.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_03_07": {
+    "example_id": "ex_03_07",
+    "case_number": "00946662",
+    "issue_key": "RCA-1665",
+    "match_type": "rca",
+    "rationale": "Voalte Admin Client users disappearing due to null'd-out staff records, fixed by upgrading to 4.1.211, exactly matches RCA-1665's root cause and its referenced fix release.",
+    "matches": [
+      {
+        "issue_key": "RCA-1665",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports Voalte Admin Client users disappearing and unable to log in, root-caused to staff records being null'd out, resolved by upgrading to Voalte Nurse Call 4.1.211. RCA-1665's root_cause_summary describes Nurse Call nulling out the staff record's foreign key to the application-user table, and its verification_summary states the fix (defect NC-20316) was applied to the 'Voalte Nurse Call 4.1.211 software release' -- an exact match of both root-cause mechanism and fix version to this case's resolution.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none) in the formal fields, but RCA-1665's own verification_summary explicitly names the 4.1.211 fix release, which matches the case's stated upgrade-to-4.1.211 resolution, providing strong textual version corroboration despite the unpopulated version_rule.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_03_08": {
+    "example_id": "ex_03_08",
+    "case_number": "00861267",
+    "issue_key": "RCA-1643",
+    "match_type": "rca",
+    "rationale": "Same unit designation, same software version, and the same lost-NUC-alert symptom, both left inconclusive due to log cycling/rolling.",
+    "matches": [
+      {
+        "issue_key": "RCA-1643",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a lost unit server (NUC) alert on the '4th floor North and East' installation, version 4.0.404, closed inconclusive because log cycling prevented determining a cause. RCA-1643's description is for unit '4 North' on 'Voalte Nurse Call 4.0.404' with 'Lost Central Server & primary console down alerts,' and its own investigation was limited by rapid log file rolling (only 5-6 hours of log retained per device) -- matching unit, version, symptom, and root-cause narrative.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none) in the formal fields, but RCA-1643's description explicitly states 'Version: Voalte Nurse Call 4.0.404,' identical to the case's reported software version, giving direct textual version support for the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_04_01": {
+    "example_id": "ex_04_01",
+    "case_number": "00846618",
+    "issue_key": "RCA-1635",
+    "match_type": "rca",
+    "rationale": "RCB3 NUC configured to monitor itself and unable to accept its own heartbeat caused recurring lost secondary console alerts on GRS10 units in 5th floor Mother Baby, matching RCA-1635.",
+    "matches": [
+      {
+        "issue_key": "RCA-1635",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case describes GRS10 units in 5th floor Mother Baby raising lost secondary console alerts even though no console was offline, traced to the RCB3 NUC being configured to monitor itself and not accepting its own heartbeat, cleared by removing the self-monitoring entry from the database with no reboot needed. RCA-1635's description/comment_summary covers the identical site context (RCB3 NUC for 5th floor Mother Baby throwing a lost secondary console alert on the GRS10H) and finds the NUC's own route id was present in its own secondary console list, so it never heartbeated with itself -- the same self-referencing monitoring defect described in the case.",
+        "version_justification": "version_rule is issue_version_unknown (version_reported and version_fix both '(none)'), so there is no version evidence to confirm or rule out the match; confidence is held at medium on the strength of the symptom/root-cause alignment alone rather than version corroboration.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_04_02": {
+    "example_id": "ex_04_02",
+    "case_number": "00862447",
+    "issue_key": "RCA-1635",
+    "match_type": "rca",
+    "rationale": "Case is an explicitly linked recurrence of the RCA-1635 RCB3 NUC configuration issue at the same 5th floor Mother Baby unit, referencing the earlier case 00846618.",
+    "matches": [
+      {
+        "issue_key": "RCA-1635",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case states calls from the 5th floor Mother Baby unit were not reaching the GRS10 console or wireless devices, and that it was escalated back to R and D noting a prior related case (00846618) filed under RCA-1635; the resolution was again an RCB3 NUC configuration update. RCA-1635 covers that same RCB3 / 5th floor Mother Baby site and configuration defect, so the case's own key_points directly tie it to this RCA rather than only inferring similarity from symptoms.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' for both reported and fix versions); the match rests on the case's explicit cross-reference to RCA-1635 and matching site/device rather than on version alignment, so confidence is capped at medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_04_03": {
+    "example_id": "ex_04_03",
+    "case_number": "00844342",
+    "issue_key": "RCA-1633",
+    "match_type": "rca",
+    "rationale": "CareComm Reporting data-loading failure was determined by R and D to be an NNC issue rather than ERM, closing RCA-1633 and spinning off defect NC-20115 -- matches RCA-1633's own closure note almost word for word.",
+    "matches": [
+      {
+        "issue_key": "RCA-1633",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case resolution states 'R&D determined that this is a NNC issue versus an ERM issue. RCA-1633 is closed, and NC defect NC-20115 has been created,' explicitly naming RCA-1633 as the record being closed. RCA-1633's own root_cause_summary reads 'R&D determined that this is a NNC issue versus an ERM issue. This RCA will be closed and a NNC defect created,' the same disposition described from the RCA's side, confirming the link.",
+        "version_justification": "version_rule is issue_version_unknown with no version_reported/version_fix recorded on RCA-1633; there is no version evidence to weigh, so the match relies entirely on the matching disposition and case reference, holding confidence at medium rather than high.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_04_04": {
+    "example_id": "ex_04_04",
+    "case_number": "00781968",
+    "issue_key": "RCA-1632",
+    "match_type": "rca",
+    "rationale": "RCB3 reported as an out-of-the-box failure due to a damaged component and replaced -- aligns with RCA-1632's finding that the returned RCB arrived with physical damage.",
+    "matches": [
+      {
+        "issue_key": "RCA-1632",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case reports an RCB3 coded as an out-of-the-box device failure from a damaged component, resolved by replacing the device. RCA-1632 covers RCB devices that would not register on the network and were in a reboot loop, with root_cause_summary 'The RCB arrived with physical damage' -- the same RCB hardware-damage root cause, though RCA-1632's comment thread records no further investigation detail beyond the NCMR closure, so the specific reboot-loop symptom is not separately confirmed in the case text.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' reported and fix); no version data exists to corroborate or weaken the match, so confidence is based solely on the shared RCB3/physical-damage root cause and capped at medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_04_05": {
+    "example_id": "ex_04_05",
+    "case_number": "00800485",
+    "issue_key": "RCA-1630",
+    "match_type": "rca",
+    "rationale": "GRS7 broken out of the box with a broken code lever directly matches RCA-1630's title 'GRS7 with code - Code Blue lever is broken off device.'",
+    "matches": [
+      {
+        "issue_key": "RCA-1630",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case identifies a broken code lever as the cause of an out-of-the-box GRS7 failure, resolved by replacing the device. RCA-1630's summary describes the identical symptom and product: 'Voalte NC GRS7 with code - Code Blue lever is broken off device.' However, RCA-1630's own root_cause_summary notes 'Wrong device sent back. Cannot investigate,' meaning the RCA's own investigation could not confirm the cause on the actual returned unit, which weakens the evidentiary strength of the match even though the reported symptom/product match exactly.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' reported and fix) and RCA-1630's own investigation was inconclusive (wrong device returned), so neither version nor root-cause confirmation support the match beyond the matching symptom description; confidence is held at medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_04_06": {
+    "example_id": "ex_04_06",
+    "case_number": "00834438",
+    "issue_key": "RCA-1628",
+    "match_type": "rca",
+    "rationale": "Multiple call switch devices damaged out of the box from a set screw installed too tightly matches RCA-1628's identical description of bath switch failures.",
+    "matches": [
+      {
+        "issue_key": "RCA-1628",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case attributes multiple damaged-out-of-box call switch devices to poor manufacturing, specifically 'a set screw installed so tightly that it pushed the plastic up and prevented the cover from fitting.' RCA-1628's description states the same failure mode nearly verbatim: 'the set screw is put in so tight that you can get it out but then it pushes the plastic up in and the cover won't fit,' for bath switch out-of-the-box failures reported in batches (9 of 27 and 16 of 27 units) -- matching the case's note of multiple failures.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' reported and fix); there is no version data to weigh, so the medium confidence rests entirely on the close textual match of the manufacturing defect description rather than on version corroboration.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_04_07": {
+    "example_id": "ex_04_07",
+    "case_number": "00829961",
+    "issue_key": "RCA-1625",
+    "match_type": "rca",
+    "rationale": "Stuck bed exit/chair alarm calls on the status board after an upgrade, traced to a device-service race condition duplicating calls into RabbitMQ, matches RCA-1625's root cause almost exactly.",
+    "matches": [
+      {
+        "issue_key": "RCA-1625",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case root cause is 'a race condition from recent multi-threaded processing changes in the device service, injecting duplicate calls into RabbitMQ,' fixed by limiting the device service to one processing thread. RCA-1625's root_cause_summary describes the same mechanism: multi-threaded processing in the Device service created a race condition where a secondary console notification was treated as a new call, injecting 'a secondary copy of the call into the RabbitMQ bus,' causing stuck calls on the status board while end devices (GRS5/GRS7/GRS10) cleared normally -- matching the case's reported_issue almost field for field.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' reported and fix) even though RCA-1625's comment_summary references sites on 4.1.200 consistent with the case's own upgrade-era symptom context; with no structured version_reported/version_fix recorded on the candidate, confidence is held at medium rather than high.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_04_08": {
+    "example_id": "ex_04_08",
+    "case_number": "00851184",
+    "issue_key": "RCA-1625",
+    "match_type": "rca",
+    "rationale": "Cancelled calls staying active on the status board from device-service duplicate-call injection; case explicitly confirms the same errors as RCA-1625 occurring at this site.",
+    "matches": [
+      {
+        "issue_key": "RCA-1625",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case actions_taken state 'Confirmed the same errors reported under RCA-1625 were occurring at this site' and describe a duplicate-key SQL error in the active call table, fixed by setting the max number of processing threads to 1 in the device service. RCA-1625's comment_summary documents the identical SQL error signature ('Cannot insert duplicate key row in object ... AK_UniqueActiveCallGUID') from the same multi-threaded device-service race condition, directly matching the case's own log evidence and explicit cross-reference to RCA-1625.",
+        "version_justification": "version_rule on RCA-1625 itself is issue_version_unknown ('(none)' reported and fix); although the related defect NC-17606 in the candidate set shows version_rule reported_in_same_version for NC 4.1.200 (matching the case's reported Voalte Nurse Call 4.1.200), that version data belongs to the defect NC-17606, not to RCA-1625, so it cannot be used to raise RCA-1625's own confidence beyond medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_05_01": {
+    "example_id": "ex_05_01",
+    "case_number": "00762895",
+    "issue_key": "RCA-1624",
+    "match_type": "rca",
+    "rationale": "RCB3 failed on install (out-of-box failure) in Interventional Radiology; RCA-1624 documents the same unit type failing with a confirmed physical-damage root cause, matching the case's resolution of replacing the RCB3.",
+    "matches": [
+      {
+        "issue_key": "RCA-1624",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports an RCB3 out-of-box failure during install resolved by ordering a replacement unit. RCA-1624's summary/description is 'NCMR0438716 - RCB3' / 'OOBF during install, RCB software failure', and its root_cause_summary gives a specific confirmed cause: the board arrived with physical damage and a missing C13_POE capacitor, found during physical inspection.",
+        "version_justification": "version_rule is issue_version_unknown (no version_reported/version_fix recorded for this hardware RCA), so version evidence neither supports nor weakens the match; confidence instead rests on the specific, confirmed physical root cause matching the case's OOBF symptom exactly.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_05_02": {
+    "example_id": "ex_05_02",
+    "case_number": "00759491",
+    "issue_key": "RCA-1623",
+    "match_type": "rca",
+    "rationale": "GRS7 touchscreen reported failed with a replacement ordered, but remote inspection found no device problem; RCA-1623 documents the same GRS7 unit type tested and found with no reproducible hardware fault.",
+    "matches": [
+      {
+        "issue_key": "RCA-1623",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case: GRS7 touchscreen reported failed, but remote inspection found no problems with the device. RCA-1623 ('NCMR0438713 - GRS7', described field issue: 'GRS7 had to be replaced, the old device touchscreen failed') reports the returned GRS7 passed FCT testing with no hardware failures and the touchscreen problem could not be reproduced on the HIB fixture, i.e. the same no-fault-found outcome for the same device type and symptom.",
+        "version_justification": "version_rule is issue_version_unknown with no version_reported/version_fix recorded, so there is no version evidence to strengthen or weaken the match; confidence is capped at medium because the match is a symptom/device-type/no-fault-found alignment rather than a confirmed shared root cause.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_05_03": {
+    "example_id": "ex_05_03",
+    "case_number": "00807578",
+    "issue_key": "RCA-1607",
+    "match_type": "rca",
+    "rationale": "Nurse Follower not functioning, resolved by setting the Primary Caregiver Room role identical to the Primary Caregiver role; RCA-1607 documents this exact role-naming root cause and the identical corrective action.",
+    "matches": [
+      {
+        "issue_key": "RCA-1607",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case: Nurse Follower not functioning on the Locating (RTLS) system, resolved by setting the Primary Caregiver Room role identical to the Primary Caregiver role (differing only in naming convention). RCA-1607 ('Nurse Follower Feature Not Functioning') gives the same root_cause_summary: the site's role naming convention was not set up correctly, and states the fix as 'Set Primary Caregiver Room role identical to Primary Caregiver role, only difference is the naming convention' -- near-identical wording to the case's own resolution text.",
+        "version_justification": "version_rule is issue_version_unknown with no version_reported/version_fix recorded, so version data does not factor into the match; confidence is high instead because the root cause and corrective action text are essentially identical between the case and the RCA.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_05_04": {
+    "example_id": "ex_05_04",
+    "case_number": "01113247",
+    "issue_key": "NC-25713",
+    "match_type": "defect",
+    "rationale": "Intermittent LDAP staff-sync failures match NC-25713's defect for the daily scheduled LDAP staff sync failing at least once a day; the case also names NC-19367 as the identified stale-connection root cause.",
+    "matches": [
+      {
+        "issue_key": "NC-25713",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case reports intermittent LDAP staff-sync failures. NC-25713's summary, 'Ldap Staff Synch daily scheduled run fails at least once a day,' describes the same recurring, intermittent failure mode of the scheduled LDAP staff sync.",
+        "version_justification": "version_rule is version_excluded: NC-25713's version_reported is NC 4.1.200, which differs from the case's reported version (Voalte Nurse Call 4.0.403), so the version evidence weakens rather than supports the match, capping confidence at medium despite the matching symptom.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "NC-19367",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case's own root-cause statement explicitly identifies this issue by key: 'Root cause: SmartSync failing to dispose of LDAP sync connections, causing them to become stale; identified in NC-19367.' NC-19367's summary, 'LDAP sync connections are not disposed of after use and become stale and fail on subsequent use,' is a near-verbatim match to that stated root cause.",
+        "version_justification": "version_rule is version_excluded (version_reported NC 4.1.200 vs. the case's Voalte Nurse Call 4.0.403), and NC-19367's status is 'Submit' with no version_fix recorded, meaning it was never confirmed fixed -- these factors limit confidence to low despite the strong textual match to the case's stated root cause.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_05_05": {
+    "example_id": "ex_05_05",
+    "case_number": "00622535",
+    "issue_key": "NC-24878",
+    "match_type": "defect",
+    "rationale": "Voalte Admin Client reported as not loading, with the case's own text stating a fix requires upgrading to a later software version; NC-24878 is the defect for the Admin Client staff tab loading slowly/not loading, fixed in a later release, and RCA-1375 is the root-cause investigation the case itself names.",
+    "matches": [
+      {
+        "issue_key": "NC-24878",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case: 'The Voalte Admin Client was reported as not loading... fixing the issue requires upgrading to a later Nurse Call software version.' NC-24878's summary/description describe the Admin Client staff tab not loading or loading slowly at a site with 2,581 active staff, where load time scales with network latency -- the same Admin-Client-not-loading symptom, with an impact_description confirming the staff-list N+1 query pattern was fixed.",
+        "version_justification": "version_rule is fixed_in_later_version: the case's reported software version, Voalte Nurse Call 4.1.100, is earlier than NC-24878's version_fix (NC 4.2.101 - PRJ01771), and the case's own case_summary.resolution says the fix 'requires upgrading to a later Nurse Call software version at a future date' -- directly consistent with the case running the unfixed version and needing the later release.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "RCA-1375",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "The case's own case_summary.actions_taken explicitly states 'Filed defect RCA-1375.' RCA-1375's description documents the identical Admin Client staff-tab slow-loading symptom with the same concrete figures (2,581 active staff records, 1 ms vs. ~20 ms latency load-time comparison) found in NC-24878, and its root_cause_summary attributes it to an excessive number of SQL statements issued when loading the staff tab.",
+        "version_justification": "RCA-1375's version_rule is issue_version_unknown (no version_reported/version_fix recorded), so it carries no independent version evidence; it is included because the case explicitly names it as the filed defect/investigation, but without version confirmation confidence is kept at medium rather than high.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_05_06": {
+    "example_id": "ex_05_06",
+    "case_number": "01094308",
+    "issue_key": "NC-23027",
+    "match_type": "defect",
+    "rationale": "Staff could not complete an action due to duplicate active Patient rows for one MRN, matching NC-23027's TOCTOU race-condition defect that produces duplicate Patient rows; RCA-1820 documents the same defect recurring at a related site.",
+    "matches": [
+      {
+        "issue_key": "NC-23027",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case describes a generic 'Your action could not be completed' error traced to duplicate active Patient database rows for a single MRN. NC-23027's description documents a time-of-check/time-of-use race condition in the Patient data-access layer that creates duplicate active Patient rows for one MRN, surfacing to staff as the same generic action-could-not-be-completed error.",
+        "version_justification": "version_rule is reported_in_same_version: NC-23027's version_reported, NC 4.1.200, matches the case's reported software version, Voalte Nurse Call 4.1.200, exactly, and the defect's version_fix (NC 4.2.101 - PRJ01771) is a later release, supporting high confidence that the case was hit by this unfixed defect.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "RCA-1820",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "RCA-1820 documents the identical duplicate-Patient-row defect pattern occurring at a related UPMC site, with concrete duplicate PatientID records, corroborating that this failure mode recurred across sites with the same root mechanism described in NC-23027.",
+        "version_justification": "RCA-1820 itself carries no version_reported/version_fix (issue_version_unknown), so it cannot independently confirm the version alignment; it is included as corroborating evidence of the same mechanism rather than as the primary version-supported match, keeping confidence at medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_05_07": {
+    "example_id": "ex_05_07",
+    "case_number": "01103746",
+    "issue_key": "NC-23027",
+    "match_type": "defect",
+    "rationale": "Staff at the site's Room 429 could not update patient info because a duplicate patient database entry existed, matching NC-23027's duplicate-Patient-row defect; RCA-1820 documents the same defect pattern at the same site family with concrete duplicate PatientIDs.",
+    "matches": [
+      {
+        "issue_key": "NC-23027",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports staff unable to update patient info in the Admin Client at Room 429 until Tier 2 found and removed a duplicate patient database entry. NC-23027's description documents the same race-condition defect that creates duplicate active Patient rows for one MRN, directly matching the duplicate-entry root cause the case's Tier 2 team found and removed.",
+        "version_justification": "version_rule is reported_in_same_version: NC-23027's version_reported, NC 4.1.200, matches the case's reported software version, Voalte Nurse Call 4.1.200, exactly, and the defect's version_fix (NC 4.2.101 - PRJ01771) postdates it, supporting high confidence.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "RCA-1820",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "RCA-1820 documents the same duplicate-patient-row defect at UPMC Pinnacle West Shore -- the same site family as this case's site -- with concrete duplicate PatientID records (337242/337243), providing a closely corroborating, site-matched prior occurrence of the mechanism described in NC-23027.",
+        "version_justification": "RCA-1820 carries no version_reported/version_fix (issue_version_unknown), so it cannot independently confirm version alignment; its value is the matching site and concrete duplicate-record detail, which keeps it a supporting rather than primary match at medium confidence.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_05_08": {
+    "example_id": "ex_05_08",
+    "case_number": "00979158",
+    "issue_key": "NC-21805",
+    "match_type": "defect",
+    "rationale": "Admin Client failed to show patient information because an A08 message without a location admitted the patient and the subsequent A01 was rejected; NC-21805 documents and fixes this exact ADT sequencing defect, and RCA-1768 is the originating investigation of the same issue.",
+    "matches": [
+      {
+        "issue_key": "NC-21805",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case's key_points state the root cause as the version needing to filter out A08 messages without a location, with a staff-assignment exception logged because the identified role could not be used for the target entity. NC-21805's description matches exactly: an ADT-A08 (INFO) without location information admits the patient with no location, and the later ADT-A01 (ADMIT) is rejected because the patient is already active, leaving an orphaned, locationless patient -- the same mechanism the case's R&D fix (filtering A08 messages without a location) resolves.",
+        "version_justification": "version_rule is fixed_in_later_version: NC-21805's version_reported is NC 4.1.200 and its version_fix is NC 4.2.100 - PRJ01290; the case's reported software version, Voalte Nurse Call 4.1.210, falls between these, and the case's own resolution text says 'R&D applied a code change and database fix so the new software version filters out A08 messages without a location,' consistent with the case being resolved by this defect's fix going into effect.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "RCA-1768",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "RCA-1768 ('Admin Client Not Showing Patients Information') describes the same symptom (patient information processed through ADT but not displaying on the Admin Client) and its root_cause_summary states it is being 'revised to a defect' because an A08 INFO action can fully admit a patient with no assigned location, causing the subsequent A01 to be rejected -- the same mechanism as NC-21805, indicating RCA-1768 was the originating investigation for that defect.",
+        "version_justification": "version_rule is issue_version_unknown with no version_reported/version_fix recorded for this RCA, so it cannot independently confirm version alignment with the case; it is included as medium-confidence corroborating evidence since its own text shows it evolved into the primary defect match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_06_01": {
+    "example_id": "ex_06_01",
+    "case_number": "00980526",
+    "issue_key": "NC-21805",
+    "match_type": "defect",
+    "rationale": "Patient admitted via A08 before the A01 arrives, leaving an orphaned patient with no location that then drops off the Status Board, matching the defect's described A08/INFO-before-A01 admission sequence.",
+    "matches": [
+      {
+        "issue_key": "NC-21805",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes a patient disappearing from the Status Board because an A08 message created/updated the patient record for admission before the A01 arrived, leaving the patient without a location. NC-21805's description matches this exactly: an A08/INFO message admits a patient with no location, and the subsequent A01 is then rejected, which is the same orphaned-patient mechanism.",
+        "version_justification": "version_rule is fixed_in_later_version (version_reported NC 4.1.200, version_fix NC 4.2.100). The case's reported software version (NC 4.1.210) falls between the reported and fix versions, so the fix was not yet present when the case occurred, strongly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_06_02": {
+    "example_id": "ex_06_02",
+    "case_number": "00883844",
+    "issue_key": "NC-20316",
+    "match_type": "defect",
+    "rationale": "Case describes dome lights not illuminating due to a Mirth configuration/Risk-channel processing issue; the labeled defect concerns directory-service login reconciliation, and no shared symptom or component evidence connects the two beyond the version.",
+    "matches": [
+      {
+        "issue_key": "NC-20316",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case's reported issue is dome lights not illuminating on a unit, traced to a Mirth configuration not being applied so Risk-channel messages were stuck in processing. NC-20316's own description instead concerns the NC Directory Service reconciliation process clearing a Staff record's ApplicationUserID and disabling user logins. Nothing in the case text (dome lights, Mirth, Risk channel) overlaps with the issue text (login/ApplicationUserID/practitioner reconciliation), so there is no symptom or component evidence tying this case to this specific defect.",
+        "version_justification": "version_rule is reported_in_same_version, and both the case's reported version (Voalte Nurse Call 4.1.210) and the issue's version_reported (NC 4.1.210) match exactly, which is the only objectively supportive fact available; it does not compensate for the absence of symptom alignment.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_06_03": {
+    "example_id": "ex_06_03",
+    "case_number": "00942470",
+    "issue_key": "NC-20316",
+    "match_type": "defect",
+    "rationale": "Users could not log into the Voalte Admin Client while also logged into Linq; R&D traced this to database function column sizes, aligning with the defect's directory-service login/reconciliation failure.",
+    "matches": [
+      {
+        "issue_key": "NC-20316",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes users unable to log into the Voalte Admin Client when also logged into Linq, with R&D tracing the cause to database function column sizes. NC-20316 describes a related failure mode in the same login/reconciliation subsystem: the Staff record's ApplicationUserID is cleared during practitioner reconciliation, and subsequent attempts to set username/domain fail because the ApplicationUser row already exists, which is consistent with the case's login-failure symptom tied to the directory/database layer.",
+        "version_justification": "version_rule is reported_in_same_version, and the case's reported software version (NC 4.1.210) matches the issue's version_reported (NC 4.1.210) exactly, supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_06_04": {
+    "example_id": "ex_06_04",
+    "case_number": "00898373",
+    "issue_key": "NC-20316",
+    "match_type": "defect",
+    "rationale": "Missing roles and user IDs appeared in the Smart Client, with R&D working to resolve the underlying issue in Voalte Admin, matching the defect's ApplicationUserID-clearing root cause.",
+    "matches": [
+      {
+        "issue_key": "NC-20316",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case reports missing roles and user IDs in the Smart Client, with R&D working to resolve the underlying issue in Voalte Admin. NC-20316's description explains this directly: practitioner reconciliation clears the Staff record's ApplicationUserID column, which would surface as missing/empty user ID and role data for affected staff, matching the case's observed symptom.",
+        "version_justification": "version_rule is reported_in_same_version, and the case's reported software version (NC 4.1.210) matches the issue's version_reported (NC 4.1.210) exactly, supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_06_05": {
+    "example_id": "ex_06_05",
+    "case_number": "00844342",
+    "issue_key": "NC-20115",
+    "match_type": "defect",
+    "rationale": "A CareComm - Reporting feature was not loading data; R&D determined it was an NNC rather than ERM issue, closed RCA-1633, and created NC-20115 to track the fix, which the case text names directly.",
+    "matches": [
+      {
+        "issue_key": "NC-20115",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case states that R&D determined the reporting-data issue was an NNC issue rather than an ERM issue, closed RCA-1633, and created defect NC-20115 to track it for a future fix — explicitly naming this issue key as the outcome of the investigation. NC-20115's own summary (bed data discrepancies, referencing RCA-1633) is consistent with the same reporting investigation described in the case.",
+        "version_justification": "version_rule is reported_in_same_version, and the case's reported software version (Voalte Nurse Call 4.1.100) matches the issue's version_reported (VNC 4.1.100) exactly, supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_06_06": {
+    "example_id": "ex_06_06",
+    "case_number": "00809026",
+    "issue_key": "NC-18446",
+    "match_type": "defect",
+    "rationale": "Status Board reports stopped loading over https after an upgrade, resolved with an http workaround, and R&D opened NC-18446 to fix the underlying https issue, matching the defect's description of https Status Board reports failing to load.",
+    "matches": [
+      {
+        "issue_key": "NC-18446",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes Status Board reports failing to load over an https URL after an upgrade, worked around by configuring SSRS to use http, with R&D opening a defect for the underlying https issue — and the case text names NC-18446 directly as that defect. NC-18446's own summary and description match this precisely: Status Board Patient Reports will not load with the https URL after SSRS is secured, showing a 'No reports available' message.",
+        "version_justification": "version_rule is fixed_in_later_version (version_reported NC 4.1.200, version_fix NC 4.2.100). The case's reported version is on the NNC numbering scheme (NNC 3.6.600) rather than the issue's NC numbering, so the two version fields are not directly comparable; confidence here rests primarily on the exact symptom match and the case's explicit naming of NC-18446.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_06_07": {
+    "example_id": "ex_06_07",
+    "case_number": "00829961",
+    "issue_key": "NC-17606",
+    "match_type": "defect",
+    "rationale": "Bed exit and chair alarm calls became stuck on the Status Board after an upgrade due to a device-service race condition injecting duplicate calls into RabbitMQ, matching NC-17606's described race condition in call creation from monitored units.",
+    "matches": [
+      {
+        "issue_key": "NC-17606",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes alerts becoming stuck on the Status Board after an upgrade, with investigation finding a race condition in the multi-threaded device service that injected duplicate call records into the RabbitMQ bus, resolved by limiting the device service to a single processing thread. NC-17606's description matches this mechanism directly: a race condition where a monitoring console's duplicate call report is incorrectly treated as a new call, causing it to become stuck in the database and Status Board (RabbitMQ).",
+        "version_justification": "version_rule is fixed_in_later_version (version_reported NC 4.1.200, version_fix NC 4.2.000). The case's reported version is on the NNC numbering scheme (NNC 3.9.200) rather than the issue's NC numbering, so direct version comparison is limited; confidence rests primarily on the closely matching described race-condition mechanism and symptoms.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_06_08": {
+    "example_id": "ex_06_08",
+    "case_number": "00851184",
+    "issue_key": "NC-17606",
+    "match_type": "defect",
+    "rationale": "Cancelled calls remained active on the Status Board due to a device-service race condition injecting duplicate call entries into RabbitMQ, explicitly tied by the case to the same prior RCA-1625 issue referenced in NC-17606.",
+    "matches": [
+      {
+        "issue_key": "NC-17606",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes cancelled calls remaining active on the Status Board, traced to a race condition from multi-threaded device-service processing that injected duplicate call notifications into the RabbitMQ bus, with log evidence of duplicate-key insert errors in the active call table; the case also notes the same errors were previously reported under RCA-1625 at other sites. NC-17606's description references the same RCA-1625 issue and describes the identical race-condition mechanism causing calls to become stuck via duplicate call reporting.",
+        "version_justification": "version_rule is reported_in_same_version, and the case's reported software version (Voalte Nurse Call 4.1.200) matches the issue's version_reported (NC 4.1.200) exactly, supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_07_01": {
+    "example_id": "ex_07_01",
+    "case_number": "00827718",
+    "issue_key": "NC-17106",
+    "match_type": "defect",
+    "rationale": "Choppy, broken audio reproduced during a ~40-endpoint group page on the VoIP/FreeSwitch nurse call system matches the candidate's conference-bridge audio-pacing defect for group pages of 20+ devices, on the same reported software version.",
+    "matches": [
+      {
+        "issue_key": "NC-17106",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case reports low audio integrity and broken, choppy audio after a group page on the VoIP (Freeswitch) system, reproduced in-house by R&D on a paging group of about 40 endpoints and attributed to a software defect. NC-17106 describes exactly this symptom and component: audio distorted and choppy when paging to 20 or more devices, caused by a FreeSWITCH conference-bridge audio pacing/buffer-underrun issue during multi-room paging.",
+        "version_justification": "version_rule is reported_in_same_version: the case was reported against Voalte Nurse Call 4.1.200, which is exactly the version_reported for NC-17106, and the case notes a new software version is needed to resolve the issue, consistent with the defect still requiring a fix at the time.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_07_02": {
+    "example_id": "ex_07_02",
+    "case_number": "00818079",
+    "issue_key": "NC-16657",
+    "match_type": "defect",
+    "rationale": "Case only records a routine 4.1.200 upgrade with no symptom or complaint qualification, so there is no corroborating failure evidence beyond the shared reported version.",
+    "matches": [
+      {
+        "issue_key": "NC-16657",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case documents a scheduled Nurse Call upgrade to version 4.1.200 that was closed with no complaint qualification and no symptom described. NC-16657 is a defect in which an authentication failure during an ECT configuration push (introduced by the same 4.1.200 upgrade) causes devices to lose audio. The case text does not mention any config-push failure, device audio loss, or authentication error, so the shared upgrade event alone does not corroborate the specific failure mode.",
+        "version_justification": "version_rule is reported_in_same_version and the case's reported version (4.1.200) exactly matches NC-16657's version_reported, but version alignment alone is not sufficient corroboration since the case records no technical symptom tying it to this specific defect.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_07_03": {
+    "example_id": "ex_07_03",
+    "case_number": "00695736",
+    "issue_key": "NC-13979",
+    "match_type": "defect",
+    "rationale": "Case only records a planned upgrade/site migration to 4.0.405 with no complaint qualification, so there is no corroborating symptom evidence beyond the shared reported version.",
+    "matches": [
+      {
+        "issue_key": "NC-13979",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case documents a planned Nurse Call software upgrade and site migration to Voalte 4.0.405, closed with no complaint qualification recorded. NC-13979 is a defect where a customer cannot log in to Status Board with correct Active Directory credentials. The case text contains no mention of Status Board, login failures, or authentication symptoms, so there is no evidence in the case tying it to this specific defect beyond the version match.",
+        "version_justification": "version_rule is reported_in_same_version and the case's reported version (4.0.405) exactly matches NC-13979's version_reported, but with no symptom corroboration in the case text this version match alone is weak support.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_07_04": {
+    "example_id": "ex_07_04",
+    "case_number": "00378091",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "GRS7 units failing to discover on the network, recorded as an out-of-box defect, share the same device family as NC-11015's vital product data corruption defect, though the case does not explicitly describe the odometer/EEPROM mechanism and the reported version predates the defect's version_reported.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case reports GRS7 units that would not discover on the network, logged as an out-of-box defect requiring replacement. NC-11015 describes a write conflict between the odometer utility and the vital product data (VPD) utility on the same EEPROM page, corrupting VPD in the field; VPD typically carries device identity information, so corrupted VPD is a plausible cause of a device failing to discover/register on the network. The component (GRS7) matches, but the case does not mention VPD, EEPROM, or the odometer utility explicitly, leaving the causal link unconfirmed.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (NNC 3.9.401) is on an older product-line naming and numerically precedes NC-11015's version_reported (NC 4.0.404), so the version evidence neither clearly supports nor rules out the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_07_05": {
+    "example_id": "ex_07_05",
+    "case_number": "00443818",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "GRS7 devices lost primary audio station alerts and were replaced as field returns, matching NC-11015's device family and its stated remedy of replacing affected devices, though the case does not explicitly confirm the VPD/odometer root cause and the reported version predates the defect's version_reported.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case reports four rooms losing primary audio station alerts on the GRS10 at a nurses station, resolved by replacing the room GRS7 devices, which were then confirmed working as designed. NC-11015 affects the same GRS7 device family with a VPD corruption defect, and its documented work-around is to replace the affected devices, matching the remedy applied here. However, the case does not mention VPD corruption, EEPROM, or the odometer utility, so the specific root-cause mechanism is not confirmed.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (Voalte Nurse Call 4.0.300) precedes NC-11015's version_reported (NC 4.0.404), so the version evidence is weak and does not clearly support or rule out the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_07_06": {
+    "example_id": "ex_07_06",
+    "case_number": "00447199",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "A malfunctioning GRS7 causing an RCB to reboot itself shares the affected device family with NC-11015 and was resolved by replacing the device, matching the defect's field-return remedy, though the case does not confirm the specific VPD/odometer root cause and the reported version predates the defect's version_reported.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case reports a bath call not appearing on a room's dome light, traced to a GRS7 that was causing the RCB to reboot itself; the GRS7 was replaced, configured, and tested successfully. NC-11015 affects the same GRS7 device family and its remedy (replacing affected devices as field returns) matches the action taken here, and a device corrupted by the EEPROM write conflict could plausibly behave erratically enough to trigger resets in a connected RCB. The case does not, however, mention VPD, EEPROM, or odometer specifically, so the exact root-cause mechanism is unconfirmed.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (Voalte Nurse Call 4.0.402) precedes NC-11015's version_reported (NC 4.0.404), so version evidence is weak and does not clearly support or rule out the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_07_07": {
+    "example_id": "ex_07_07",
+    "case_number": "00451264",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "An unpowered SRS causing loss of a room's primary audio station, resolved by replacing the SRS, involves a different device type (SRS, not GRS7) than NC-11015's documented affected devices, and the reported version predates the defect's version_reported, so support for this match is thin.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case reports a room losing its primary audio station because the SRS had no power and could not be called from within the room; the SRS was replaced, configured, and tested successfully. NC-11015 describes a VPD/EEPROM write-conflict defect documented against GRS7 devices, not the SRS unit involved here, and a lack of power is more consistent with a hardware/power-supply fault than with VPD corruption. The device type and symptom do not align well with the defect's described mechanism.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (Voalte Nurse Call 4.0.402) precedes NC-11015's version_reported (NC 4.0.404), and the device-type mismatch leaves the version alignment as the only point of support, which is weak.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_07_08": {
+    "example_id": "ex_07_08",
+    "case_number": "00452528",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "Three down SRS units with parts on order and no confirmed resolution involve a different device type than NC-11015's documented affected devices and provide no symptom detail, and the reported version predates the defect's version_reported, so support for this match is thin.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case documents a request for service on three SRS units that were down, with replacement parts ordered; the case remains unresolved with no confirmation that replacement occurred or restored function. NC-11015 describes a VPD/EEPROM write-conflict defect documented against GRS7 devices, not the SRS units referenced here, and the case gives no specific symptom beyond the units being 'down.' The device-type mismatch and lack of confirmed resolution leave this match thinly supported.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (NNC 3.9.401) is on an older product-line naming and precedes NC-11015's version_reported (NC 4.0.404), so the version evidence is weak and the match is not confirmed by the case.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_08_01": {
+    "example_id": "ex_08_01",
+    "case_number": "00448476",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "The GRS7 was reported inoperable and resolved only by shipping replacement hardware rather than a software fix, consistent with NC-11015's finding that the Nurse Call Odometer utility can corrupt vital product data on the same eeprom page, a failure that requires a service-level repair (serial connection plus default admin password) rather than a field software fix.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00448476 reports a GRS7 that was inoperable and was resolved by shipping a replacement unit, with no software fix applied. NC-11015 describes the Nurse Call Odometer utility writing to the same eeprom page as the vital product data (VPD) utility, corrupting VPD in the field; its work_around notes that repair requires a serial connection and the default hradmin password, i.e. not a standard field remedy, which is consistent with the case being resolved via hardware replacement instead of a software correction.",
+        "version_justification": "version_rule is fixed_in_later_version: the case's reported software version (4.0.300) predates NC-11015's version_fix (NC 4.2.000), so the unit could have been running software still affected by the odometer/VPD write conflict, supporting the match. The case text itself does not explicitly mention odometer writes or VPD corruption, so the version evidence is supportive but not conclusive.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_08_02": {
+    "example_id": "ex_08_02",
+    "case_number": "00615483",
+    "issue_key": "NC-9070",
+    "match_type": "defect",
+    "rationale": "A bed exit alert issue reported immediately after a Nurse Call software upgrade matches NC-9070, a confirmed defect where bed exit alerts are generated even though the patient safety feature is not enabled, reported at the same software version as the case.",
+    "matches": [
+      {
+        "issue_key": "NC-9070",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case 00615483 reports a bed exit alert issue following a software upgrade to Voalte Nurse Call 4.1.101. NC-9070's actual_results state that a Bed Exit Off alert is generated even though the patient safety feature is not enabled, after upgrading from 4.1.001 to 4.1.101, matching both the symptom (bed exit alert malfunction post-upgrade) and the upgrade timing described in the case.",
+        "version_justification": "version_rule is reported_in_same_version: NC-9070's version_reported (NC 4.1.101) is identical to the case's reported software version (Voalte Nurse Call 4.1.101), strongly supporting that the case was affected by this exact defect before its NC 4.1.200 fix.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_08_03": {
+    "example_id": "ex_08_03",
+    "case_number": "00594484",
+    "issue_key": "NC-8234",
+    "match_type": "defect",
+    "rationale": "The case's complaint of incorrect data in a built-in/canned report aligns with NC-8234, a confirmed defect in which the Certify Full canned report fails to evaluate call deviations against the user-specified start date/time and so shows incorrect certification data.",
+    "matches": [
+      {
+        "issue_key": "NC-8234",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00594484's reported issue is incorrect data shown in a built-in/canned report. NC-8234 describes the Certify Full report failing to honor the user-specified start datetime, so calls are shown as certified when they should be flagged as deviations - the same class of symptom (a canned report displaying incorrect/incorrect-looking data). The case was canceled as a duplicate before any case-specific detail (which report, which devices) was documented, so the match rests on the shared 'canned report shows incorrect data' symptom rather than an exact description match.",
+        "version_justification": "version_rule is fixed_in_later_version: NC-8234 states it affects versions from initial release (3.9.000) through its fix in NC 4.1.200. The case's reported software version, 4.0.403, falls within that affected range and predates the fix, supporting that the case could be hitting this defect.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_08_04": {
+    "example_id": "ex_08_04",
+    "case_number": "00536173",
+    "issue_key": "NC-7998",
+    "match_type": "defect",
+    "rationale": "A GRS7 touchscreen reported as constantly freezing, resolved by power cycling the unit while running the exact version at which NC-7998 was reported, matches this defect's documented GRS7 touchscreen-freeze symptom and reboot work-around.",
+    "matches": [
+      {
+        "issue_key": "NC-7998",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case 00536173 reports a GRS7 touchscreen constantly freezing, resolved only by power cycling the device. NC-7998 describes the GRS7 touchscreen failing to accept touch input/freezing (e.g. after a soft reboot of other units), with 'Reboot the GRS-7' listed as the work_around, matching both the symptom and the resolution action taken on the case.",
+        "version_justification": "version_rule is reported_in_same_version: NC-7998's version_reported (VNC 4.0.402) exactly matches the case's reported software version (Voalte Nurse Call 4.0.402), and the fix (NC 4.1.200) is later, consistent with the site being advised to upgrade to prevent recurrence.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_08_05": {
+    "example_id": "ex_08_05",
+    "case_number": "00578434",
+    "issue_key": "NC-7998",
+    "match_type": "defect",
+    "rationale": "Code calls stuck and unable to be cleared on multiple GRS7 devices, resolved by power cycling, is consistent with NC-7998's GRS7 touchscreen-freeze defect and its documented reboot work-around, on a software version in the same affected 4.0.x line that predates the fix.",
+    "matches": [
+      {
+        "issue_key": "NC-7998",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00578434 reports code calls unable to be cleared from multiple GRS7 devices, resolved by power cycling the units, consistent with the GRS7 freezing/unresponsive behavior NC-7998 describes, and matches the defect's work_around of rebooting the GRS-7.",
+        "version_justification": "NC-7998's version_rule is reported_in_same_version at VNC 4.0.402, but this case's reported version is 4.0.301, an earlier build in the same 4.0.x line rather than an exact match, so the version evidence supports but does not conclusively confirm this is the same defect; the case does predate the fix version NC 4.1.200.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_08_06": {
+    "example_id": "ex_08_06",
+    "case_number": "00615539",
+    "issue_key": "NC-7998",
+    "match_type": "defect",
+    "rationale": "A frozen GRS7 device resolved only by power cycling, on the exact software version at which NC-7998 was reported, matches this defect's GRS7 touchscreen-freeze symptom and reboot work-around.",
+    "matches": [
+      {
+        "issue_key": "NC-7998",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case 00615539 reports a GRS7 device frozen, resolved by power cycling the unit. NC-7998 describes the GRS7 touchscreen becoming unresponsive/freezing and lists 'Reboot the GRS-7' as the work_around, matching both the symptom and the resolution action used on the case.",
+        "version_justification": "version_rule is reported_in_same_version: NC-7998's version_reported (VNC 4.0.402) exactly matches the case's reported software version (Voalte Nurse Call 4.0.402), supporting that the case hit this specific defect before its NC 4.1.200 fix.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_08_07": {
+    "example_id": "ex_08_07",
+    "case_number": "00309227",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "A GRS10H light bar stuck active after a code call, tracked internally under RCA-1028, matches NC-6563, whose description explicitly cites RCA-1028 as explaining why rebooting resolves the same light-bar-stuck-on symptom.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00309227 reports a GRS10H light bar remaining active after a code call was completed, and notes it was tracked under RCA-1028. NC-6563's own description explains that rebooting the device resolves the field issue 'as explained in' RCA-1028, directly tying this defect's light-bar-stuck symptom to the same tracking record cited in the case, and NC-6563's summary (light bar continues to flash/remain on without an active call) matches the case's reported symptom.",
+        "version_justification": "version_rule is case_version_unknown: the case text does not record a reported software version, so there is no direct version evidence to confirm or weaken the match beyond the strong symptom and RCA-1028 cross-reference alignment.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_08_08": {
+    "example_id": "ex_08_08",
+    "case_number": "00235787",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "An audio/indicator light stuck open on a GRS10H, cleared only by rebooting the device, is consistent with NC-6563's defect where the GRS10H light bar becomes stuck out of sync with call status and is resolved by reboot, at a software version within the defect's documented affected range.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00235787 reports an audio indicator light stuck open on a GRS10H, cleared by rebooting the device. NC-6563 describes the GRS10H light bar becoming stuck out of sync with call status (remaining illuminated/flashing after a call is canceled), with 'Reboot the GRS-10' as its work_around, matching the same light-bar component and reboot-based resolution, though the case describes a steady 'stuck open' state rather than the defect's more specifically documented 'flashing' presentation.",
+        "version_justification": "version_rule is fixed_in_later_version: NC-6563's description states it impacts versions 4.0.xxx and above, and the case's reported version (4.0.200) falls in that range and predates the version_fix (NC 4.1.200), supporting that the case could be hitting this defect.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_09_01": {
+    "example_id": "ex_09_01",
+    "case_number": "00249562",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "Call light continuously on at a nursing unit, cleared by rebooting the GRS10H, matches NC-6563's GRS-10H light bar remaining illuminated without an active call.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports a call light continuously on on GRS10H, resolved only by rebooting the device; NC-6563 describes the GRS-10H light bar continuing to flash/illuminate after calls are canceled, with the device reboot itself cited as the known field workaround (actual_results: light bar continues to flash when there is no active call; work_around: reboot the GRS10).",
+        "version_justification": "Case reported Voalte Nurse Call 4.0.300, close to the candidate's version_reported (VNC 4.0.301); version_rule is fixed_in_later_version with fix in NC 4.1.200, so the defect was still unfixed at the customer's 4.0.300 build, consistent with the symptom appearing.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_09_02": {
+    "example_id": "ex_09_02",
+    "case_number": "00248780",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "A GRS10H wall-mount unit was RMA'd on the same product/version as NC-6563's light bar defect, though the case summary gives no light-bar symptom detail.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "Case only records a GRS10H wall-mount RMA with no stated failure mode (no mention of the light bar flashing/staying lit); NC-6563 is specifically about the GRS-10H light bar remaining illuminated without an active call, so the product/component matches but the reported behavior that would corroborate this defect is absent from the case text.",
+        "version_justification": "Case reported Voalte Nurse Call 4.0.300, close to the candidate's version_reported (VNC 4.0.301); version_rule is fixed_in_later_version (fix in NC 4.1.200), so the version is consistent with the defect still being present, but this only supports plausibility, not confirmation, since no symptom is described.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_09_03": {
+    "example_id": "ex_09_03",
+    "case_number": "00408709",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "GRS10H light bar stayed lit after a cancelled call, cleared by reboot and explicitly tracked under RCA-1028, which NC-6563's own description cites as the root cause writeup.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case describes the GRS10H light bar staying lit after a call was cancelled, cleared only by rebooting the device, and notes the case was tracked under RCA-1028; NC-6563's description explicitly references RCA-1028 as explaining why rebooting resolves the field symptom, and its own summary/actual_results describe the identical light-bar-stays-on-after-cancel behavior.",
+        "version_justification": "Case reported VNC 4.0.301, exactly matching the candidate's version_reported (PRJ01242 - VNC 4.0.301); version_rule is reported_in_same_version, directly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_09_04": {
+    "example_id": "ex_09_04",
+    "case_number": "00440500",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "GRS10 light bar stayed lit with no active call or alert, resolved by rebooting the GRS10H, matching NC-6563's described light-bar defect and its reboot workaround.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports the GRS10 light bar remaining illuminated with no active call or system alert, resolved by rebooting the GRS10H; NC-6563's actual_results (light bar continues to flash when there is no active call) and work_around (reboot the GRS10) match this symptom and remedy exactly.",
+        "version_justification": "Case reported VNC 4.0.402, later than the candidate's version_reported (VNC 4.0.301) but still earlier than the fix version NC 4.1.200; version_rule is fixed_in_later_version, consistent with the defect remaining unfixed at 4.0.402.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_09_05": {
+    "example_id": "ex_09_05",
+    "case_number": "00542963",
+    "issue_key": "NC-6298",
+    "match_type": "defect",
+    "rationale": "Status board error resolved by adding a help center link matches NC-6298's defect where the external HelpCenter files were missing from the install, causing a 404 on the status board's HelpCenter link.",
+    "matches": [
+      {
+        "issue_key": "NC-6298",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports an error on the Nurse Call status board resolved by adding a new help center link; NC-6298 describes the external HelpCenter not being installed (HelpCenter returns a 404 error when launched from the StatusBoard link), with the documented work_around being to copy the missing HelpCenter files into place, directly matching the case's fix of adding the help center link.",
+        "version_justification": "Case reported NC 4.0.404, exactly matching the candidate's version_reported (NC 4.0.404); version_rule is reported_in_same_version, and the candidate notes the issue also affects 4.0.405 (the fix version), directly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_09_06": {
+    "example_id": "ex_09_06",
+    "case_number": "00494035",
+    "issue_key": "NC-6189",
+    "match_type": "defect",
+    "rationale": "Random staff and duress alerts resolved by an RTLS connector hot fix match NC-6189's defect where HPL badge reconnects trigger phantom duress/button-press alerts in the RTLS connector.",
+    "matches": [
+      {
+        "issue_key": "NC-6189",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports random staff and duress alerts on the RTLS Connector, resolved by an RTLS connector hot fix; NC-6189 describes the RTLS connector misinterpreting initial tag state on reconnect as a button press, generating random/phantom duress and staff calls, which matches both the symptom (random staff/duress alerts) and the affected component (RTLS connector).",
+        "version_justification": "Case reported VNC 4.0.301, exactly matching the candidate's version_reported (PRJ01242 - VNC 4.0.301); version_rule is reported_in_same_version, directly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_09_07": {
+    "example_id": "ex_09_07",
+    "case_number": "00218354",
+    "issue_key": "NC-6185",
+    "match_type": "defect",
+    "rationale": "Site-wide short calls from multiple rooms, resolved by upgrading to VNC 4.0.400, matches NC-6185's defect where short-duration calls fail to send a cancel to Wireless.",
+    "matches": [
+      {
+        "issue_key": "NC-6185",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports site-wide short calls being placed from multiple rooms, with the resolution stating the issue is addressed in the Voalte Nurse Call 4.0.400 release; NC-6185 describes short-duration calls (under a second from place to cancel) not sending a cancel to Wireless, producing strobing call-cord disconnects, matching the 'short calls' symptom, and its comment_summary notes the fix work was tied to inclusion in the 4.0.400 release the case's resolution points to.",
+        "version_justification": "Candidate has no recorded version_reported/version_fix (version_rule is issue_version_unknown), so there is no direct version corroboration from the candidate record itself; however the case's own resolution text independently states the fix shipped in VNC 4.0.400, aligning with the candidate's release.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_09_08": {
+    "example_id": "ex_09_08",
+    "case_number": "00445590",
+    "issue_key": "NC-6183",
+    "match_type": "defect",
+    "rationale": "Dome light not turning off with the lost unit server populated after a room reset shares the 'lost unit server' symptom with NC-6183's room-reboot defect, though the version rule flags it as version-excluded.",
+    "matches": [
+      {
+        "issue_key": "NC-6183",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case reports a dome light not turning off and the lost unit server populating after a room was reset; NC-6183 ('Rebooting Rooms causes Lost Unit Server') describes rooms being incorrectly flagged as lost unit server after a room reboot, matching the lost-unit-server symptom, but the candidate's description and steps center on a network storm/CPU spike rather than the dome light failing to turn off, so the match is only partial.",
+        "version_justification": "Case reported NNC 3.9.401, very close to the candidate's version_reported (NNC 3.9.400), but version_rule is version_excluded, meaning normal version filtering would have ruled this candidate out, which weakens rather than supports the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_10_01": {
+    "example_id": "ex_10_01",
+    "case_number": "00218496",
+    "issue_key": "NC-5951",
+    "match_type": "defect",
+    "rationale": "Smart Sync stopped processing incoming bed data and was resolved by an upgrade; NC-5951 is the Smart Sync defect describing the identical failure to process incoming bed data.",
+    "matches": [
+      {
+        "issue_key": "NC-5951",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case's reported issue is that Smart Sync stopped processing incoming bed data, resolved by upgrading software; NC-5951's own summary/description state the same symptom in nearly identical terms (Smart Sync not processing incoming bed data), so the failure mode lines up directly rather than on a generic product-area basis.",
+        "version_justification": "version_rule is case_version_unknown, with both version_reported and version_fix recorded as (none) on NC-5951, so there is no usable version evidence on either side to confirm or weaken the match; it is accepted on symptom grounds alone.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_10_02": {
+    "example_id": "ex_10_02",
+    "case_number": "00214168",
+    "issue_key": "NC-5928",
+    "match_type": "defect",
+    "rationale": "The case is a vague certification failure closed as 'Not a Complaint' with no technical detail; NC-5928 is a certification-report failure that is only topically similar, with no confirming mechanism in the case text.",
+    "matches": [
+      {
+        "issue_key": "NC-5928",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case only reports being 'unable to certify' during ENT work, resolved via a secondhand message with no technical detail and closed as 'Not a Complaint'; NC-5928 describes Full Certification Reports failing to run in a SQL 2014 SSRS context, which shares only the generic word 'certify' with no corroborating detail (no mention of reports, SSRS, or SQL) in the case itself.",
+        "version_justification": "version_rule is issue_version_unknown; NC-5928's version_reported and version_fix are both (none), and its own description refers to a 4.0.300 SQL 2014 SSRS deployment, while the case reports NNC 3.6.800, so the version context does not clearly align and offers no support.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_10_03": {
+    "example_id": "ex_10_03",
+    "case_number": "00226287",
+    "issue_key": "NC-1278",
+    "match_type": "defect",
+    "rationale": "A lost primary console case was resolved by adding a database index for timeout improvement; NC-1278 is the ECT device-save defect whose own documented workaround is adding an index on the device table to fix the same timeout.",
+    "matches": [
+      {
+        "issue_key": "NC-1278",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case's resolution was adding a database index for timeout improvement in the Enterprise Configuration Tool (ECT); NC-1278's own work_around section describes the second workaround as creating an index on the device table (on isEnabled/IsRowActive columns) to resolve the same ECT save-timeout/connection-service-lost behavior, a very specific and matching remedy rather than a generic product-area similarity.",
+        "version_justification": "version_rule is reported_in_same_version; NC-1278's version_reported (NNC 3.9.400) matches the case's reported software version exactly, directly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_10_04": {
+    "example_id": "ex_10_04",
+    "case_number": "00524119",
+    "issue_key": "NC-1204",
+    "match_type": "defect",
+    "rationale": "ADT and staff-assignment data stopped processing after a software update and was fixed with a Mirth code change; NC-1204 is the ADT/ROL staff-assignment translation defect that was fixed by a Mirth-side code change for the same message type.",
+    "matches": [
+      {
+        "issue_key": "NC-1204",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case's reported issue is ADT not processing after a software update, resolved by a code change added to Mirth to let ADT and staff-assignment data process correctly; NC-1204 describes ADT HL7 messages with ROL (staff assignment) segments being mistranslated and rejected by the clinical interface, fixed by a code change in the Mirth care-assignment logic, matching both the component (Mirth/ADT/staff assignment) and the remedy (a Mirth code fix).",
+        "version_justification": "version_rule is fixed_in_later_version; the case was reported on NNC 3.9.400, which precedes NC-1204's version_fix of NC 4.1.101 (PRJ01610), consistent with the defect being unresolved in the customer's running version at the time of the complaint.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_10_05": {
+    "example_id": "ex_10_05",
+    "case_number": "00477680",
+    "issue_key": "NC-772",
+    "match_type": "defect",
+    "rationale": "A GRS10 health-check case was closed unresolved with the explicit note that upgrading to 4.1.200+ was required; NC-772 is the device-service defect whose version_fix is exactly NC 4.1.200.",
+    "matches": [
+      {
+        "issue_key": "NC-772",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case's resolution states the customer would need to upgrade to software version 4.1.200 or later for the issue to be resolved; NC-772's version_fix is exactly NC 4.1.200, a precise version match to the stated remedy, though the case summary itself only mentions a 'health check request' and does not independently describe the false-lost-heartbeat/dropped-socket mechanism documented in NC-772, so symptom-level corroboration is thinner than the version alignment.",
+        "version_justification": "version_rule is fixed_in_later_version; the case's reported version (NNC 3.9.401) precedes NC-772's version_fix (NC 4.1.200), and that exact fix version is the same version called out in the case's own resolution text, strongly supporting the match on version grounds.",
+        "kb_support": []
+      }
+    ]
+  },
+  "ex_10_06": {
+    "example_id": "ex_10_06",
+    "case_number": "00494035",
+    "issue_key": "NC-665",
+    "match_type": "defect",
+    "rationale": "Random staff and duress alerts in the OR were resolved with an RTLS connector hot fix; NC-665 is the RtlsConnector defect causing false duress calls from misread badge data, and its linked RCA explicitly names this case number.",
+    "matches": [
+      {
+        "issue_key": "NC-665",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case reports random staff alerts and random duress alerts triggering unexpectedly, resolved by an RTLS connector hot fix; NC-665 describes RtlsConnector misinterpreting HPL initial-state button data as real-time button events, which 'depending on the configuration may enunciate as invalid duress calls, sometimes in large number at once' -- the same random/multiple false-duress-call behavior. NC-665's own description also cross-references RCA-1201, and RCA-1201's investigation text explicitly names this case number as one of the sites exhibiting the issue, giving direct case-level corroboration beyond symptom similarity alone.",
+        "version_justification": "version_rule is version_excluded, and NC-665's version_reported (VNC 4.1.000) is later than the case's reported version (Voalte Nurse Call 4.0.301), which on its own would weaken the match; however, the case was resolved via a hot fix (not a standard release upgrade) and NC-665 is directly tied through RCA-1201 to this specific case number, so the explicit case citation is treated as stronger evidence than the raw version-field mismatch.",
+        "kb_support": []
+      }
+    ]
+  }
+}

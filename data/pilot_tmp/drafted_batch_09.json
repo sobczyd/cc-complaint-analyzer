@@ -1,0 +1,138 @@
+[
+  {
+    "example_id": "ex_09_01",
+    "case_number": "00249562",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "Call light continuously on at a nursing unit, cleared by rebooting the GRS10H, matches NC-6563's GRS-10H light bar remaining illuminated without an active call.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports a call light continuously on on GRS10H, resolved only by rebooting the device; NC-6563 describes the GRS-10H light bar continuing to flash/illuminate after calls are canceled, with the device reboot itself cited as the known field workaround (actual_results: light bar continues to flash when there is no active call; work_around: reboot the GRS10).",
+        "version_justification": "Case reported Voalte Nurse Call 4.0.300, close to the candidate's version_reported (VNC 4.0.301); version_rule is fixed_in_later_version with fix in NC 4.1.200, so the defect was still unfixed at the customer's 4.0.300 build, consistent with the symptom appearing.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_09_02",
+    "case_number": "00248780",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "A GRS10H wall-mount unit was RMA'd on the same product/version as NC-6563's light bar defect, though the case summary gives no light-bar symptom detail.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "Case only records a GRS10H wall-mount RMA with no stated failure mode (no mention of the light bar flashing/staying lit); NC-6563 is specifically about the GRS-10H light bar remaining illuminated without an active call, so the product/component matches but the reported behavior that would corroborate this defect is absent from the case text.",
+        "version_justification": "Case reported Voalte Nurse Call 4.0.300, close to the candidate's version_reported (VNC 4.0.301); version_rule is fixed_in_later_version (fix in NC 4.1.200), so the version is consistent with the defect still being present, but this only supports plausibility, not confirmation, since no symptom is described.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_09_03",
+    "case_number": "00408709",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "GRS10H light bar stayed lit after a cancelled call, cleared by reboot and explicitly tracked under RCA-1028, which NC-6563's own description cites as the root cause writeup.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case describes the GRS10H light bar staying lit after a call was cancelled, cleared only by rebooting the device, and notes the case was tracked under RCA-1028; NC-6563's description explicitly references RCA-1028 as explaining why rebooting resolves the field symptom, and its own summary/actual_results describe the identical light-bar-stays-on-after-cancel behavior.",
+        "version_justification": "Case reported VNC 4.0.301, exactly matching the candidate's version_reported (PRJ01242 - VNC 4.0.301); version_rule is reported_in_same_version, directly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_09_04",
+    "case_number": "00440500",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "GRS10 light bar stayed lit with no active call or alert, resolved by rebooting the GRS10H, matching NC-6563's described light-bar defect and its reboot workaround.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports the GRS10 light bar remaining illuminated with no active call or system alert, resolved by rebooting the GRS10H; NC-6563's actual_results (light bar continues to flash when there is no active call) and work_around (reboot the GRS10) match this symptom and remedy exactly.",
+        "version_justification": "Case reported VNC 4.0.402, later than the candidate's version_reported (VNC 4.0.301) but still earlier than the fix version NC 4.1.200; version_rule is fixed_in_later_version, consistent with the defect remaining unfixed at 4.0.402.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_09_05",
+    "case_number": "00542963",
+    "issue_key": "NC-6298",
+    "match_type": "defect",
+    "rationale": "Status board error resolved by adding a help center link matches NC-6298's defect where the external HelpCenter files were missing from the install, causing a 404 on the status board's HelpCenter link.",
+    "matches": [
+      {
+        "issue_key": "NC-6298",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports an error on the Nurse Call status board resolved by adding a new help center link; NC-6298 describes the external HelpCenter not being installed (HelpCenter returns a 404 error when launched from the StatusBoard link), with the documented work_around being to copy the missing HelpCenter files into place, directly matching the case's fix of adding the help center link.",
+        "version_justification": "Case reported NC 4.0.404, exactly matching the candidate's version_reported (NC 4.0.404); version_rule is reported_in_same_version, and the candidate notes the issue also affects 4.0.405 (the fix version), directly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_09_06",
+    "case_number": "00494035",
+    "issue_key": "NC-6189",
+    "match_type": "defect",
+    "rationale": "Random staff and duress alerts resolved by an RTLS connector hot fix match NC-6189's defect where HPL badge reconnects trigger phantom duress/button-press alerts in the RTLS connector.",
+    "matches": [
+      {
+        "issue_key": "NC-6189",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports random staff and duress alerts on the RTLS Connector, resolved by an RTLS connector hot fix; NC-6189 describes the RTLS connector misinterpreting initial tag state on reconnect as a button press, generating random/phantom duress and staff calls, which matches both the symptom (random staff/duress alerts) and the affected component (RTLS connector).",
+        "version_justification": "Case reported VNC 4.0.301, exactly matching the candidate's version_reported (PRJ01242 - VNC 4.0.301); version_rule is reported_in_same_version, directly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_09_07",
+    "case_number": "00218354",
+    "issue_key": "NC-6185",
+    "match_type": "defect",
+    "rationale": "Site-wide short calls from multiple rooms, resolved by upgrading to VNC 4.0.400, matches NC-6185's defect where short-duration calls fail to send a cancel to Wireless.",
+    "matches": [
+      {
+        "issue_key": "NC-6185",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports site-wide short calls being placed from multiple rooms, with the resolution stating the issue is addressed in the Voalte Nurse Call 4.0.400 release; NC-6185 describes short-duration calls (under a second from place to cancel) not sending a cancel to Wireless, producing strobing call-cord disconnects, matching the 'short calls' symptom, and its comment_summary notes the fix work was tied to inclusion in the 4.0.400 release the case's resolution points to.",
+        "version_justification": "Candidate has no recorded version_reported/version_fix (version_rule is issue_version_unknown), so there is no direct version corroboration from the candidate record itself; however the case's own resolution text independently states the fix shipped in VNC 4.0.400, aligning with the candidate's release.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_09_08",
+    "case_number": "00445590",
+    "issue_key": "NC-6183",
+    "match_type": "defect",
+    "rationale": "Dome light not turning off with the lost unit server populated after a room reset shares the 'lost unit server' symptom with NC-6183's room-reboot defect, though the version rule flags it as version-excluded.",
+    "matches": [
+      {
+        "issue_key": "NC-6183",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case reports a dome light not turning off and the lost unit server populating after a room was reset; NC-6183 ('Rebooting Rooms causes Lost Unit Server') describes rooms being incorrectly flagged as lost unit server after a room reboot, matching the lost-unit-server symptom, but the candidate's description and steps center on a network storm/CPU spike rather than the dome light failing to turn off, so the match is only partial.",
+        "version_justification": "Case reported NNC 3.9.401, very close to the candidate's version_reported (NNC 3.9.400), but version_rule is version_excluded, meaning normal version filtering would have ruled this candidate out, which weakens rather than supports the match.",
+        "kb_support": []
+      }
+    ]
+  }
+]

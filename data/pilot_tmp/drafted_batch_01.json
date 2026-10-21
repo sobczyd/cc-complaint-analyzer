@@ -1,0 +1,140 @@
+[
+  {
+    "example_id": "ex_01_01",
+    "case_number": "01111943",
+    "issue_key": "RCA-1914",
+    "match_type": "rca",
+    "rationale": "Code blue did not annunciate on GRS10 at the same facility/PBX described in the RCA, with the same root cause of GatewayService message/socket instability.",
+    "matches": [
+      {
+        "issue_key": "RCA-1914",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports a code blue that did not alert on GRS10 at Holy Cross Health (Room 360/3 South/CVIMC); the RCA documents the identical facility/unit and root-causes repeated GRS10-at-PBX recovery-mode entry from oversized GatewayService messages and socket errors, matching the case's annunciation failure.",
+        "version_justification": "version_rule is reported_in_same_version: the candidate's version_reported matches the case's reported Voalte Nurse Call 4.0.405/PRJ01586 exactly, strongly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_01_02",
+    "case_number": "01138390",
+    "issue_key": "RCA-1913",
+    "match_type": "rca",
+    "rationale": "Case explicitly suspects a failed GRS5 code blue lever in 2nd Floor Med Surg Room 202, matching the RCA's identical room/title and broken-lever root cause.",
+    "matches": [
+      {
+        "issue_key": "RCA-1913",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case states the GRS5 code blue lever is suspected of failing in 2nd Floor Med Surg Room 202; the RCA's title and location are the same (2nd Fl Med Surg Rm202) and its root cause is a broken code lever, directly matching the suspected failure mode in the case.",
+        "version_justification": "version_rule is reported_in_same_version: the candidate's version_reported matches the case's reported Voalte Nurse Call 4.0.403 exactly, strongly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_01_03",
+    "case_number": "01131426",
+    "issue_key": "RCA-1912",
+    "match_type": "rca",
+    "rationale": "Case reports a code blue not alerting from the SRS in the 1st Fl ER Trauma Room, resolved by swapping the device; the RCA for the identical location root-causes a blown power diode causing the SRS to be dead.",
+    "matches": [
+      {
+        "issue_key": "RCA-1912",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case describes an SRS code blue failure in the 1st Fl, ER, Trauma Room resolved by replacing the device; the RCA covers the same unit/room and root-causes a blown diode (D2_PWR) that left the SRS dead, consistent with the case's device-swap resolution.",
+        "version_justification": "version_rule is reported_in_same_version: the candidate's version_reported matches the case's reported PRJ01167-VNC 4.0.110 exactly, strongly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_01_04",
+    "case_number": "01172864",
+    "issue_key": "RCA-1910",
+    "match_type": "rca",
+    "rationale": "GRS7 touchscreen froze while the physical code lever still worked, matching the RCA's known frozen-screen defect and confirmed KB article for the same symptom.",
+    "matches": [
+      {
+        "issue_key": "RCA-1910",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports a frozen GRS7 touchscreen with the code blue lever not activating at Inova Fairfax North Tower, 6th floor, Room 646; the RCA documents the same known frozen-screen defect in GRS7 app versions prior to 4.1.200 and confirms the physical code lever operates independently of the touchscreen, matching the case's hardware-vs-software finding.",
+        "version_justification": "version_rule is reported_in_same_version: the candidate's version_reported matches the case's reported Voalte Nurse Call 4.0.405/PRJ01586 exactly, and the RCA's fix version (prior to 4.1.200) is consistent with the case's affected version.",
+        "kb_support": [
+          "UIDInw"
+        ]
+      }
+    ]
+  },
+  {
+    "example_id": "ex_01_05",
+    "case_number": "01127977",
+    "issue_key": "RCA-1893",
+    "match_type": "rca",
+    "rationale": "Bed exit alarm failed to ring on GRS10 in the same two rooms at the same hospital described in the RCA, though the RCA's reported version differs from this case's.",
+    "matches": [
+      {
+        "issue_key": "RCA-1893",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case reports a bed exit alarm not ringing to GRS10 stations in Rooms 359/361 at Montrose Memorial Hospital, with continuous ping timeouts to the RCBs resolved by RCB replacement; the RCA covers the identical rooms and hospital and the same RCB-ping-timeout investigation pattern.",
+        "version_justification": "version_rule is version_excluded: the candidate's reported version (PRJ01175-VNC 4.0.300) differs from the case's reported Voalte Nurse Call 4.0.404, and the RCA's own conclusion was inconclusive/network-related rather than a confirmed hardware defect, which weakens the match despite the strong location/symptom alignment.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_01_06",
+    "case_number": "01044221",
+    "issue_key": "RCA-1828",
+    "match_type": "rca",
+    "rationale": "GRS10 at the same hospital produced the identical 3-tone beeping noise with sporadic stuck calls, root-caused to the same WebSocket timing defect requiring the same future-release fix.",
+    "matches": [
+      {
+        "issue_key": "RCA-1828",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case describes a GRS10 at Mount Nittany Medical Center making a 3-tone beeping noise with sporadic stuck calls, traced to a WebSocket connection timing issue requiring an upgrade to a future release; the RCA's title and account are identical (Mount Nittany, same symptom description) and documents the same WebSocket timing root cause fixed in a later release.",
+        "version_justification": "version_rule is issue_version_unknown because no structured version_reported field is populated, but the RCA's own description states the NC version as 4.2.000, matching the case's reported Voalte Nurse Call 4.2.000, and both reference the same fix (4.2.200), supporting the match despite the unstructured version metadata.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_01_07",
+    "case_number": "01008579",
+    "issue_key": "RCA-1786",
+    "match_type": "rca",
+    "rationale": "Post-restore script error on the SmartSync server matches the RCA's verbatim collation-conflict error message and identical fix.",
+    "matches": [
+      {
+        "issue_key": "RCA-1786",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports a post-restore script error on the SmartSync test server resolved by updating the script to evaluate values using the database default collation; the RCA's description contains the same collation-conflict error text (\"Cannot resolve the collation conflict... Msg 468, Level 16, State 9... Unable to complete post-restore for NavicareEnterprise\") and its verification summary documents the identical fix of updating the post-restore script to use the database default collation.",
+        "version_justification": "version_rule is case_version_unknown (no version_reported/version_fix populated on either side), but the verbatim match of the error text and the identical resolution provide strong independent support for the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_01_08",
+    "case_number": "00965986",
+    "issue_key": "RCA-1766",
+    "match_type": "rca",
+    "rationale": "Specific users on wireless mobiles could not receive calls on the reported 4.1.210 version, matching the RCA's identical version-tagged title and oversized SIP INVITE root cause.",
+    "matches": [
+      {
+        "issue_key": "RCA-1766",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports specific users unable to receive calls on wireless mobile devices, with the underlying cause traced to an oversized message header (over 1499 bytes) forcing an additional codec; the RCA's title (\"NNC - 4.1.210 - Specific User Cannot Receive Calls on their Mobiles\") matches the symptom description exactly and its root cause states the INVITE SIP packet exceeds the 1499-byte limit, the same header-size finding as the case.",
+        "version_justification": "version_rule is issue_version_unknown because no structured version_reported field is populated, but the RCA's own title states version 4.1.210, matching the case's reported Voalte Nurse Call 4.1.210 exactly, supporting the match despite the unstructured version metadata.",
+        "kb_support": []
+      }
+    ]
+  }
+]

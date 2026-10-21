@@ -1,0 +1,178 @@
+[
+  {
+    "example_id": "ex_05_01",
+    "case_number": "00762895",
+    "issue_key": "RCA-1624",
+    "match_type": "rca",
+    "rationale": "RCB3 failed on install (out-of-box failure) in Interventional Radiology; RCA-1624 documents the same unit type failing with a confirmed physical-damage root cause, matching the case's resolution of replacing the RCB3.",
+    "matches": [
+      {
+        "issue_key": "RCA-1624",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case reports an RCB3 out-of-box failure during install resolved by ordering a replacement unit. RCA-1624's summary/description is 'NCMR0438716 - RCB3' / 'OOBF during install, RCB software failure', and its root_cause_summary gives a specific confirmed cause: the board arrived with physical damage and a missing C13_POE capacitor, found during physical inspection.",
+        "version_justification": "version_rule is issue_version_unknown (no version_reported/version_fix recorded for this hardware RCA), so version evidence neither supports nor weakens the match; confidence instead rests on the specific, confirmed physical root cause matching the case's OOBF symptom exactly.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_05_02",
+    "case_number": "00759491",
+    "issue_key": "RCA-1623",
+    "match_type": "rca",
+    "rationale": "GRS7 touchscreen reported failed with a replacement ordered, but remote inspection found no device problem; RCA-1623 documents the same GRS7 unit type tested and found with no reproducible hardware fault.",
+    "matches": [
+      {
+        "issue_key": "RCA-1623",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case: GRS7 touchscreen reported failed, but remote inspection found no problems with the device. RCA-1623 ('NCMR0438713 - GRS7', described field issue: 'GRS7 had to be replaced, the old device touchscreen failed') reports the returned GRS7 passed FCT testing with no hardware failures and the touchscreen problem could not be reproduced on the HIB fixture, i.e. the same no-fault-found outcome for the same device type and symptom.",
+        "version_justification": "version_rule is issue_version_unknown with no version_reported/version_fix recorded, so there is no version evidence to strengthen or weaken the match; confidence is capped at medium because the match is a symptom/device-type/no-fault-found alignment rather than a confirmed shared root cause.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_05_03",
+    "case_number": "00807578",
+    "issue_key": "RCA-1607",
+    "match_type": "rca",
+    "rationale": "Nurse Follower not functioning, resolved by setting the Primary Caregiver Room role identical to the Primary Caregiver role; RCA-1607 documents this exact role-naming root cause and the identical corrective action.",
+    "matches": [
+      {
+        "issue_key": "RCA-1607",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "Case: Nurse Follower not functioning on the Locating (RTLS) system, resolved by setting the Primary Caregiver Room role identical to the Primary Caregiver role (differing only in naming convention). RCA-1607 ('Nurse Follower Feature Not Functioning') gives the same root_cause_summary: the site's role naming convention was not set up correctly, and states the fix as 'Set Primary Caregiver Room role identical to Primary Caregiver role, only difference is the naming convention' -- near-identical wording to the case's own resolution text.",
+        "version_justification": "version_rule is issue_version_unknown with no version_reported/version_fix recorded, so version data does not factor into the match; confidence is high instead because the root cause and corrective action text are essentially identical between the case and the RCA.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_05_04",
+    "case_number": "01113247",
+    "issue_key": "NC-25713",
+    "match_type": "defect",
+    "rationale": "Intermittent LDAP staff-sync failures match NC-25713's defect for the daily scheduled LDAP staff sync failing at least once a day; the case also names NC-19367 as the identified stale-connection root cause.",
+    "matches": [
+      {
+        "issue_key": "NC-25713",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case reports intermittent LDAP staff-sync failures. NC-25713's summary, 'Ldap Staff Synch daily scheduled run fails at least once a day,' describes the same recurring, intermittent failure mode of the scheduled LDAP staff sync.",
+        "version_justification": "version_rule is version_excluded: NC-25713's version_reported is NC 4.1.200, which differs from the case's reported version (Voalte Nurse Call 4.0.403), so the version evidence weakens rather than supports the match, capping confidence at medium despite the matching symptom.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "NC-19367",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case's own root-cause statement explicitly identifies this issue by key: 'Root cause: SmartSync failing to dispose of LDAP sync connections, causing them to become stale; identified in NC-19367.' NC-19367's summary, 'LDAP sync connections are not disposed of after use and become stale and fail on subsequent use,' is a near-verbatim match to that stated root cause.",
+        "version_justification": "version_rule is version_excluded (version_reported NC 4.1.200 vs. the case's Voalte Nurse Call 4.0.403), and NC-19367's status is 'Submit' with no version_fix recorded, meaning it was never confirmed fixed -- these factors limit confidence to low despite the strong textual match to the case's stated root cause.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_05_05",
+    "case_number": "00622535",
+    "issue_key": "NC-24878",
+    "match_type": "defect",
+    "rationale": "Voalte Admin Client reported as not loading, with the case's own text stating a fix requires upgrading to a later software version; NC-24878 is the defect for the Admin Client staff tab loading slowly/not loading, fixed in a later release, and RCA-1375 is the root-cause investigation the case itself names.",
+    "matches": [
+      {
+        "issue_key": "NC-24878",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case: 'The Voalte Admin Client was reported as not loading... fixing the issue requires upgrading to a later Nurse Call software version.' NC-24878's summary/description describe the Admin Client staff tab not loading or loading slowly at a site with 2,581 active staff, where load time scales with network latency -- the same Admin-Client-not-loading symptom, with an impact_description confirming the staff-list N+1 query pattern was fixed.",
+        "version_justification": "version_rule is fixed_in_later_version: the case's reported software version, Voalte Nurse Call 4.1.100, is earlier than NC-24878's version_fix (NC 4.2.101 - PRJ01771), and the case's own case_summary.resolution says the fix 'requires upgrading to a later Nurse Call software version at a future date' -- directly consistent with the case running the unfixed version and needing the later release.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "RCA-1375",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "The case's own case_summary.actions_taken explicitly states 'Filed defect RCA-1375.' RCA-1375's description documents the identical Admin Client staff-tab slow-loading symptom with the same concrete figures (2,581 active staff records, 1 ms vs. ~20 ms latency load-time comparison) found in NC-24878, and its root_cause_summary attributes it to an excessive number of SQL statements issued when loading the staff tab.",
+        "version_justification": "RCA-1375's version_rule is issue_version_unknown (no version_reported/version_fix recorded), so it carries no independent version evidence; it is included because the case explicitly names it as the filed defect/investigation, but without version confirmation confidence is kept at medium rather than high.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_05_06",
+    "case_number": "01094308",
+    "issue_key": "NC-23027",
+    "match_type": "defect",
+    "rationale": "Staff could not complete an action due to duplicate active Patient rows for one MRN, matching NC-23027's TOCTOU race-condition defect that produces duplicate Patient rows; RCA-1820 documents the same defect recurring at a related site.",
+    "matches": [
+      {
+        "issue_key": "NC-23027",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case describes a generic 'Your action could not be completed' error traced to duplicate active Patient database rows for a single MRN. NC-23027's description documents a time-of-check/time-of-use race condition in the Patient data-access layer that creates duplicate active Patient rows for one MRN, surfacing to staff as the same generic action-could-not-be-completed error.",
+        "version_justification": "version_rule is reported_in_same_version: NC-23027's version_reported, NC 4.1.200, matches the case's reported software version, Voalte Nurse Call 4.1.200, exactly, and the defect's version_fix (NC 4.2.101 - PRJ01771) is a later release, supporting high confidence that the case was hit by this unfixed defect.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "RCA-1820",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "RCA-1820 documents the identical duplicate-Patient-row defect pattern occurring at a related UPMC site, with concrete duplicate PatientID records, corroborating that this failure mode recurred across sites with the same root mechanism described in NC-23027.",
+        "version_justification": "RCA-1820 itself carries no version_reported/version_fix (issue_version_unknown), so it cannot independently confirm the version alignment; it is included as corroborating evidence of the same mechanism rather than as the primary version-supported match, keeping confidence at medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_05_07",
+    "case_number": "01103746",
+    "issue_key": "NC-23027",
+    "match_type": "defect",
+    "rationale": "Staff at the site's Room 429 could not update patient info because a duplicate patient database entry existed, matching NC-23027's duplicate-Patient-row defect; RCA-1820 documents the same defect pattern at the same site family with concrete duplicate PatientIDs.",
+    "matches": [
+      {
+        "issue_key": "NC-23027",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case reports staff unable to update patient info in the Admin Client at Room 429 until Tier 2 found and removed a duplicate patient database entry. NC-23027's description documents the same race-condition defect that creates duplicate active Patient rows for one MRN, directly matching the duplicate-entry root cause the case's Tier 2 team found and removed.",
+        "version_justification": "version_rule is reported_in_same_version: NC-23027's version_reported, NC 4.1.200, matches the case's reported software version, Voalte Nurse Call 4.1.200, exactly, and the defect's version_fix (NC 4.2.101 - PRJ01771) postdates it, supporting high confidence.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "RCA-1820",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "RCA-1820 documents the same duplicate-patient-row defect at UPMC Pinnacle West Shore -- the same site family as this case's site -- with concrete duplicate PatientID records (337242/337243), providing a closely corroborating, site-matched prior occurrence of the mechanism described in NC-23027.",
+        "version_justification": "RCA-1820 carries no version_reported/version_fix (issue_version_unknown), so it cannot independently confirm version alignment; its value is the matching site and concrete duplicate-record detail, which keeps it a supporting rather than primary match at medium confidence.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_05_08",
+    "case_number": "00979158",
+    "issue_key": "NC-21805",
+    "match_type": "defect",
+    "rationale": "Admin Client failed to show patient information because an A08 message without a location admitted the patient and the subsequent A01 was rejected; NC-21805 documents and fixes this exact ADT sequencing defect, and RCA-1768 is the originating investigation of the same issue.",
+    "matches": [
+      {
+        "issue_key": "NC-21805",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case's key_points state the root cause as the version needing to filter out A08 messages without a location, with a staff-assignment exception logged because the identified role could not be used for the target entity. NC-21805's description matches exactly: an ADT-A08 (INFO) without location information admits the patient with no location, and the later ADT-A01 (ADMIT) is rejected because the patient is already active, leaving an orphaned, locationless patient -- the same mechanism the case's R&D fix (filtering A08 messages without a location) resolves.",
+        "version_justification": "version_rule is fixed_in_later_version: NC-21805's version_reported is NC 4.1.200 and its version_fix is NC 4.2.100 - PRJ01290; the case's reported software version, Voalte Nurse Call 4.1.210, falls between these, and the case's own resolution text says 'R&D applied a code change and database fix so the new software version filters out A08 messages without a location,' consistent with the case being resolved by this defect's fix going into effect.",
+        "kb_support": []
+      },
+      {
+        "issue_key": "RCA-1768",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "RCA-1768 ('Admin Client Not Showing Patients Information') describes the same symptom (patient information processed through ADT but not displaying on the Admin Client) and its root_cause_summary states it is being 'revised to a defect' because an A08 INFO action can fully admit a patient with no assigned location, causing the subsequent A01 to be rejected -- the same mechanism as NC-21805, indicating RCA-1768 was the originating investigation for that defect.",
+        "version_justification": "version_rule is issue_version_unknown with no version_reported/version_fix recorded for this RCA, so it cannot independently confirm version alignment with the case; it is included as medium-confidence corroborating evidence since its own text shows it evolved into the primary defect match.",
+        "kb_support": []
+      }
+    ]
+  }
+]

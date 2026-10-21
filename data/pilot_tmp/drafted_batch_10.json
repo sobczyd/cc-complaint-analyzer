@@ -1,0 +1,104 @@
+[
+  {
+    "example_id": "ex_10_01",
+    "case_number": "00218496",
+    "issue_key": "NC-5951",
+    "match_type": "defect",
+    "rationale": "Smart Sync stopped processing incoming bed data and was resolved by an upgrade; NC-5951 is the Smart Sync defect describing the identical failure to process incoming bed data.",
+    "matches": [
+      {
+        "issue_key": "NC-5951",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case's reported issue is that Smart Sync stopped processing incoming bed data, resolved by upgrading software; NC-5951's own summary/description state the same symptom in nearly identical terms (Smart Sync not processing incoming bed data), so the failure mode lines up directly rather than on a generic product-area basis.",
+        "version_justification": "version_rule is case_version_unknown, with both version_reported and version_fix recorded as (none) on NC-5951, so there is no usable version evidence on either side to confirm or weaken the match; it is accepted on symptom grounds alone.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_10_02",
+    "case_number": "00214168",
+    "issue_key": "NC-5928",
+    "match_type": "defect",
+    "rationale": "The case is a vague certification failure closed as 'Not a Complaint' with no technical detail; NC-5928 is a certification-report failure that is only topically similar, with no confirming mechanism in the case text.",
+    "matches": [
+      {
+        "issue_key": "NC-5928",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case only reports being 'unable to certify' during ENT work, resolved via a secondhand message with no technical detail and closed as 'Not a Complaint'; NC-5928 describes Full Certification Reports failing to run in a SQL 2014 SSRS context, which shares only the generic word 'certify' with no corroborating detail (no mention of reports, SSRS, or SQL) in the case itself.",
+        "version_justification": "version_rule is issue_version_unknown; NC-5928's version_reported and version_fix are both (none), and its own description refers to a 4.0.300 SQL 2014 SSRS deployment, while the case reports NNC 3.6.800, so the version context does not clearly align and offers no support.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_10_03",
+    "case_number": "00226287",
+    "issue_key": "NC-1278",
+    "match_type": "defect",
+    "rationale": "A lost primary console case was resolved by adding a database index for timeout improvement; NC-1278 is the ECT device-save defect whose own documented workaround is adding an index on the device table to fix the same timeout.",
+    "matches": [
+      {
+        "issue_key": "NC-1278",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case's resolution was adding a database index for timeout improvement in the Enterprise Configuration Tool (ECT); NC-1278's own work_around section describes the second workaround as creating an index on the device table (on isEnabled/IsRowActive columns) to resolve the same ECT save-timeout/connection-service-lost behavior, a very specific and matching remedy rather than a generic product-area similarity.",
+        "version_justification": "version_rule is reported_in_same_version; NC-1278's version_reported (NNC 3.9.400) matches the case's reported software version exactly, directly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_10_04",
+    "case_number": "00524119",
+    "issue_key": "NC-1204",
+    "match_type": "defect",
+    "rationale": "ADT and staff-assignment data stopped processing after a software update and was fixed with a Mirth code change; NC-1204 is the ADT/ROL staff-assignment translation defect that was fixed by a Mirth-side code change for the same message type.",
+    "matches": [
+      {
+        "issue_key": "NC-1204",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case's reported issue is ADT not processing after a software update, resolved by a code change added to Mirth to let ADT and staff-assignment data process correctly; NC-1204 describes ADT HL7 messages with ROL (staff assignment) segments being mistranslated and rejected by the clinical interface, fixed by a code change in the Mirth care-assignment logic, matching both the component (Mirth/ADT/staff assignment) and the remedy (a Mirth code fix).",
+        "version_justification": "version_rule is fixed_in_later_version; the case was reported on NNC 3.9.400, which precedes NC-1204's version_fix of NC 4.1.101 (PRJ01610), consistent with the defect being unresolved in the customer's running version at the time of the complaint.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_10_05",
+    "case_number": "00477680",
+    "issue_key": "NC-772",
+    "match_type": "defect",
+    "rationale": "A GRS10 health-check case was closed unresolved with the explicit note that upgrading to 4.1.200+ was required; NC-772 is the device-service defect whose version_fix is exactly NC 4.1.200.",
+    "matches": [
+      {
+        "issue_key": "NC-772",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case's resolution states the customer would need to upgrade to software version 4.1.200 or later for the issue to be resolved; NC-772's version_fix is exactly NC 4.1.200, a precise version match to the stated remedy, though the case summary itself only mentions a 'health check request' and does not independently describe the false-lost-heartbeat/dropped-socket mechanism documented in NC-772, so symptom-level corroboration is thinner than the version alignment.",
+        "version_justification": "version_rule is fixed_in_later_version; the case's reported version (NNC 3.9.401) precedes NC-772's version_fix (NC 4.1.200), and that exact fix version is the same version called out in the case's own resolution text, strongly supporting the match on version grounds.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_10_06",
+    "case_number": "00494035",
+    "issue_key": "NC-665",
+    "match_type": "defect",
+    "rationale": "Random staff and duress alerts in the OR were resolved with an RTLS connector hot fix; NC-665 is the RtlsConnector defect causing false duress calls from misread badge data, and its linked RCA explicitly names this case number.",
+    "matches": [
+      {
+        "issue_key": "NC-665",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case reports random staff alerts and random duress alerts triggering unexpectedly, resolved by an RTLS connector hot fix; NC-665 describes RtlsConnector misinterpreting HPL initial-state button data as real-time button events, which 'depending on the configuration may enunciate as invalid duress calls, sometimes in large number at once' -- the same random/multiple false-duress-call behavior. NC-665's own description also cross-references RCA-1201, and RCA-1201's investigation text explicitly names this case number as one of the sites exhibiting the issue, giving direct case-level corroboration beyond symptom similarity alone.",
+        "version_justification": "version_rule is version_excluded, and NC-665's version_reported (VNC 4.1.000) is later than the case's reported version (Voalte Nurse Call 4.0.301), which on its own would weaken the match; however, the case was resolved via a hot fix (not a standard release upgrade) and NC-665 is directly tied through RCA-1201 to this specific case number, so the explicit case citation is treated as stronger evidence than the raw version-field mismatch.",
+        "kb_support": []
+      }
+    ]
+  }
+]

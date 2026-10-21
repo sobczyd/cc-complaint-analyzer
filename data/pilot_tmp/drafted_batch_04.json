@@ -1,0 +1,138 @@
+[
+  {
+    "example_id": "ex_04_01",
+    "case_number": "00846618",
+    "issue_key": "RCA-1635",
+    "match_type": "rca",
+    "rationale": "RCB3 NUC configured to monitor itself and unable to accept its own heartbeat caused recurring lost secondary console alerts on GRS10 units in 5th floor Mother Baby, matching RCA-1635.",
+    "matches": [
+      {
+        "issue_key": "RCA-1635",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case describes GRS10 units in 5th floor Mother Baby raising lost secondary console alerts even though no console was offline, traced to the RCB3 NUC being configured to monitor itself and not accepting its own heartbeat, cleared by removing the self-monitoring entry from the database with no reboot needed. RCA-1635's description/comment_summary covers the identical site context (RCB3 NUC for 5th floor Mother Baby throwing a lost secondary console alert on the GRS10H) and finds the NUC's own route id was present in its own secondary console list, so it never heartbeated with itself -- the same self-referencing monitoring defect described in the case.",
+        "version_justification": "version_rule is issue_version_unknown (version_reported and version_fix both '(none)'), so there is no version evidence to confirm or rule out the match; confidence is held at medium on the strength of the symptom/root-cause alignment alone rather than version corroboration.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_04_02",
+    "case_number": "00862447",
+    "issue_key": "RCA-1635",
+    "match_type": "rca",
+    "rationale": "Case is an explicitly linked recurrence of the RCA-1635 RCB3 NUC configuration issue at the same 5th floor Mother Baby unit, referencing the earlier case 00846618.",
+    "matches": [
+      {
+        "issue_key": "RCA-1635",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case states calls from the 5th floor Mother Baby unit were not reaching the GRS10 console or wireless devices, and that it was escalated back to R and D noting a prior related case (00846618) filed under RCA-1635; the resolution was again an RCB3 NUC configuration update. RCA-1635 covers that same RCB3 / 5th floor Mother Baby site and configuration defect, so the case's own key_points directly tie it to this RCA rather than only inferring similarity from symptoms.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' for both reported and fix versions); the match rests on the case's explicit cross-reference to RCA-1635 and matching site/device rather than on version alignment, so confidence is capped at medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_04_03",
+    "case_number": "00844342",
+    "issue_key": "RCA-1633",
+    "match_type": "rca",
+    "rationale": "CareComm Reporting data-loading failure was determined by R and D to be an NNC issue rather than ERM, closing RCA-1633 and spinning off defect NC-20115 -- matches RCA-1633's own closure note almost word for word.",
+    "matches": [
+      {
+        "issue_key": "RCA-1633",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case resolution states 'R&D determined that this is a NNC issue versus an ERM issue. RCA-1633 is closed, and NC defect NC-20115 has been created,' explicitly naming RCA-1633 as the record being closed. RCA-1633's own root_cause_summary reads 'R&D determined that this is a NNC issue versus an ERM issue. This RCA will be closed and a NNC defect created,' the same disposition described from the RCA's side, confirming the link.",
+        "version_justification": "version_rule is issue_version_unknown with no version_reported/version_fix recorded on RCA-1633; there is no version evidence to weigh, so the match relies entirely on the matching disposition and case reference, holding confidence at medium rather than high.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_04_04",
+    "case_number": "00781968",
+    "issue_key": "RCA-1632",
+    "match_type": "rca",
+    "rationale": "RCB3 reported as an out-of-the-box failure due to a damaged component and replaced -- aligns with RCA-1632's finding that the returned RCB arrived with physical damage.",
+    "matches": [
+      {
+        "issue_key": "RCA-1632",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case reports an RCB3 coded as an out-of-the-box device failure from a damaged component, resolved by replacing the device. RCA-1632 covers RCB devices that would not register on the network and were in a reboot loop, with root_cause_summary 'The RCB arrived with physical damage' -- the same RCB hardware-damage root cause, though RCA-1632's comment thread records no further investigation detail beyond the NCMR closure, so the specific reboot-loop symptom is not separately confirmed in the case text.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' reported and fix); no version data exists to corroborate or weaken the match, so confidence is based solely on the shared RCB3/physical-damage root cause and capped at medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_04_05",
+    "case_number": "00800485",
+    "issue_key": "RCA-1630",
+    "match_type": "rca",
+    "rationale": "GRS7 broken out of the box with a broken code lever directly matches RCA-1630's title 'GRS7 with code - Code Blue lever is broken off device.'",
+    "matches": [
+      {
+        "issue_key": "RCA-1630",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case identifies a broken code lever as the cause of an out-of-the-box GRS7 failure, resolved by replacing the device. RCA-1630's summary describes the identical symptom and product: 'Voalte NC GRS7 with code - Code Blue lever is broken off device.' However, RCA-1630's own root_cause_summary notes 'Wrong device sent back. Cannot investigate,' meaning the RCA's own investigation could not confirm the cause on the actual returned unit, which weakens the evidentiary strength of the match even though the reported symptom/product match exactly.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' reported and fix) and RCA-1630's own investigation was inconclusive (wrong device returned), so neither version nor root-cause confirmation support the match beyond the matching symptom description; confidence is held at medium.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_04_06",
+    "case_number": "00834438",
+    "issue_key": "RCA-1628",
+    "match_type": "rca",
+    "rationale": "Multiple call switch devices damaged out of the box from a set screw installed too tightly matches RCA-1628's identical description of bath switch failures.",
+    "matches": [
+      {
+        "issue_key": "RCA-1628",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case attributes multiple damaged-out-of-box call switch devices to poor manufacturing, specifically 'a set screw installed so tightly that it pushed the plastic up and prevented the cover from fitting.' RCA-1628's description states the same failure mode nearly verbatim: 'the set screw is put in so tight that you can get it out but then it pushes the plastic up in and the cover won't fit,' for bath switch out-of-the-box failures reported in batches (9 of 27 and 16 of 27 units) -- matching the case's note of multiple failures.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' reported and fix); there is no version data to weigh, so the medium confidence rests entirely on the close textual match of the manufacturing defect description rather than on version corroboration.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_04_07",
+    "case_number": "00829961",
+    "issue_key": "RCA-1625",
+    "match_type": "rca",
+    "rationale": "Stuck bed exit/chair alarm calls on the status board after an upgrade, traced to a device-service race condition duplicating calls into RabbitMQ, matches RCA-1625's root cause almost exactly.",
+    "matches": [
+      {
+        "issue_key": "RCA-1625",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case root cause is 'a race condition from recent multi-threaded processing changes in the device service, injecting duplicate calls into RabbitMQ,' fixed by limiting the device service to one processing thread. RCA-1625's root_cause_summary describes the same mechanism: multi-threaded processing in the Device service created a race condition where a secondary console notification was treated as a new call, injecting 'a secondary copy of the call into the RabbitMQ bus,' causing stuck calls on the status board while end devices (GRS5/GRS7/GRS10) cleared normally -- matching the case's reported_issue almost field for field.",
+        "version_justification": "version_rule is issue_version_unknown ('(none)' reported and fix) even though RCA-1625's comment_summary references sites on 4.1.200 consistent with the case's own upgrade-era symptom context; with no structured version_reported/version_fix recorded on the candidate, confidence is held at medium rather than high.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_04_08",
+    "case_number": "00851184",
+    "issue_key": "RCA-1625",
+    "match_type": "rca",
+    "rationale": "Cancelled calls staying active on the status board from device-service duplicate-call injection; case explicitly confirms the same errors as RCA-1625 occurring at this site.",
+    "matches": [
+      {
+        "issue_key": "RCA-1625",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "Case actions_taken state 'Confirmed the same errors reported under RCA-1625 were occurring at this site' and describe a duplicate-key SQL error in the active call table, fixed by setting the max number of processing threads to 1 in the device service. RCA-1625's comment_summary documents the identical SQL error signature ('Cannot insert duplicate key row in object ... AK_UniqueActiveCallGUID') from the same multi-threaded device-service race condition, directly matching the case's own log evidence and explicit cross-reference to RCA-1625.",
+        "version_justification": "version_rule on RCA-1625 itself is issue_version_unknown ('(none)' reported and fix); although the related defect NC-17606 in the candidate set shows version_rule reported_in_same_version for NC 4.1.200 (matching the case's reported Voalte Nurse Call 4.1.200), that version data belongs to the defect NC-17606, not to RCA-1625, so it cannot be used to raise RCA-1625's own confidence beyond medium.",
+        "kb_support": []
+      }
+    ]
+  }
+]

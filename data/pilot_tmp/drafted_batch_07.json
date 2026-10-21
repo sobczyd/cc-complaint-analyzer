@@ -1,0 +1,138 @@
+[
+  {
+    "example_id": "ex_07_01",
+    "case_number": "00827718",
+    "issue_key": "NC-17106",
+    "match_type": "defect",
+    "rationale": "Choppy, broken audio reproduced during a ~40-endpoint group page on the VoIP/FreeSwitch nurse call system matches the candidate's conference-bridge audio-pacing defect for group pages of 20+ devices, on the same reported software version.",
+    "matches": [
+      {
+        "issue_key": "NC-17106",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case reports low audio integrity and broken, choppy audio after a group page on the VoIP (Freeswitch) system, reproduced in-house by R&D on a paging group of about 40 endpoints and attributed to a software defect. NC-17106 describes exactly this symptom and component: audio distorted and choppy when paging to 20 or more devices, caused by a FreeSWITCH conference-bridge audio pacing/buffer-underrun issue during multi-room paging.",
+        "version_justification": "version_rule is reported_in_same_version: the case was reported against Voalte Nurse Call 4.1.200, which is exactly the version_reported for NC-17106, and the case notes a new software version is needed to resolve the issue, consistent with the defect still requiring a fix at the time.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_07_02",
+    "case_number": "00818079",
+    "issue_key": "NC-16657",
+    "match_type": "defect",
+    "rationale": "Case only records a routine 4.1.200 upgrade with no symptom or complaint qualification, so there is no corroborating failure evidence beyond the shared reported version.",
+    "matches": [
+      {
+        "issue_key": "NC-16657",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case documents a scheduled Nurse Call upgrade to version 4.1.200 that was closed with no complaint qualification and no symptom described. NC-16657 is a defect in which an authentication failure during an ECT configuration push (introduced by the same 4.1.200 upgrade) causes devices to lose audio. The case text does not mention any config-push failure, device audio loss, or authentication error, so the shared upgrade event alone does not corroborate the specific failure mode.",
+        "version_justification": "version_rule is reported_in_same_version and the case's reported version (4.1.200) exactly matches NC-16657's version_reported, but version alignment alone is not sufficient corroboration since the case records no technical symptom tying it to this specific defect.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_07_03",
+    "case_number": "00695736",
+    "issue_key": "NC-13979",
+    "match_type": "defect",
+    "rationale": "Case only records a planned upgrade/site migration to 4.0.405 with no complaint qualification, so there is no corroborating symptom evidence beyond the shared reported version.",
+    "matches": [
+      {
+        "issue_key": "NC-13979",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case documents a planned Nurse Call software upgrade and site migration to Voalte 4.0.405, closed with no complaint qualification recorded. NC-13979 is a defect where a customer cannot log in to Status Board with correct Active Directory credentials. The case text contains no mention of Status Board, login failures, or authentication symptoms, so there is no evidence in the case tying it to this specific defect beyond the version match.",
+        "version_justification": "version_rule is reported_in_same_version and the case's reported version (4.0.405) exactly matches NC-13979's version_reported, but with no symptom corroboration in the case text this version match alone is weak support.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_07_04",
+    "case_number": "00378091",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "GRS7 units failing to discover on the network, recorded as an out-of-box defect, share the same device family as NC-11015's vital product data corruption defect, though the case does not explicitly describe the odometer/EEPROM mechanism and the reported version predates the defect's version_reported.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case reports GRS7 units that would not discover on the network, logged as an out-of-box defect requiring replacement. NC-11015 describes a write conflict between the odometer utility and the vital product data (VPD) utility on the same EEPROM page, corrupting VPD in the field; VPD typically carries device identity information, so corrupted VPD is a plausible cause of a device failing to discover/register on the network. The component (GRS7) matches, but the case does not mention VPD, EEPROM, or the odometer utility explicitly, leaving the causal link unconfirmed.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (NNC 3.9.401) is on an older product-line naming and numerically precedes NC-11015's version_reported (NC 4.0.404), so the version evidence neither clearly supports nor rules out the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_07_05",
+    "case_number": "00443818",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "GRS7 devices lost primary audio station alerts and were replaced as field returns, matching NC-11015's device family and its stated remedy of replacing affected devices, though the case does not explicitly confirm the VPD/odometer root cause and the reported version predates the defect's version_reported.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case reports four rooms losing primary audio station alerts on the GRS10 at a nurses station, resolved by replacing the room GRS7 devices, which were then confirmed working as designed. NC-11015 affects the same GRS7 device family with a VPD corruption defect, and its documented work-around is to replace the affected devices, matching the remedy applied here. However, the case does not mention VPD corruption, EEPROM, or the odometer utility, so the specific root-cause mechanism is not confirmed.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (Voalte Nurse Call 4.0.300) precedes NC-11015's version_reported (NC 4.0.404), so the version evidence is weak and does not clearly support or rule out the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_07_06",
+    "case_number": "00447199",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "A malfunctioning GRS7 causing an RCB to reboot itself shares the affected device family with NC-11015 and was resolved by replacing the device, matching the defect's field-return remedy, though the case does not confirm the specific VPD/odometer root cause and the reported version predates the defect's version_reported.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "The case reports a bath call not appearing on a room's dome light, traced to a GRS7 that was causing the RCB to reboot itself; the GRS7 was replaced, configured, and tested successfully. NC-11015 affects the same GRS7 device family and its remedy (replacing affected devices as field returns) matches the action taken here, and a device corrupted by the EEPROM write conflict could plausibly behave erratically enough to trigger resets in a connected RCB. The case does not, however, mention VPD, EEPROM, or odometer specifically, so the exact root-cause mechanism is unconfirmed.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (Voalte Nurse Call 4.0.402) precedes NC-11015's version_reported (NC 4.0.404), so version evidence is weak and does not clearly support or rule out the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_07_07",
+    "case_number": "00451264",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "An unpowered SRS causing loss of a room's primary audio station, resolved by replacing the SRS, involves a different device type (SRS, not GRS7) than NC-11015's documented affected devices, and the reported version predates the defect's version_reported, so support for this match is thin.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case reports a room losing its primary audio station because the SRS had no power and could not be called from within the room; the SRS was replaced, configured, and tested successfully. NC-11015 describes a VPD/EEPROM write-conflict defect documented against GRS7 devices, not the SRS unit involved here, and a lack of power is more consistent with a hardware/power-supply fault than with VPD corruption. The device type and symptom do not align well with the defect's described mechanism.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (Voalte Nurse Call 4.0.402) precedes NC-11015's version_reported (NC 4.0.404), and the device-type mismatch leaves the version alignment as the only point of support, which is weak.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_07_08",
+    "case_number": "00452528",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "Three down SRS units with parts on order and no confirmed resolution involve a different device type than NC-11015's documented affected devices and provide no symptom detail, and the reported version predates the defect's version_reported, so support for this match is thin.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case documents a request for service on three SRS units that were down, with replacement parts ordered; the case remains unresolved with no confirmation that replacement occurred or restored function. NC-11015 describes a VPD/EEPROM write-conflict defect documented against GRS7 devices, not the SRS units referenced here, and the case gives no specific symptom beyond the units being 'down.' The device-type mismatch and lack of confirmed resolution leave this match thinly supported.",
+        "version_justification": "version_rule is fixed_in_later_version (fix in NC 4.2.000); the case's reported version (NNC 3.9.401) is on an older product-line naming and precedes NC-11015's version_reported (NC 4.0.404), so the version evidence is weak and the match is not confirmed by the case.",
+        "kb_support": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,138 @@
+[
+  {
+    "example_id": "ex_03_01",
+    "case_number": "00869858",
+    "issue_key": "RCA-1688",
+    "match_type": "rca",
+    "rationale": "RCB device power-stability failure (RCB3 powers on but won't stay on) matches RCA-1688's identical RCB power-on-but-not-staying-on complaint, both closed inconclusive.",
+    "matches": [
+      {
+        "issue_key": "RCA-1688",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "The case reports an RCB that failed as an out-of-box failure (OOBF) with no remote troubleshooting performed. RCA-1688's description states the RCB 'will power on but not stay on' after cabling and port changes, and its own HW/SW investigation found no hardware faults (device passed FCT) and could not reproduce the failure, concluding 'inconclusive but most likely environmental' -- the same inconclusive, no-fault-found outcome as this case's unresolved OOBF.",
+        "version_justification": "version_rule is issue_version_unknown and version_reported/version_fix are both (none), so there is no formal version evidence; the case's reported version (Voalte Nurse Call 4.0.402) is not corroborated or contradicted by RCA-1688's text, leaving version support neutral.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_03_02",
+    "case_number": "00894378",
+    "issue_key": "RCA-1681",
+    "match_type": "rca",
+    "rationale": "RCA-1681's own field-action note explicitly references 'Case 894378' and documents the same ED-door Staff Emergency switch replacement, directly tying it to this case.",
+    "matches": [
+      {
+        "issue_key": "RCA-1681",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a Staff Emergency call at an ED door not registering, resolved by replacing the pull switch hardware. RCA-1681's investigation notes describe the same location, the same device replacement action, and a field-action request note that explicitly cites 'Case 894378' -- directly identifying this RCA as the record of this exact case's investigation, not merely a similar incident.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none), so there is no formal version rule to apply; the direct case-number citation in RCA-1681's own text is stronger evidence of the correct match than version data would provide.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_03_03",
+    "case_number": "00868767",
+    "issue_key": "RCA-1674",
+    "match_type": "rca",
+    "rationale": "Smart/Admin Client staff-tab slow loading with a large staff count matches RCA-1674's own investigation, which attributes the delay to an inefficient staff query needing pagination.",
+    "matches": [
+      {
+        "issue_key": "RCA-1674",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports the staff tab being slow/frozen when loading. RCA-1674's summary is 'VNC 4.1.200 Admin Client Slow/Frozen when Loading staff tab' and its root_cause_summary states the query for a large number of staff (2500+) is inefficient and needs paging -- directly matching the case's own symptom and component (staff tab loading performance).",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none); however RCA-1674's own summary cites 'VNC 4.1.200' explicitly in its title, consistent with the case being on a comparable software line, supporting (though not formally confirming via the version_rule field) the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_03_04",
+    "case_number": "00883844",
+    "issue_key": "RCA-1665",
+    "match_type": "rca",
+    "rationale": "No symptom overlap exists between this case's Mirth-configuration dome-light issue and RCA-1665's staff-sync/application-user record defect; the only shared fact is the reported software version.",
+    "matches": [
+      {
+        "issue_key": "RCA-1665",
+        "issue_type": "rca",
+        "confidence": "low",
+        "rationale": "The case describes dome lights not illuminating because Mirth configuration for built-out channels was never completed during implementation, causing Risk channel messages to get stuck in processing; this was resolved by applying missed Mirth configuration steps. RCA-1665 instead describes a staff-sync error where a CSA practitioner version bump causes Nurse Call to null out a staff record's foreign key to the application-user table -- an unrelated subsystem (staff/user account data) and symptom (login/sync failure, not dome-light alerting) with no described connection to Mirth or Risk channel configuration.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none); the only alignment is that both the case and RCA-1665's summary reference software version 4.1.210, which is too weak on its own to support a causal match given the complete lack of symptom overlap.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_03_05",
+    "case_number": "00942470",
+    "issue_key": "RCA-1665",
+    "match_type": "rca",
+    "rationale": "Both describe simultaneous-login/staff-account database problems introduced around the Linq deployment, though the case attributes its specific fix to database function column sizes rather than RCA-1665's stated foreign-key nulling.",
+    "matches": [
+      {
+        "issue_key": "RCA-1665",
+        "issue_type": "rca",
+        "confidence": "medium",
+        "rationale": "The case reports users unable to log into Voalte Admin Client while simultaneously logged into Linq, traced by R&D to database function column sizes. RCA-1665 covers a related Linq-pilot-era defect where a CSA practitioner version bump causes Nurse Call to null out a staff record's application-user foreign key, also a database-level staff/login data defect tied to Linq deployment -- a thematically adjacent root cause (staff/login database integrity during Linq rollout) but not the identical mechanism the case itself cites (column sizing vs. foreign-key nulling).",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none); both the case and RCA-1665's summary reference software version 4.1.210, providing weak corroborating (not conclusive) version alignment given the differing specific root-cause mechanism.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_03_06",
+    "case_number": "00898373",
+    "issue_key": "RCA-1665",
+    "match_type": "rca",
+    "rationale": "Missing user IDs and staff roles in the Smart Client directly match RCA-1665's root cause of staff records having their application-user foreign key nulled out.",
+    "matches": [
+      {
+        "issue_key": "RCA-1665",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports missing user IDs and staff roles in the Smart Client, with the implementation lead confirming R&D is working on the issue in Voalte Admin. RCA-1665's root_cause_summary explains exactly this symptom class: a CSA practitioner version bump causes Nurse Call to update the staff record and null out its foreign key to the application-user table (username/domain), which is the direct cause of missing user ID/role data -- a precise causal match to the case's reported_issue and key_points.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none); the case and RCA-1665's summary both reference software version 4.1.210, and the case's status (unresolved, pending an R&D fix) is consistent with RCA-1665 being open/in-progress work on the same defect at the time.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_03_07",
+    "case_number": "00946662",
+    "issue_key": "RCA-1665",
+    "match_type": "rca",
+    "rationale": "Voalte Admin Client users disappearing due to null'd-out staff records, fixed by upgrading to 4.1.211, exactly matches RCA-1665's root cause and its referenced fix release.",
+    "matches": [
+      {
+        "issue_key": "RCA-1665",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports Voalte Admin Client users disappearing and unable to log in, root-caused to staff records being null'd out, resolved by upgrading to Voalte Nurse Call 4.1.211. RCA-1665's root_cause_summary describes Nurse Call nulling out the staff record's foreign key to the application-user table, and its verification_summary states the fix (defect NC-20316) was applied to the 'Voalte Nurse Call 4.1.211 software release' -- an exact match of both root-cause mechanism and fix version to this case's resolution.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none) in the formal fields, but RCA-1665's own verification_summary explicitly names the 4.1.211 fix release, which matches the case's stated upgrade-to-4.1.211 resolution, providing strong textual version corroboration despite the unpopulated version_rule.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_03_08",
+    "case_number": "00861267",
+    "issue_key": "RCA-1643",
+    "match_type": "rca",
+    "rationale": "Same unit designation, same software version, and the same lost-NUC-alert symptom, both left inconclusive due to log cycling/rolling.",
+    "matches": [
+      {
+        "issue_key": "RCA-1643",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a lost unit server (NUC) alert on the '4th floor North and East' installation, version 4.0.404, closed inconclusive because log cycling prevented determining a cause. RCA-1643's description is for unit '4 North' on 'Voalte Nurse Call 4.0.404' with 'Lost Central Server & primary console down alerts,' and its own investigation was limited by rapid log file rolling (only 5-6 hours of log retained per device) -- matching unit, version, symptom, and root-cause narrative.",
+        "version_justification": "version_rule is issue_version_unknown with version_reported/version_fix both (none) in the formal fields, but RCA-1643's description explicitly states 'Version: Voalte Nurse Call 4.0.404,' identical to the case's reported software version, giving direct textual version support for the match.",
+        "kb_support": []
+      }
+    ]
+  }
+]

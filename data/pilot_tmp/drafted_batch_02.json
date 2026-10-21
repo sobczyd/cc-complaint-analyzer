@@ -1,0 +1,140 @@
+[
+  {
+    "example_id": "ex_02_01",
+    "case_number": "00960232",
+    "issue_key": "RCA-1751",
+    "match_type": "rca",
+    "rationale": "The case's failed/replaced GRS5 audio stations are the same physical devices documented in RCA-1751 (serial numbers match), which replaced them with GRS7 units after an unrecoverable application crash loop.",
+    "matches": [
+      {
+        "issue_key": "RCA-1751",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a lost primary audio station alert resolved by replacing failed GRS5 audio devices with GRS7 units. RCA-1751 documents three GRS5 units (serials 0282006WWIS, 041192S2WIS, 041192LTWIS) that failed during network maintenance and could not be powered back into a working application state, and were likewise replaced with newer GRS7 units -- the case's GRS5 serial numbers correspond exactly to devices covered by this RCA.",
+        "version_justification": "RCA-1751's version_rule is issue_version_unknown (no version_reported/version_fix recorded), so the match is not supported by version alignment; instead it rests on the exact match of affected device serial numbers and identical failure/remediation pattern (GRS5 failure, replaced with GRS7).",
+        "kb_support": [
+          "2629730338"
+        ]
+      }
+    ]
+  },
+  {
+    "example_id": "ex_02_02",
+    "case_number": "00917743",
+    "issue_key": "RCA-1747",
+    "match_type": "rca",
+    "rationale": "The case's stiff, hard-to-press Code Pink button in the NICU that was resolved by replacing the switch matches RCA-1747's investigation of the same stiff NICU Code Pink button.",
+    "matches": [
+      {
+        "issue_key": "RCA-1747",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case describes a NICU Code Pink button that was found stiff/hard to press and was resolved by replacing the call switch. RCA-1747's summary and description describe the identical symptom: a NICU Code Pink button that was 'very stiff and hard to press,' resulting in failed activations, with the investigation inspecting and replacing part P2520NNC2A09 (PB SWITCH, CODE PINK, W/CANCEL) -- the same component and failure mode as the case.",
+        "version_justification": "RCA-1747's version_rule is issue_version_unknown (no version data recorded), so confidence here is driven by the close textual and mechanical alignment (same button type, same location type, same stiffness symptom, same switch-replacement fix) rather than version evidence.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_02_03",
+    "case_number": "00869710",
+    "issue_key": "RCA-1742",
+    "match_type": "rca",
+    "rationale": "The case's newly staged Gen 3 POE switch that could not be reached via its command line interface after factory/standard resets matches RCA-1742's identically described defective POE switch.",
+    "matches": [
+      {
+        "issue_key": "RCA-1742",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case states a Gen 3 POE switch could not be interfaced with via its command line interface, with factory reset, standard reset, and power reseating all failing before the device was replaced as an out-of-box failure. RCA-1742's description states the same thing nearly verbatim: 'Defective POE switch, cannot interface with the command line interface. Have tried factory and standard reset and reseeding to power supply with no success.'",
+        "version_justification": "RCA-1742's version_rule is issue_version_unknown (no version_reported/version_fix recorded), so the match relies on the near-identical description of the failure and the troubleshooting steps attempted (factory reset, standard reset, power reseat) rather than version evidence.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_02_04",
+    "case_number": "00946971",
+    "issue_key": "RCA-1740",
+    "match_type": "rca",
+    "rationale": "The case's stuck rounding-due light traced to an SQL monitoring process (SQLExternalMonitoring) overloading the database server matches RCA-1740's identical root cause for rounding timers failing to clear.",
+    "matches": [
+      {
+        "issue_key": "RCA-1740",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a stuck rounding-due light caused by a lack of server hardware and an SQL monitoring service bogging down the database, fixed by eliminating the SQL monitor service and adding DB server hardware, on Voalte Nurse Call 4.0.402. RCA-1740's description also references Nursecall version 4.0.402.0 with rounding-due calls getting stuck/unable to clear and reminder logs showing SQL update failures, and its investigation identifies the exact same cause: the 'SQLExternalMonitoring' process hammering TempDB and causing IO latency/timeouts, recommending staggered backups and disabling that monitoring process.",
+        "version_justification": "RCA-1740's version_rule is issue_version_unknown (no version_reported/version_fix field populated), but the candidate's own description text states 'Nursecall version | 4.0.402.0,' which matches the case's reported software version (Voalte Nurse Call 4.0.402) exactly, strongly reinforcing the match even though the structured version_rule field is unpopulated.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_02_05",
+    "case_number": "00942599",
+    "issue_key": "RCA-1734",
+    "match_type": "rca",
+    "rationale": "The case's sporadic inability to call a Linq device, inconclusive on Voalte Nurse Call 4.1.210/4.1.211, matches RCA-1734's identically titled sporadic Linq-calling investigation.",
+    "matches": [
+      {
+        "issue_key": "RCA-1734",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports a sporadic inability to call a Linq device that was upgraded to 4.1.211 during investigation but remained inconclusive/unreproduced. RCA-1734 is titled 'Sporadic inability to call Linq device' and its comment summary describes a site that sporadically could not call a specific Linq device, with the audio station holding incorrect dialing information for that staff member, and notes no further occurrences were reported after an upgrade -- matching both the symptom and the eventual upgrade-related resolution path in the case.",
+        "version_justification": "RCA-1734's version_rule is issue_version_unknown (no version_reported/version_fix recorded), so the match is supported by the matching symptom description and the shared detail that the issue stopped recurring after a software upgrade, rather than by a populated version field.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_02_06",
+    "case_number": "00942470",
+    "issue_key": "RCA-1730",
+    "match_type": "rca",
+    "rationale": "The case's inability to log into Voalte Admin Client while logged into Linq, traced to undersized database columns and fixed in 4.1.211, matches RCA-1730's identical root cause and fix.",
+    "matches": [
+      {
+        "issue_key": "RCA-1730",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case describes users unable to log into Voalte Admin Client specifically while also logged into Linq, on version 4.1.210, with R&D tracing it to database function column sizes and applying a fix. RCA-1730's summary is 'Users logged into a Linq badge are unable to login to Voalte Admin Client,' and its investigation_details identify the exact same root cause: the TrunkAccessDialString column size mismatch (20 vs 256) in the Staff_GetByUserDomainId function, with the fix applied in the Voalte Nurse Call 4.1.211 release -- matching both the symptom and the resolution described in the case.",
+        "version_justification": "RCA-1730 itself has version_rule issue_version_unknown, but its text documents that the underlying defect (linked as NC-20390, version_reported NC 4.1.210, version_rule reported_in_same_version) was fixed in 4.1.211, which exactly matches the case's reported version (Voalte Nurse Call 4.1.210) and confirms the fix had not yet reached the customer at the time of the complaint.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_02_07",
+    "case_number": "00917005",
+    "issue_key": "RCA-1703",
+    "match_type": "rca",
+    "rationale": "The case's Avaya callback failures from 8-digit FreeSWITCH-generated VoIP extensions, resolved by restarting VoIP services, matches RCA-1703's identical finding and workaround.",
+    "matches": [
+      {
+        "issue_key": "RCA-1703",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case reports Mobile Heartbeat callback failures because FreeSWITCH-generated VoIP extensions grew past 7 digits (exceeding 7999), while Avaya is hardcoded for 7-digit extensions, with VoIP service restart used as a workaround. RCA-1703's description documents the identical mechanism: aliases were being generated at 6 digits instead of 5, which combined with a prepended prefix produced 8-digit extensions that broke Avaya callback (expecting only 7 digits), and restarting the VoIP service temporarily restored 5-digit aliases -- matching the case's symptom and workaround exactly.",
+        "version_justification": "RCA-1703's version_rule is issue_version_unknown (no version data recorded on the RCA itself), but the related defect candidate NC-20216 (same summary title) has version_reported NC 4.1.210 with version_rule reported_in_same_version, matching the case's reported software version (Voalte Nurse Call 4.1.210) and reinforcing that this was an active, unfixed issue at the time of the case.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_02_08",
+    "case_number": "00913499",
+    "issue_key": "RCA-1700",
+    "match_type": "rca",
+    "rationale": "The case's 4th floor GRS7 devices freezing after the 4.1.210 upgrade, resolved by rebooting the units, is explicitly tracked under RCA-1700 in the case's own key points.",
+    "matches": [
+      {
+        "issue_key": "RCA-1700",
+        "issue_type": "rca",
+        "confidence": "high",
+        "rationale": "The case states GRS7 devices on the 4th floor kept freezing after an upgrade to Voalte Nurse Call 4.1.210 and that field service rebooted all GRS7 units to stop further occurrences, explicitly noting the issue was 'Tracked under RCA-1700.' RCA-1700's summary and comment_summary describe GRS7 panels on the 4th floor becoming unresponsive to touch after the upgrade to 4.1.210 on 11/25/2025, remedied by resetting the affected rooms -- matching the device, floor, upgrade version, symptom, and remediation described in the case.",
+        "version_justification": "RCA-1700's version_rule is issue_version_unknown (no version_reported/version_fix recorded), but its summary text states the freeze occurred 'after upgrade to 4.1.210,' matching the case's reported software version (Voalte Nurse Call 4.1.210) exactly, which strengthens the match despite the unpopulated structured version fields.",
+        "kb_support": []
+      }
+    ]
+  }
+]

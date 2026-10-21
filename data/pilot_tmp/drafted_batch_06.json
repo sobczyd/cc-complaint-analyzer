@@ -1,0 +1,138 @@
+[
+  {
+    "example_id": "ex_06_01",
+    "case_number": "00980526",
+    "issue_key": "NC-21805",
+    "match_type": "defect",
+    "rationale": "Patient admitted via A08 before the A01 arrives, leaving an orphaned patient with no location that then drops off the Status Board, matching the defect's described A08/INFO-before-A01 admission sequence.",
+    "matches": [
+      {
+        "issue_key": "NC-21805",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes a patient disappearing from the Status Board because an A08 message created/updated the patient record for admission before the A01 arrived, leaving the patient without a location. NC-21805's description matches this exactly: an A08/INFO message admits a patient with no location, and the subsequent A01 is then rejected, which is the same orphaned-patient mechanism.",
+        "version_justification": "version_rule is fixed_in_later_version (version_reported NC 4.1.200, version_fix NC 4.2.100). The case's reported software version (NC 4.1.210) falls between the reported and fix versions, so the fix was not yet present when the case occurred, strongly supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_06_02",
+    "case_number": "00883844",
+    "issue_key": "NC-20316",
+    "match_type": "defect",
+    "rationale": "Case describes dome lights not illuminating due to a Mirth configuration/Risk-channel processing issue; the labeled defect concerns directory-service login reconciliation, and no shared symptom or component evidence connects the two beyond the version.",
+    "matches": [
+      {
+        "issue_key": "NC-20316",
+        "issue_type": "defect",
+        "confidence": "low",
+        "rationale": "The case's reported issue is dome lights not illuminating on a unit, traced to a Mirth configuration not being applied so Risk-channel messages were stuck in processing. NC-20316's own description instead concerns the NC Directory Service reconciliation process clearing a Staff record's ApplicationUserID and disabling user logins. Nothing in the case text (dome lights, Mirth, Risk channel) overlaps with the issue text (login/ApplicationUserID/practitioner reconciliation), so there is no symptom or component evidence tying this case to this specific defect.",
+        "version_justification": "version_rule is reported_in_same_version, and both the case's reported version (Voalte Nurse Call 4.1.210) and the issue's version_reported (NC 4.1.210) match exactly, which is the only objectively supportive fact available; it does not compensate for the absence of symptom alignment.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_06_03",
+    "case_number": "00942470",
+    "issue_key": "NC-20316",
+    "match_type": "defect",
+    "rationale": "Users could not log into the Voalte Admin Client while also logged into Linq; R&D traced this to database function column sizes, aligning with the defect's directory-service login/reconciliation failure.",
+    "matches": [
+      {
+        "issue_key": "NC-20316",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes users unable to log into the Voalte Admin Client when also logged into Linq, with R&D tracing the cause to database function column sizes. NC-20316 describes a related failure mode in the same login/reconciliation subsystem: the Staff record's ApplicationUserID is cleared during practitioner reconciliation, and subsequent attempts to set username/domain fail because the ApplicationUser row already exists, which is consistent with the case's login-failure symptom tied to the directory/database layer.",
+        "version_justification": "version_rule is reported_in_same_version, and the case's reported software version (NC 4.1.210) matches the issue's version_reported (NC 4.1.210) exactly, supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_06_04",
+    "case_number": "00898373",
+    "issue_key": "NC-20316",
+    "match_type": "defect",
+    "rationale": "Missing roles and user IDs appeared in the Smart Client, with R&D working to resolve the underlying issue in Voalte Admin, matching the defect's ApplicationUserID-clearing root cause.",
+    "matches": [
+      {
+        "issue_key": "NC-20316",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case reports missing roles and user IDs in the Smart Client, with R&D working to resolve the underlying issue in Voalte Admin. NC-20316's description explains this directly: practitioner reconciliation clears the Staff record's ApplicationUserID column, which would surface as missing/empty user ID and role data for affected staff, matching the case's observed symptom.",
+        "version_justification": "version_rule is reported_in_same_version, and the case's reported software version (NC 4.1.210) matches the issue's version_reported (NC 4.1.210) exactly, supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_06_05",
+    "case_number": "00844342",
+    "issue_key": "NC-20115",
+    "match_type": "defect",
+    "rationale": "A CareComm - Reporting feature was not loading data; R&D determined it was an NNC rather than ERM issue, closed RCA-1633, and created NC-20115 to track the fix, which the case text names directly.",
+    "matches": [
+      {
+        "issue_key": "NC-20115",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case states that R&D determined the reporting-data issue was an NNC issue rather than an ERM issue, closed RCA-1633, and created defect NC-20115 to track it for a future fix — explicitly naming this issue key as the outcome of the investigation. NC-20115's own summary (bed data discrepancies, referencing RCA-1633) is consistent with the same reporting investigation described in the case.",
+        "version_justification": "version_rule is reported_in_same_version, and the case's reported software version (Voalte Nurse Call 4.1.100) matches the issue's version_reported (VNC 4.1.100) exactly, supporting the match.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_06_06",
+    "case_number": "00809026",
+    "issue_key": "NC-18446",
+    "match_type": "defect",
+    "rationale": "Status Board reports stopped loading over https after an upgrade, resolved with an http workaround, and R&D opened NC-18446 to fix the underlying https issue, matching the defect's description of https Status Board reports failing to load.",
+    "matches": [
+      {
+        "issue_key": "NC-18446",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes Status Board reports failing to load over an https URL after an upgrade, worked around by configuring SSRS to use http, with R&D opening a defect for the underlying https issue — and the case text names NC-18446 directly as that defect. NC-18446's own summary and description match this precisely: Status Board Patient Reports will not load with the https URL after SSRS is secured, showing a 'No reports available' message.",
+        "version_justification": "version_rule is fixed_in_later_version (version_reported NC 4.1.200, version_fix NC 4.2.100). The case's reported version is on the NNC numbering scheme (NNC 3.6.600) rather than the issue's NC numbering, so the two version fields are not directly comparable; confidence here rests primarily on the exact symptom match and the case's explicit naming of NC-18446.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_06_07",
+    "case_number": "00829961",
+    "issue_key": "NC-17606",
+    "match_type": "defect",
+    "rationale": "Bed exit and chair alarm calls became stuck on the Status Board after an upgrade due to a device-service race condition injecting duplicate calls into RabbitMQ, matching NC-17606's described race condition in call creation from monitored units.",
+    "matches": [
+      {
+        "issue_key": "NC-17606",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes alerts becoming stuck on the Status Board after an upgrade, with investigation finding a race condition in the multi-threaded device service that injected duplicate call records into the RabbitMQ bus, resolved by limiting the device service to a single processing thread. NC-17606's description matches this mechanism directly: a race condition where a monitoring console's duplicate call report is incorrectly treated as a new call, causing it to become stuck in the database and Status Board (RabbitMQ).",
+        "version_justification": "version_rule is fixed_in_later_version (version_reported NC 4.1.200, version_fix NC 4.2.000). The case's reported version is on the NNC numbering scheme (NNC 3.9.200) rather than the issue's NC numbering, so direct version comparison is limited; confidence rests primarily on the closely matching described race-condition mechanism and symptoms.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_06_08",
+    "case_number": "00851184",
+    "issue_key": "NC-17606",
+    "match_type": "defect",
+    "rationale": "Cancelled calls remained active on the Status Board due to a device-service race condition injecting duplicate call entries into RabbitMQ, explicitly tied by the case to the same prior RCA-1625 issue referenced in NC-17606.",
+    "matches": [
+      {
+        "issue_key": "NC-17606",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "The case describes cancelled calls remaining active on the Status Board, traced to a race condition from multi-threaded device-service processing that injected duplicate call notifications into the RabbitMQ bus, with log evidence of duplicate-key insert errors in the active call table; the case also notes the same errors were previously reported under RCA-1625 at other sites. NC-17606's description references the same RCA-1625 issue and describes the identical race-condition mechanism causing calls to become stuck via duplicate call reporting.",
+        "version_justification": "version_rule is reported_in_same_version, and the case's reported software version (Voalte Nurse Call 4.1.200) matches the issue's version_reported (NC 4.1.200) exactly, supporting the match.",
+        "kb_support": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,138 @@
+[
+  {
+    "example_id": "ex_08_01",
+    "case_number": "00448476",
+    "issue_key": "NC-11015",
+    "match_type": "defect",
+    "rationale": "The GRS7 was reported inoperable and resolved only by shipping replacement hardware rather than a software fix, consistent with NC-11015's finding that the Nurse Call Odometer utility can corrupt vital product data on the same eeprom page, a failure that requires a service-level repair (serial connection plus default admin password) rather than a field software fix.",
+    "matches": [
+      {
+        "issue_key": "NC-11015",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00448476 reports a GRS7 that was inoperable and was resolved by shipping a replacement unit, with no software fix applied. NC-11015 describes the Nurse Call Odometer utility writing to the same eeprom page as the vital product data (VPD) utility, corrupting VPD in the field; its work_around notes that repair requires a serial connection and the default hradmin password, i.e. not a standard field remedy, which is consistent with the case being resolved via hardware replacement instead of a software correction.",
+        "version_justification": "version_rule is fixed_in_later_version: the case's reported software version (4.0.300) predates NC-11015's version_fix (NC 4.2.000), so the unit could have been running software still affected by the odometer/VPD write conflict, supporting the match. The case text itself does not explicitly mention odometer writes or VPD corruption, so the version evidence is supportive but not conclusive.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_08_02",
+    "case_number": "00615483",
+    "issue_key": "NC-9070",
+    "match_type": "defect",
+    "rationale": "A bed exit alert issue reported immediately after a Nurse Call software upgrade matches NC-9070, a confirmed defect where bed exit alerts are generated even though the patient safety feature is not enabled, reported at the same software version as the case.",
+    "matches": [
+      {
+        "issue_key": "NC-9070",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case 00615483 reports a bed exit alert issue following a software upgrade to Voalte Nurse Call 4.1.101. NC-9070's actual_results state that a Bed Exit Off alert is generated even though the patient safety feature is not enabled, after upgrading from 4.1.001 to 4.1.101, matching both the symptom (bed exit alert malfunction post-upgrade) and the upgrade timing described in the case.",
+        "version_justification": "version_rule is reported_in_same_version: NC-9070's version_reported (NC 4.1.101) is identical to the case's reported software version (Voalte Nurse Call 4.1.101), strongly supporting that the case was affected by this exact defect before its NC 4.1.200 fix.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_08_03",
+    "case_number": "00594484",
+    "issue_key": "NC-8234",
+    "match_type": "defect",
+    "rationale": "The case's complaint of incorrect data in a built-in/canned report aligns with NC-8234, a confirmed defect in which the Certify Full canned report fails to evaluate call deviations against the user-specified start date/time and so shows incorrect certification data.",
+    "matches": [
+      {
+        "issue_key": "NC-8234",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00594484's reported issue is incorrect data shown in a built-in/canned report. NC-8234 describes the Certify Full report failing to honor the user-specified start datetime, so calls are shown as certified when they should be flagged as deviations - the same class of symptom (a canned report displaying incorrect/incorrect-looking data). The case was canceled as a duplicate before any case-specific detail (which report, which devices) was documented, so the match rests on the shared 'canned report shows incorrect data' symptom rather than an exact description match.",
+        "version_justification": "version_rule is fixed_in_later_version: NC-8234 states it affects versions from initial release (3.9.000) through its fix in NC 4.1.200. The case's reported software version, 4.0.403, falls within that affected range and predates the fix, supporting that the case could be hitting this defect.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_08_04",
+    "case_number": "00536173",
+    "issue_key": "NC-7998",
+    "match_type": "defect",
+    "rationale": "A GRS7 touchscreen reported as constantly freezing, resolved by power cycling the unit while running the exact version at which NC-7998 was reported, matches this defect's documented GRS7 touchscreen-freeze symptom and reboot work-around.",
+    "matches": [
+      {
+        "issue_key": "NC-7998",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case 00536173 reports a GRS7 touchscreen constantly freezing, resolved only by power cycling the device. NC-7998 describes the GRS7 touchscreen failing to accept touch input/freezing (e.g. after a soft reboot of other units), with 'Reboot the GRS-7' listed as the work_around, matching both the symptom and the resolution action taken on the case.",
+        "version_justification": "version_rule is reported_in_same_version: NC-7998's version_reported (VNC 4.0.402) exactly matches the case's reported software version (Voalte Nurse Call 4.0.402), and the fix (NC 4.1.200) is later, consistent with the site being advised to upgrade to prevent recurrence.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_08_05",
+    "case_number": "00578434",
+    "issue_key": "NC-7998",
+    "match_type": "defect",
+    "rationale": "Code calls stuck and unable to be cleared on multiple GRS7 devices, resolved by power cycling, is consistent with NC-7998's GRS7 touchscreen-freeze defect and its documented reboot work-around, on a software version in the same affected 4.0.x line that predates the fix.",
+    "matches": [
+      {
+        "issue_key": "NC-7998",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00578434 reports code calls unable to be cleared from multiple GRS7 devices, resolved by power cycling the units, consistent with the GRS7 freezing/unresponsive behavior NC-7998 describes, and matches the defect's work_around of rebooting the GRS-7.",
+        "version_justification": "NC-7998's version_rule is reported_in_same_version at VNC 4.0.402, but this case's reported version is 4.0.301, an earlier build in the same 4.0.x line rather than an exact match, so the version evidence supports but does not conclusively confirm this is the same defect; the case does predate the fix version NC 4.1.200.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_08_06",
+    "case_number": "00615539",
+    "issue_key": "NC-7998",
+    "match_type": "defect",
+    "rationale": "A frozen GRS7 device resolved only by power cycling, on the exact software version at which NC-7998 was reported, matches this defect's GRS7 touchscreen-freeze symptom and reboot work-around.",
+    "matches": [
+      {
+        "issue_key": "NC-7998",
+        "issue_type": "defect",
+        "confidence": "high",
+        "rationale": "Case 00615539 reports a GRS7 device frozen, resolved by power cycling the unit. NC-7998 describes the GRS7 touchscreen becoming unresponsive/freezing and lists 'Reboot the GRS-7' as the work_around, matching both the symptom and the resolution action used on the case.",
+        "version_justification": "version_rule is reported_in_same_version: NC-7998's version_reported (VNC 4.0.402) exactly matches the case's reported software version (Voalte Nurse Call 4.0.402), supporting that the case hit this specific defect before its NC 4.1.200 fix.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_08_07",
+    "case_number": "00309227",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "A GRS10H light bar stuck active after a code call, tracked internally under RCA-1028, matches NC-6563, whose description explicitly cites RCA-1028 as explaining why rebooting resolves the same light-bar-stuck-on symptom.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00309227 reports a GRS10H light bar remaining active after a code call was completed, and notes it was tracked under RCA-1028. NC-6563's own description explains that rebooting the device resolves the field issue 'as explained in' RCA-1028, directly tying this defect's light-bar-stuck symptom to the same tracking record cited in the case, and NC-6563's summary (light bar continues to flash/remain on without an active call) matches the case's reported symptom.",
+        "version_justification": "version_rule is case_version_unknown: the case text does not record a reported software version, so there is no direct version evidence to confirm or weaken the match beyond the strong symptom and RCA-1028 cross-reference alignment.",
+        "kb_support": []
+      }
+    ]
+  },
+  {
+    "example_id": "ex_08_08",
+    "case_number": "00235787",
+    "issue_key": "NC-6563",
+    "match_type": "defect",
+    "rationale": "An audio/indicator light stuck open on a GRS10H, cleared only by rebooting the device, is consistent with NC-6563's defect where the GRS10H light bar becomes stuck out of sync with call status and is resolved by reboot, at a software version within the defect's documented affected range.",
+    "matches": [
+      {
+        "issue_key": "NC-6563",
+        "issue_type": "defect",
+        "confidence": "medium",
+        "rationale": "Case 00235787 reports an audio indicator light stuck open on a GRS10H, cleared by rebooting the device. NC-6563 describes the GRS10H light bar becoming stuck out of sync with call status (remaining illuminated/flashing after a call is canceled), with 'Reboot the GRS-10' as its work_around, matching the same light-bar component and reboot-based resolution, though the case describes a steady 'stuck open' state rather than the defect's more specifically documented 'flashing' presentation.",
+        "version_justification": "version_rule is fixed_in_later_version: NC-6563's description states it impacts versions 4.0.xxx and above, and the case's reported version (4.0.200) falls in that range and predates the version_fix (NC 4.1.200), supporting that the case could be hitting this defect.",
+        "kb_support": []
+      }
+    ]
+  }
+]
