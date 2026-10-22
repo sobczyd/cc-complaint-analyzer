@@ -21,6 +21,8 @@ DIM_CLUSTER_COLUMNS = [
 DIM_DEFECT_COLUMNS = [
     "Case Number", "issue_key", "issue_type", "confidence", "rationale", "version_justification", "kb_support",
 ]
+SUMMARY_PREFIX = "case_summary."
+SUMMARIES_FILE = "cases_with_summaries.xlsx"
 
 README = """# Power BI export package
 
@@ -32,11 +34,13 @@ Generated {generated} from `{run}`. Each Excel file is one table; point Power BI
 | DimID.xlsx (DimID) | DimID | `Source Identifier Raw` |
 | DimCluster.xlsx (DimCluster) | DimCluster | `Case Number` |
 | DimDefect.xlsx (DimDefect) | DimDefect | `Case Number` (many rows per case) |
+| DimSummary.xlsx (DimSummary) | DimSummary | `Source Identifier Raw` (the `case_summary.*` columns) |
 
 ## Relationships (single direction, filtering from the dimension to FactSource)
 - FactSource[Source Identifier Raw] 1 : 1 DimID[Source Identifier Raw]
 - FactSource[Source Identifier Raw] 1 : 1 DimCluster[Case Number]
 - FactSource[Source Identifier Raw] 1 : * DimDefect[Case Number]
+- FactSource[Source Identifier Raw] 1 : 1 DimSummary[Source Identifier Raw]
 
 All keys are text (leading zeros kept). A case can match several defects, so use a distinct count of cases
 when slicing by defect.
@@ -154,6 +158,27 @@ def read_defect_rows(mappings: Path | None) -> list[dict[str, Any]]:
     return out
 
 
+def read_summary_rows(summaries: Path | None) -> tuple[list[str], list[dict[str, Any]]]:
+    """Return the ``case_summary.*`` column names and one record per case (key in ``CaseNumber``)."""
+    if summaries is None:
+        return [], []
+    book = load_workbook(summaries, read_only=True, data_only=True)
+    try:
+        if "Cases" not in book.sheetnames:
+            raise PowerBIExportError(f"no 'Cases' sheet in {summaries}")
+        rows = list(book["Cases"].iter_rows(values_only=True))
+    finally:
+        book.close()
+    header = [_text(cell) for cell in rows[0]]
+    columns = [name for name in header if name.startswith(SUMMARY_PREFIX)]
+    out = []
+    for values in rows[1:]:
+        record = dict(zip(header, values))
+        if _text(record.get("CaseNumber")):
+            out.append(record)
+    return columns, out
+
+
 def build_package(
     run_dir: Path,
     *,
@@ -208,13 +233,30 @@ def build_package(
         [[row[column] for column in DIM_DEFECT_COLUMNS] for row in defect_rows],
     )
 
+    summaries = run_dir / SUMMARIES_FILE
+    summaries = summaries if summaries.is_file() else None
+    if summaries is None:
+        warnings.append(f"no {SUMMARIES_FILE}: DimSummary is empty")
+    summary_columns, summary_records = read_summary_rows(summaries)
+    if summaries is not None and not summary_columns:
+        warnings.append(f"no {SUMMARY_PREFIX}* columns in {SUMMARIES_FILE}: DimSummary has no summary columns")
+    summary_rows = [
+        [_text(record["CaseNumber"])] + [record.get(column) for column in summary_columns]
+        for record in summary_records
+        if _text(record["CaseNumber"]) in key_set
+    ]
+    _write(out_dir / "DimSummary.xlsx", "DimSummary", [KEY] + summary_columns, summary_rows)
+    missing_summary = key_set - {row[0] for row in summary_rows}
+    if summaries is not None and missing_summary:
+        warnings.append(f"{len(missing_summary)} FactSource case(s) have no summary")
+
     missing_cluster = [key for key in key_set if key not in chosen] if cluster_source != "none" else []
     if missing_cluster:
         warnings.append(f"{len(missing_cluster)} FactSource case(s) have no cluster")
     (out_dir / "README.md").write_text(
         README.format(generated=datetime.now().strftime("%Y-%m-%d %H:%M"), run=run_dir.name), encoding="utf-8"
     )
-    sources = {"cases": cases, "comparison": comparison_file, "case_assignments": assignments, "mappings": mappings}
+    sources = {"cases": cases, "comparison": comparison_file, "case_assignments": assignments, "mappings": mappings, "summaries": summaries}
     manifest = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "run_dir": str(run_dir),
@@ -227,8 +269,10 @@ def build_package(
             "DimID": len(dim_id),
             "DimCluster": len(chosen),
             "DimDefect": len(defect_rows),
+            "DimSummary": len(summary_rows),
         },
         "coverage": {
+            "cases_without_summary": len(missing_summary) if summaries is not None else len(key_set),
             "cases_without_cluster": len(missing_cluster),
             "cases_with_defect": len({row["Case Number"] for row in defect_rows}),
             "cases_without_defect": len(key_set - {row["Case Number"] for row in defect_rows}),

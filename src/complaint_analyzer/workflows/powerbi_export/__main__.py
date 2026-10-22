@@ -54,7 +54,7 @@ def main(argv: list[str] | None = None) -> int:
 def package_main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(
         prog="python -m complaint_analyzer.workflows.powerbi_export package",
-        description="Write FactSource, DimID, DimCluster and DimDefect workbooks to <run>\\powerbi_export_package.",
+        description="Write FactSource, DimID, DimCluster, DimDefect and DimSummary workbooks to <run>\\powerbi_export_package.",
     )
     parser.add_argument("--run", type=Path, required=True, help="run folder containing cases.xlsx")
     parser.add_argument("--comparison", type=Path, default=None, help="compare_* folder or comparison.xlsx for DimCluster")

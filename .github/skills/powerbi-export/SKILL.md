@@ -54,6 +54,7 @@ Writes `<run>\powerbi_export_package\` with one Excel file per Power BI table, p
 - `DimID.xlsx`: `Source Identifier Raw`, `Source Identifier`, `PR ID`, blank `Trackwise_Status`. TODO: add Trackwise columns once that export exists.
 - `DimCluster.xlsx`: key `Case Number`; `Resolved cluster`, `Resolved subcluster`, `Period`, `Mapping status`, `Mapping confidence`. Taken from `--comparison` (`comparison.xlsx` > Case Assignments, folder or file) if given, else from `clusters\<name>\case_assignments.jsonl` (newest, or `--clusters`).
 - `DimDefect.xlsx`: 1 FactSource to many rows per `Case Number`; `issue_key`, `issue_type`, `confidence`, `rationale`, `version_justification`, `kb_support`. From `defects\<name>\mappings.xlsx` (newest, or `--defects`); `match_type = none` rows are dropped.
+- `DimSummary.xlsx`: key `Source Identifier Raw` (1:1 with FactSource) plus every `case_summary.*` column. From `<run>\cases_with_summaries.xlsx` (Cases sheet); missing file gives a warning and an empty dimension.
 
 Clusters and defects are optional: missing sources give a warning and an empty dimension. Rows for
 cases outside the run (for example the other period in a comparison) are dropped and counted in the
