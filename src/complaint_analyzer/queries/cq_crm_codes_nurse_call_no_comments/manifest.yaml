@@ -4,7 +4,7 @@ description: >-
   Nurse Call problem codes and complaint qualifications. Case comments are deliberately
   excluded.
 created: "2026-10-15"
-updated: "2026-10-19"
+updated: "2026-10-21"
 versions:
   - version: v1
     file: v1.txt
@@ -91,3 +91,31 @@ versions:
       status: skipped
       row_count: null
       notes: Single standard Case field added; not run against the org yet.
+  - version: v5
+    file: v5.txt
+    created: "2026-10-21"
+    author: Sobczynski
+    base_version: v4
+    prompt: >-
+      For the generated powerbi.xlsx, use the attached field comparison Excel file to revise the
+      powerbi-export skill to match data\input\salesforce.xlsx, specifically for cases which are
+      already closed. Investigate columns with a value of Not Matched, consulting the
+      trackforce-insight repository. (Plan: add the complaint qualification fields that feed UDI,
+      Work Order, Main - Sub Assembly, KB Article and the RA Actions to Resolve picklist, and return
+      the Service Requested by Baxter picklist label.)
+    summary: Adds the complaint qualification fields needed for Power BI parity and returns the Service Requested picklist label.
+    changes:
+      - "Complaint_Qualifications__r: HRCSVC_Service_Requested_by_Baxter__c now selected as toLabel(...) so the picklist label is returned."
+      - "Complaint_Qualifications__r: added RA_Actions_to_Resolve__c (RA picklist, feeds actions_to_resolve_2)."
+      - "Complaint_Qualifications__r: added HRCSVC_KB_Article__c (feeds Reference Name)."
+      - "Complaint_Qualifications__r: added HRCSVC_UDI__c (feeds udi)."
+      - "Complaint_Qualifications__r: added HRCSVC_Work_Order__r.WorkOrderNumber (feeds work_order)."
+      - "Complaint_Qualifications__r: added HRCSVC_Product_Feature_Component__c (Main - Sub Assembly)."
+      - Filters, other fields, subquery filters and ordering are unchanged from v4.
+    objects: [Case, Account, Asset, Problem_Codes__r, Complaint_Qualifications__r, WorkOrder]
+    validation:
+      org: hillrom
+      validated_at: "2026-10-21T23:52:00Z"
+      status: passed
+      row_count: 5
+      notes: Ran with sf data query --file and LIMIT 5 on the default target org; done=true.

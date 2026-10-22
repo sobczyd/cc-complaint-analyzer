@@ -5,8 +5,35 @@
 Last-30-day Salesforce Cases with the CareComm - Nurse Call complaint code, with their Nurse Call problem codes and complaint qualifications. Case comments are deliberately excluded.
 
 - Created: 2026-10-15
-- Last updated: 2026-10-19
-- Versions: 4
+- Last updated: 2026-10-21
+- Versions: 5
+
+## v5 — 2026-10-21
+
+**Summary:** Adds the complaint qualification fields needed for Power BI parity and returns the Service Requested picklist label.
+
+- File: `v5.txt`
+- Based on: v4
+- Author: Sobczynski
+- Objects: `Case`, `Account`, `Asset`, `Problem_Codes__r`, `Complaint_Qualifications__r`, `WorkOrder`
+
+**Changes:**
+
+- Complaint_Qualifications__r: HRCSVC_Service_Requested_by_Baxter__c now selected as toLabel(...) so the picklist label is returned.
+- Complaint_Qualifications__r: added RA_Actions_to_Resolve__c (RA picklist, feeds actions_to_resolve_2).
+- Complaint_Qualifications__r: added HRCSVC_KB_Article__c (feeds Reference Name).
+- Complaint_Qualifications__r: added HRCSVC_UDI__c (feeds udi).
+- Complaint_Qualifications__r: added HRCSVC_Work_Order__r.WorkOrderNumber (feeds work_order).
+- Complaint_Qualifications__r: added HRCSVC_Product_Feature_Component__c (Main - Sub Assembly).
+- Filters, other fields, subquery filters and ordering are unchanged from v4.
+
+**Prompt:**
+
+> For the generated powerbi.xlsx, use the attached field comparison Excel file to revise the powerbi-export skill to match data\input\salesforce.xlsx, specifically for cases which are already closed. Investigate columns with a value of Not Matched, consulting the trackforce-insight repository. (Plan: add the complaint qualification fields that feed UDI, Work Order, Main - Sub Assembly, KB Article and the RA Actions to Resolve picklist, and return the Service Requested by Baxter picklist label.)
+
+**Validation:** status `passed`, org `hillrom`, at 2026-10-21T23:52:00Z, 5 row(s)
+
+_Ran with sf data query --file and LIMIT 5 on the default target org; done=true._
 
 ## v4 — 2026-10-19
 

@@ -41,6 +41,8 @@ CASES_WORKBOOK_FILENAME = "cases.xlsx"
 
 _SELECT = re.compile(r"\s*SELECT\s", re.IGNORECASE)
 _FROM = re.compile(r"\sFROM\s+(\w+)", re.IGNORECASE)
+# Field functions that keep the field's API name as the result key (toLabel(X) -> X).
+_FIELD_FUNCTION = re.compile(r"^(?:toLabel|convertCurrency|format)\(\s*([\w.]+)\s*\)$", re.IGNORECASE)
 
 
 class ExportError(Exception):
@@ -128,11 +130,16 @@ def parse_select(soql: str) -> SelectShape:
             inner = _select_and_from(part[1:-1])
             if inner is not None:
                 children[inner[1]] = tuple(
-                    name for name in _split_top_level(inner[0]) if name
+                    _field_name(name) for name in _split_top_level(inner[0]) if name
                 )
         elif part and not any(char.isspace() for char in part):
-            fields.append(part)
+            fields.append(_field_name(part))
     return SelectShape(fields=tuple(fields), children=children)
+
+
+def _field_name(part: str) -> str:
+    match = _FIELD_FUNCTION.match(part)
+    return match.group(1) if match else part
 
 
 # --------------------------------------------------------------------------- sf CLI

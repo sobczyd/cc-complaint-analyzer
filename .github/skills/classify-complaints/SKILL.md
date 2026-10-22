@@ -33,7 +33,7 @@ each decision with:
      after asking.
    - No folder: fetch. Ask to confirm the period and the query. Default query set:
      `cq_crm_codes_nurse_call_no_comments`, **latest version** (currently
-     `src\complaint_analyzer\queries\cq_crm_codes_nurse_call_no_comments\v4.txt`; find the newest
+     `src\complaint_analyzer\queries\cq_crm_codes_nurse_call_no_comments\v5.txt`; find the newest
      `vN.txt` rather than assuming). If the user did not name a query, ask with `ask_user` whether to use
      the latest version of the default set (first choice, recommended) or another query name/version
      (list with `.\.venv\Scripts\python.exe -m complaint_analyzer.queries --list`) before proceeding.
@@ -61,7 +61,8 @@ each decision with:
 6. **Defect mapping** (optional): ask whether to map the complaints to existing Jira defects and RCAs.
    If yes, run the `jira-rca-corpus` skill when the corpora are missing or stale, then the
    `defect-mapping` skill against `<run_dir>\clusters\<name>\case_assignments.jsonl`.
-   Also offer the `powerbi-export` skill to write `<run_dir>\powerbi.xlsx` (salesforce.xlsx layout) from `cases.xlsx`.
+   Also offer the `powerbi-export` skill to write `<run_dir>\powerbi.xlsx` (salesforce.xlsx layout) from `cases.xlsx`,
+   or its `package` command to write `<run_dir>\powerbi_export_package\` (FactSource, DimID, DimCluster, DimDefect) for the Power BI data model.
    To compare this period with another (for example last month), mention the `compare-periods` skill, which
    needs only the finished clustering and not the defect mapping.
 7. **Diagram**: record the final choices with `state`, then generate the static diagram (rerun any time):

@@ -1,0 +1,52 @@
+SELECT Id, CaseNumber, Status, Subject, Description,
+       CreatedDate, ClosedDate, LastModifiedDate,
+       Owner.Name,
+       Account.Name, Account.BillingState, Account.BillingPostalCode, Account.JDE_External_ID__c,
+       HRCSVC_Is_Complain_Qualification_Exist__c,
+       HRCSVC_Clock_Hours_to_Resolve__c,
+       HRCSVC_Business_Hours_to_Resolve__c,
+       RMA_Number__c,
+       Serial_Number_s__c,
+       HRCSVC_Asset_s_Model_Description__c,
+       Asset.Name,
+       Asset.SerialNumber,
+       Asset.HRCFSL_UDI__c,
+       HRCSVC_Software_Version__r.Name,
+       HRCSVC_Main_Sub_Assembly__r.Name,
+       DEA_Exists__c, Is_DEA_Required__c, Is_Remote_Assessment_Required__c,
+       HRCSVC_Case_Resolution__c, Case_Resolution_ReadOnly__c,
+       HRCSVC_Complaint_Code__r.Name,
+       (SELECT Id, Cause_Code__r.Name, Cause_Code_Name__c,
+               Component_Code__r.Name, Component_Name__c,
+               As_Determined_Code__r.Name, As_Reported_Code__r.Name,
+               Product_Family__r.Name,
+               ADC_Name__c, ADPC_Name__c, ARPC_Name__c, ARPC_Complaint__c, DVAD__c,
+               Asset__r.Name, Work_Order__r.WorkOrderNumber
+        FROM Problem_Codes__r
+        WHERE Product_Family__r.Name = 'CareComm - Nurse Call'),
+       (SELECT Id, Name, HRCSVC_Status__c, HRCSVC_Product_Group__c,
+               TW_Complaint_Number__c, HRCSVC21_URL__c,
+               HRCSVC_Certification_Date__c, HRCSVC_Upgrade_Date__c,
+               HRCSVC_Part_Serial_and_or_Revision__c,
+               HRCSVC_Device_Serviced__c, HRCSVC_Was_device_serviced__c,
+               HRCSVC_Describe_Malfunction_Event__c, HRCSVC_Process_Step__c,
+               HRCSVC_Injury_or_Death__c, HRCSVC_Second_device_involved__c,
+               HRCSVC_Was_the_event_communicated__c,
+               toLabel(HRCSVC_Service_Requested_by_Baxter__c), HRCSVC_Complaint_Occupation__c,
+               HRCSVC_Device_Message_Alert__c,
+               HRCSVC_Issue_Cause__c, RA_Issue_Cause__c,
+               HRCSVC_Actions_to_Resolve__c, RA_Actions_to_Resolve_Text__c,
+               RA_Did_same_issue_occur__c,
+               HRCSVC_Log_Evidence__c, HRCSVC_Log_Evidence_Text__c,
+               RA_Log_Evidence__c, RA_Log_Evidence_Text__c,
+               RA_Explain_Log_Evidence__c,
+               HRCSVC_Test_Inspection_Troubleshooting__c, RA_Test_Inspection_Troubleshooting__c,
+               HRCSVC_Test_Results__c, RA_Test_Results__c,
+               RA_Actions_to_Resolve__c, HRCSVC_KB_Article__c, HRCSVC_UDI__c,
+               HRCSVC_Work_Order__r.WorkOrderNumber, HRCSVC_Product_Feature_Component__c
+        FROM Complaint_Qualifications__r
+        WHERE HRCSVC_Product_Group__c = 'CareComm - Nurse Call')
+FROM Case
+WHERE CreatedDate = LAST_N_DAYS:30
+  AND HRCSVC_Complaint_Code__r.Name = 'CareComm - Nurse Call'
+ORDER BY CreatedDate DESC

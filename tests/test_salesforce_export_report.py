@@ -67,6 +67,14 @@ def test_parse_select_reads_fields_and_children():
     assert shape.children == {"Problem_Codes__r": ("Id", "Cause_Code__r.Name")}
 
 
+def test_parse_select_unwraps_tolabel():
+    shape = parse_select(
+        "SELECT Id, toLabel(Status), (SELECT Name, toLabel(Picklist__c) FROM Kids__r) FROM Case"
+    )
+    assert shape.fields == ("Id", "Status")
+    assert shape.children == {"Kids__r": ("Name", "Picklist__c")}
+
+
 def test_parse_response_rejects_errors():
     with pytest.raises(ExportError, match="did not return JSON"):
         parse_response("not json")
@@ -97,7 +105,7 @@ def test_export_query_set_from_json(tmp_path):
     for name in ("query.soql", "raw.json", "export.json", "cases.xlsx"):
         assert (out / name).is_file()
     meta = json.loads((out / "export.json").read_text(encoding="utf-8"))
-    assert meta["version"] == "v3" and meta["row_count"] == 1
+    assert meta["version"] == "v5" and meta["row_count"] == 1
     header = _sheet_rows(out / "cases.xlsx", "Cases")[0]
     assert header[:2] == ["Id", "CaseNumber"]
     assert "Problem Codes" in load_workbook(out / "cases.xlsx").sheetnames

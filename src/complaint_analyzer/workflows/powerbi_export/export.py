@@ -11,6 +11,7 @@ from openpyxl import Workbook, load_workbook
 
 from ..defect_mapping.kb import parse_link
 from .mapping import build_row
+from .serials import SERIAL_COLUMNS
 
 DEFAULT_TEMPLATE = Path("data") / "input" / "salesforce.xlsx"
 
@@ -63,7 +64,8 @@ def load_kb_titles(kb_dir: Path | None) -> dict[str, str]:
 def export_powerbi(
     cases: Path, out: Path, *, template: Path = DEFAULT_TEMPLATE, kb_dir: Path | None = None
 ) -> dict[str, Any]:
-    headers = read_headers(template)
+    template_headers = read_headers(template)
+    headers = template_headers + [name for name in SERIAL_COLUMNS if name not in template_headers]
     case_rows = read_sheet(cases, "Cases")
     if not case_rows:
         raise PowerBIExportError(f"no rows on the Cases sheet of {cases}")
@@ -80,8 +82,17 @@ def export_powerbi(
     sheet = book.active
     sheet.title = "Sheet1"
     sheet.append(headers)
-    stats = {"cases": 0, "extra_problem_codes": 0, "extra_qualifications": 0, "kb_titles": 0}
+    stats = {
+        "cases": 0,
+        "extra_problem_codes": 0,
+        "extra_qualifications": 0,
+        "kb_titles": 0,
+        "serial_numbers": 0,
+        "pre_post_serials": 0,
+    }
     reference_index = headers.index("Reference Name")
+    serials_index = headers.index("serial_numbers") if "serial_numbers" in headers else None
+    pre_index, post_index = headers.index("pre_sn"), headers.index("post_sn")
     for case in case_rows:
         number = str(case.get("CaseNumber"))
         codes, cqs = problem_codes.get(number, []), qualifications.get(number, [])
@@ -96,12 +107,14 @@ def export_powerbi(
             export_date=exported_at,
         )
         stats["kb_titles"] += bool(row[reference_index])
+        stats["serial_numbers"] += serials_index is not None and bool(row[serials_index])
+        stats["pre_post_serials"] += bool(row[pre_index] or row[post_index])
         sheet.append(row)
         stats["cases"] += 1
     sheet.freeze_panes = "A2"
     out.parent.mkdir(parents=True, exist_ok=True)
     book.save(out)
-    return {**stats, "columns": len(headers), "out": str(out)}
+    return {**stats, "columns": len(headers), "template_columns": len(template_headers), "out": str(out)}
 
 
 def _by_case(rows: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
