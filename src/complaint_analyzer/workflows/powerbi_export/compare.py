@@ -24,24 +24,8 @@ from .mapping import NA_STRINGS
 KEY = "Source Identifier Raw"
 STATE = "Source State"
 
-# Trackwise / customer columns with no Salesforce source yet (handled in separate work).
-UNSOURCED = frozenset(
-    {
-        "Project",
-        "Complaint Receipt Date",
-        "Date Opened",
-        "Date Closed",
-        "PR State",
-        "Source Status",
-        "Source Created Date",
-        "Source Closed Date",
-        "Event Description",
-        "Evaluation Rationale",
-        "kept_file",
-        "Customer",
-        "Customer / Technical Note",
-    }
-)
+    # Trackwise columns with no Salesforce source (Trackwise data not supplied) stay blank; customer columns have no source.
+UNSOURCED = frozenset({"Customer", "Customer / Technical Note"})
 TIMING = frozenset({"export_date"})
 # Columns this export derives itself; the dashboard leaves them blank.
 DERIVED = frozenset({"serial_numbers"})
@@ -59,7 +43,7 @@ _FILLS = {
 
 
 def is_unsourced(column: str) -> bool:
-    return column in UNSOURCED or column.endswith("^") or column.endswith("_Merged")
+    return column in UNSOURCED
 
 
 def normalize(value: Any) -> str:

@@ -223,5 +223,5 @@ def build_row(
         [description, case.get("Serial_Number_s__c"), qualification.get("HRCSVC_Part_Serial_and_or_Revision__c")]
     )
     values["serial_numbers"] = ", ".join(find_serials(text)) or None
-    values.update(pre_post_serials(text))
+    values.update(pre_post_serials(text, today=export_date))
     return [values.get(header) for header in headers]

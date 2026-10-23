@@ -131,6 +131,16 @@ def test_defect_mapping_skill_and_worker_are_wired() -> None:
         assert needle in corpus_body
 
 
+def test_trackwise_integration_skill_is_wired() -> None:
+    skill_path = ROOT / ".github" / "skills" / "trackwise-integration" / "SKILL.md"
+    metadata, body = _frontmatter(skill_path)
+    assert metadata["name"] == skill_path.parent.name
+    for needle in ("FactComplaint", "--trackwise-dir", "data\\trackwise", "trackforce-insight"):
+        assert needle in body
+    _, export_body = _frontmatter(ROOT / ".github" / "skills" / "powerbi-export" / "SKILL.md")
+    assert "trackwise-integration" in export_body
+
+
 def test_case_clustering_skill_and_worker_are_wired() -> None:
     skill_path = ROOT / ".github" / "skills" / "case-clustering" / "SKILL.md"
     metadata, body = _frontmatter(skill_path)

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from openpyxl import Workbook
 
@@ -10,9 +10,13 @@ from complaint_analyzer.workflows.powerbi_export.derived import (
 )
 from complaint_analyzer.workflows.powerbi_export.description import parse_description
 from complaint_analyzer.workflows.powerbi_export.mapping import build_row, format_date, format_datetime
+from complaint_analyzer.workflows.powerbi_export.package import dim_serial_rows
 from complaint_analyzer.workflows.powerbi_export.serials import (
     SERIAL_COLUMNS,
+    age_category,
+    classify_serials,
     find_serials,
+    months_since_1970,
     pre_post_serials,
     serial_wwyy,
     week_monday,
@@ -168,11 +172,61 @@ def test_pre_post_serials_from_description():
     assert list(values) == list(SERIAL_COLUMNS)
     assert values["pre_sn"] == "062618PWM2" and values["pre_sn_date"] == "0626"
     assert values["post_sn"] == "26261F1WM2" and values["post_sn_date"] == "2626"
-    assert values["pre_sn_date_wwyy"] == datetime(2026, 2, 2)
-    assert values["post_sn_date_wwyy"] == datetime(2026, 6, 22)
+    assert values["pre_sn_date_wwyy"] == date(2026, 2, 2)
+    assert values["post_sn_date_wwyy"] == date(2026, 6, 22)
     previous = pre_post_serials("Previous RCB SN: 3918291WIS\nNew RCB SN: 492417KWM2", current_yy=26)
     assert (previous["pre_sn"], previous["post_sn"]) == ("3918291WIS", "492417KWM2")
-    assert pre_post_serials("New SN: 402017LWIS", current_yy=26) == dict.fromkeys(SERIAL_COLUMNS)
+    empty = dict.fromkeys(SERIAL_COLUMNS) | {
+        "new_serial_numbers": "402017LWIS",
+        "current_year": date.today().year,
+        "current_months_since_1970": months_since_1970(date.today()),
+    }
+    assert pre_post_serials("New SN: 402017LWIS", current_yy=26) == empty
+
+
+def test_classify_serials_by_preceding_keyword():
+    text = "402017LWIS first. OLD: 062618PWM2, 0819028WIS new 26261F1WM2 NEW- 492417KWM2 Previous 3918291WIS\nlater 111111AWIS"
+    assert classify_serials("402017LWIS only") == ([], [])
+    old, new = classify_serials(text)
+    assert old == ["062618PWM2", "0819028WIS", "3918291WIS"]
+    assert new == ["26261F1WM2", "492417KWM2"]
+    assert classify_serials("402017LWIS then old 062618PWM2") == (["062618PWM2"], [])
+    values = pre_post_serials(text, today=date(2026, 10, 23))
+    assert values["old_serial_numbers"] == "062618PWM2, 0819028WIS, 3918291WIS"
+    assert values["new_serial_numbers"] == "26261F1WM2, 492417KWM2"
+
+
+def test_dim_serial_rows_explode_and_dedupe():
+    fact = [
+        {
+            "Source Identifier Raw": "01", "old_serial_numbers": "062618PWM2, 0819028WIS",
+            "new_serial_numbers": "26261F1WM2, 062618PWM2", "pre_sn": "062618PWM2", "post_sn": "26261F1WM2",
+            "pre_sn_date_wwyy": datetime(2026, 2, 2),
+        },
+        {"Source Identifier Raw": "02", "old_serial_numbers": "062618PWM2, 062618PWM2", "new_serial_numbers": None},
+    ]
+    rows = dim_serial_rows(fact, today=date(2026, 10, 23))
+    assert [(r["Source Identifier Raw"], r["sn_type"], r["serial_number"]) for r in rows] == [
+        ("01", "old", "062618PWM2"), ("01", "old", "0819028WIS"), ("01", "new", "26261F1WM2"),
+        ("01", "new", "062618PWM2"), ("02", "old", "062618PWM2"),
+    ]
+    assert rows[0]["pre_sn_date_wwyy"] == date(2026, 2, 2) and rows[0]["sn_age_in_months"] == 8
+    assert rows[0]["sn_age_category"] == "within warranty"
+
+
+def test_derived_age_columns():
+    values = pre_post_serials("SN NEW - 26261F1WM2 / SN OLD - 062618PWM2", today=date(2026, 10, 23))
+    assert values["pre_sn_date_year"] == 2026 and values["post_sn_date_year"] == 2026
+    assert values["current_year"] == 2026 and values["pre_sn_age_in_years"] == 0
+    assert values["pre_sn_age_in_months_since_1970"] == 56 * 12 + 1
+    assert values["current_months_since_1970"] == 56 * 12 + 9
+    assert values["pre_sn_age_in_months"] == 8 and values["pre_sn_age_category"] == "within warranty"
+    old = pre_post_serials("old 011014PWM2 new 01241PWM2", today=date(2026, 10, 23))
+    assert old["pre_sn_age_in_years"] == 16 and old["post_sn_age_in_years"] == 2
+    assert old["pre_sn_age_category"] == "beyond expected life"
+    assert [age_category(n) for n in (18, 19, 60, 61, None)] == [
+        "within warranty", "within service life", "within service life", "beyond expected life", None,
+    ]
 
 
 def test_serial_wwyy_windows():
@@ -183,7 +237,7 @@ def test_serial_wwyy_windows():
     assert serial_wwyy("00121WIS", current_yy=26) == "0121"
     assert serial_wwyy("00150WIS", current_yy=26) == "0015"
     assert week_monday("5325") is None
-    assert week_monday("0102") == datetime(2001, 12, 31)
+    assert week_monday("0102") == date(2001, 12, 31)
 
 
 def test_build_row_appends_serial_columns():
@@ -194,7 +248,9 @@ def test_build_row_appends_serial_columns():
         None,
         {"HRCSVC_Part_Serial_and_or_Revision__c": "4020142WIS"},
     )
-    assert row[:6] == ["4020142WIS, 042516TWM2", "4020142WIS", "4020", "042516TWM2", "0425", datetime(2020, 9, 28)]
+    assert row[:8] == [
+        "4020142WIS, 042516TWM2", "4020142WIS", "042516TWM2", "4020142WIS", "4020", "042516TWM2", "0425", date(2020, 9, 28),
+    ]
 
 
 def test_compare_normalization_and_truncation():
@@ -226,7 +282,7 @@ def _book(path, headers, rows):
 
 
 def test_compare_closed_cases(tmp_path):
-    headers = ["Source Identifier Raw", "Source State", "case_id", "Product Family^", "serial_numbers"]
+    headers = ["Source Identifier Raw", "Source State", "case_id", "Customer", "serial_numbers"]
     _book(tmp_path / "ours.xlsx", headers, [["01", "Closed", "a", None, "1234AWIS"], ["02", "Open", "b", None, None]])
     _book(tmp_path / "dash.xlsx", headers, [["01", "Closed", "a", "X", None], ["02", "Open", "c", None, None]])
     result = compare(tmp_path / "ours.xlsx", tmp_path / "dash.xlsx")
@@ -236,7 +292,7 @@ def test_compare_closed_cases(tmp_path):
         "Source Identifier Raw": "Matched",
         "Source State": "Matched",
         "case_id": "Matched",
-        "Product Family^": "Unsourced",
+        "Customer": "Unsourced",
         "serial_numbers": "Derived",
     }
     assert compare(tmp_path / "ours.xlsx", tmp_path / "dash.xlsx", state=None)["cases"] == 2

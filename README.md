@@ -37,7 +37,7 @@ VS Code**. Then:
 ## 2. End-to-end workflow: build the Power BI package
 
 The goal is the `powerbi_export_package\` folder (`FactSource`, `DimID`, `DimCluster`,
-`DimDefect`, `DimSummary` Excel files plus a refresh `README.md`) that feeds the Power BI data model. Each
+`DimDefect`, `DimSummary`, `DimSerial` Excel files plus a refresh `README.md`) that feeds the Power BI data model. Each
 step is one prompt in Copilot Chat; every step writes into the run folder under `data\runs\`.
 
 | Step | What happens | Prompt | Key output |
@@ -112,7 +112,7 @@ defect mapping at the end.
 | `/defect-mapping data\runs\<run-id>\clusters\<name> --min-batch 10 --max-batch 20` | `defect-mapping` | Same, with custom batch bounds |
 | `/compare-periods Sep 2026 (run <a>) vs Oct 1-19 2026 (run <b>)` | `compare-periods` → Cluster Resolve Worker | `data\runs\compare_...\comparison.xlsx`, `summary.md`, audit files |
 | `/compare-periods split data\runs\<run-id> at 2026-10-15` | `compare-periods` (one run, two date ranges) | Same, with no name resolution needed |
-| `/powerbi-export package --run data\runs\<run-id>` | `powerbi-export` | `powerbi_export_package\` (FactSource, DimID, DimCluster, DimDefect, DimSummary) |
+| `/powerbi-export package --run data\runs\<run-id>` | `powerbi-export` | `powerbi_export_package\` (FactSource, DimID, DimCluster, DimDefect, DimSummary, DimSerial) |
 | `/jira-rca-corpus refresh` | `jira-rca-corpus` | Fresh Jira defect/RCA and KB corpora in `data\jira` and `data\kb` |
 | `/jama-nursecall-context update the glossary` | `jama-nursecall-context`, `prompt-author` | Updated clustering glossary (new prompt version) |
 

@@ -14,13 +14,40 @@ from datetime import date, datetime
 from typing import Any, Iterable
 
 SERIAL_COLUMNS: tuple[str, ...] = (
+    "old_serial_numbers",
+    "new_serial_numbers",
     "pre_sn",
     "pre_sn_date",
     "post_sn",
     "post_sn_date",
     "pre_sn_date_wwyy",
     "post_sn_date_wwyy",
+    "pre_sn_date_year",
+    "post_sn_date_year",
+    "current_year",
+    "pre_sn_age_in_years",
+    "post_sn_age_in_years",
+    "pre_sn_age_in_months_since_1970",
+    "post_sn_age_in_months_since_1970",
+    "current_months_since_1970",
+    "pre_sn_age_in_months",
+    "pre_sn_age_category",
 )
+DATE_COLUMNS: tuple[str, ...] = ("pre_sn_date_wwyy", "post_sn_date_wwyy")
+
+
+def months_since_1970(value: date) -> int:
+    return (value.year - 1970) * 12 + value.month - 1
+
+
+def age_category(age_in_months: int | None) -> str | None:
+    if age_in_months is None:
+        return None
+    if age_in_months <= 18:
+        return "within warranty"
+    if age_in_months <= 60:
+        return "within service life"
+    return "beyond expected life"
 
 # "old" widened with the other words used for the replaced device ("Previous RCB SN: ...").
 OLD_TOKEN = r"(?<![A-Za-z])(?:old|previous|original|existing)(?![A-Za-z])"
@@ -52,6 +79,44 @@ def find_serials(text: str) -> list[str]:
     return found
 
 
+def classify_serials(text: str) -> tuple[list[str], list[str]]:
+    """Split serials into (old, new) by the nearest preceding old/new keyword on the same line.
+
+    Unlabeled serials are dropped; the line limit keeps a keyword from leaking into the next source field.
+    """
+    text = text or ""
+    markers = sorted(
+        [(m.start(), "old") for m in _OLD_RE.finditer(text)] + [(m.start(), "new") for m in _NEW_RE.finditer(text)]
+    )
+    lists: dict[str, list[str]] = {"old": [], "new": []}
+    for match in SERIAL_RE.finditer(text):
+        line_start = text.rfind("\n", 0, match.start()) + 1
+        kind = next((label for start, label in reversed(markers) if line_start <= start < match.start()), None)
+        serial = match.group(1).upper()
+        if kind and serial not in lists[kind]:
+            lists[kind].append(serial)
+    return lists["old"], lists["new"]
+
+
+def serial_attributes(serial: str, *, today: date | datetime | None = None) -> dict[str, Any]:
+    """Per-serial date, year and age columns used by DimSerial."""
+    today = today or date.today()
+    stamp = week_monday(serial_wwyy(serial, current_yy=today.year % 100))
+    values: dict[str, Any] = dict.fromkeys(
+        ("sn_date_wwyy", "sn_date_year", "sn_age_in_years", "sn_age_in_months", "sn_age_category")
+    )
+    if stamp is not None:
+        months = months_since_1970(today) - months_since_1970(stamp)
+        values.update(
+            sn_date_wwyy=stamp,
+            sn_date_year=stamp.year,
+            sn_age_in_years=today.year - stamp.year,
+            sn_age_in_months=months,
+            sn_age_category=age_category(months),
+        )
+    return values
+
+
 def _valid_wwyy(wwyy: str, current_yy: int) -> bool:
     return len(wwyy) == 4 and wwyy.isdigit() and 1 <= int(wwyy[:2]) <= 53 and int(wwyy[2:]) <= current_yy
 
@@ -78,7 +143,7 @@ def serial_wwyy(serial: str | None, *, current_yy: int | None = None) -> str | N
     return next((window for window in windows if _valid_wwyy(window, current_yy)), first)
 
 
-def week_monday(wwyy: str | None) -> datetime | None:
+def week_monday(wwyy: str | None) -> date | None:
     """Monday of ISO week ``WW`` in year ``20YY``; ``None`` when the week is invalid."""
     if not wwyy or len(wwyy) != 4 or not wwyy.isdigit():
         return None
@@ -86,12 +151,20 @@ def week_monday(wwyy: str | None) -> datetime | None:
         monday = date.fromisocalendar(2000 + int(wwyy[2:]), int(wwyy[:2]), 1)
     except ValueError:
         return None
-    return datetime(monday.year, monday.month, monday.day)
+    return monday
 
 
-def pre_post_serials(text: str, *, current_yy: int | None = None) -> dict[str, Any]:
-    """The six ``SERIAL_COLUMNS`` for one case; all empty unless the text cites old, new and a serial."""
+def pre_post_serials(text: str, *, current_yy: int | None = None, today: date | datetime | None = None) -> dict[str, Any]:
+    """The ``SERIAL_COLUMNS`` for one case; all empty unless the text cites old, new and a serial."""
     values: dict[str, Any] = dict.fromkeys(SERIAL_COLUMNS)
+    today = today or date.today()
+    if current_yy is None:
+        current_yy = today.year % 100
+    values["current_year"] = today.year
+    values["current_months_since_1970"] = months_since_1970(today)
+    old, new = classify_serials(text)
+    values["old_serial_numbers"] = ", ".join(old) or None
+    values["new_serial_numbers"] = ", ".join(new) or None
     if not (text and _OLD_RE.search(text) and _NEW_RE.search(text) and SERIAL_RE.search(text)):
         return values
     pre, post = PRE_SN_RE.search(text), POST_SN_RE.search(text)
@@ -101,4 +174,14 @@ def pre_post_serials(text: str, *, current_yy: int | None = None) -> dict[str, A
     values["post_sn_date"] = serial_wwyy(values["post_sn"], current_yy=current_yy)
     values["pre_sn_date_wwyy"] = week_monday(values["pre_sn_date"])
     values["post_sn_date_wwyy"] = week_monday(values["post_sn_date"])
+    for side in ("pre", "post"):
+        stamp = values[f"{side}_sn_date_wwyy"]
+        if stamp is None:
+            continue
+        values[f"{side}_sn_date_year"] = stamp.year
+        values[f"{side}_sn_age_in_years"] = today.year - stamp.year
+        values[f"{side}_sn_age_in_months_since_1970"] = months_since_1970(stamp)
+    if values["pre_sn_age_in_months_since_1970"] is not None:
+        values["pre_sn_age_in_months"] = values["current_months_since_1970"] - values["pre_sn_age_in_months_since_1970"]
+        values["pre_sn_age_category"] = age_category(values["pre_sn_age_in_months"])
     return values

@@ -8,10 +8,12 @@ from pathlib import Path
 from typing import Any
 
 from openpyxl import Workbook, load_workbook
+from openpyxl.utils import get_column_letter
 
 from ..defect_mapping.kb import parse_link
 from .mapping import build_row
-from .serials import SERIAL_COLUMNS
+from .serials import DATE_COLUMNS, SERIAL_COLUMNS
+from .trackwise import TrackwiseData, apply_trackwise
 
 DEFAULT_TEMPLATE = Path("data") / "input" / "salesforce.xlsx"
 
@@ -62,7 +64,12 @@ def load_kb_titles(kb_dir: Path | None) -> dict[str, str]:
 
 
 def export_powerbi(
-    cases: Path, out: Path, *, template: Path = DEFAULT_TEMPLATE, kb_dir: Path | None = None
+    cases: Path,
+    out: Path,
+    *,
+    template: Path = DEFAULT_TEMPLATE,
+    kb_dir: Path | None = None,
+    trackwise: TrackwiseData | None = None,
 ) -> dict[str, Any]:
     template_headers = read_headers(template)
     headers = template_headers + [name for name in SERIAL_COLUMNS if name not in template_headers]
@@ -89,6 +96,8 @@ def export_powerbi(
         "kb_titles": 0,
         "serial_numbers": 0,
         "pre_post_serials": 0,
+        "trackwise_matched": 0,
+        "trackwise_ambiguous": 0,
     }
     reference_index = headers.index("Reference Name")
     serials_index = headers.index("serial_numbers") if "serial_numbers" in headers else None
@@ -106,11 +115,17 @@ def export_powerbi(
             kb_title=kb_title,
             export_date=exported_at,
         )
+        pr_key, candidates = apply_trackwise(trackwise, headers, row, cases.name)
+        stats["trackwise_matched"] += pr_key is not None
+        stats["trackwise_ambiguous"] += candidates > 1
         stats["kb_titles"] += bool(row[reference_index])
         stats["serial_numbers"] += serials_index is not None and bool(row[serials_index])
         stats["pre_post_serials"] += bool(row[pre_index] or row[post_index])
         sheet.append(row)
         stats["cases"] += 1
+    for name in DATE_COLUMNS:
+        for cell in sheet[get_column_letter(headers.index(name) + 1)][1:]:
+            cell.number_format = "yyyy-mm-dd"
     sheet.freeze_panes = "A2"
     out.parent.mkdir(parents=True, exist_ok=True)
     book.save(out)
